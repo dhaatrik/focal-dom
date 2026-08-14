@@ -41,7 +41,7 @@ packages/extension/
 ## 🛠️ Phases & Sub-Phases
 
 ### Phase 06.1: Manifest V3 Configuration (`manifest.json`)
-- [ ] **Sub-phase 06.1.1:** Configure permissions:
+- [x] **Sub-phase 06.1.1:** Configure permissions:
   ```json
   {
     "manifest_version": 3,
@@ -59,18 +59,18 @@ packages/extension/
   ```
 
 ### Phase 06.2: In-Page Content Script & Telemetry (`src/content/`)
-- [ ] **Sub-phase 06.2.1:** Port `DOMMetadataTracker` from `@focaldom/core`:
+- [x] **Sub-phase 06.2.1:** Port `DOMMetadataTracker` from `@focaldom/core`:
   - Intercept user click, hover, scroll, and input events.
   - Scan for `position: fixed` and `position: sticky` headers and compute bounding boxes.
-- [ ] **Sub-phase 06.2.2:** Inject minimal floating visual recording badge in the top-right corner of the web page to indicate active capture.
+- [x] **Sub-phase 06.2.2:** Inject minimal floating visual recording badge in the top-right corner of the web page to indicate active capture.
 
 ### Phase 06.3: WebSocket Streaming Client (`src/background/`)
-- [ ] **Sub-phase 06.3.1:** Connect background service worker to Desktop application WebSocket (`ws://127.0.0.1:48480`).
-- [ ] **Sub-phase 06.3.2:** Buffer and stream DOM event frames with high-precision `performance.now()` timestamps.
-- [ ] **Sub-phase 06.3.3:** Handle auto-reconnect and heartbeat ping/pong.
+- [x] **Sub-phase 06.3.1:** Connect background service worker to Desktop application WebSocket (`ws://127.0.0.1:48480`).
+- [x] **Sub-phase 06.3.2:** Buffer and stream DOM event frames with high-precision `performance.now()` timestamps.
+- [x] **Sub-phase 06.3.3:** Handle auto-reconnect and heartbeat ping/pong.
 
 ### Phase 06.4: Recording Control Popup (`src/popup/`)
-- [ ] **Sub-phase 06.4.1:** Build lightweight React popup with:
+- [x] **Sub-phase 06.4.1:** Build lightweight React popup with:
   - Connection status indicator (🟢 Connected to Desktop App / 🔴 Disconnected).
   - Start Recording / Stop Recording button.
   - Recording duration timer.

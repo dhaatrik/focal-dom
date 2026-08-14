@@ -31,7 +31,7 @@ graph TD
 | **03** | [Implement_03_Renderer_Engine.md](Implement_03_Renderer_Engine.md) | `@focaldom/renderer`: Pixi.js composition, motion blur shaders, raw RGBA FFmpeg pipe | ✅ Done |
 | **04** | [Implement_04_Studio_Timeline.md](Implement_04_Studio_Timeline.md) | `@focaldom/studio`: React 19 + Zustand multi-track timeline, physics tuner, styling panel | ✅ Done |
 | **05** | [Implement_05_Desktop_App.md](Implement_05_Desktop_App.md) | `apps/desktop`: Electron Windows shell, native FFmpeg bundling, SharedArrayBuffer IPC | ✅ Done |
-| **06** | [Implement_06_Chrome_Extension.md](Implement_06_Chrome_Extension.md) | `@focaldom/extension`: Mode A Manifest V3 live recording & WebSocket telemetry | ⏳ Ready |
+| **06** | [Implement_06_Chrome_Extension.md](Implement_06_Chrome_Extension.md) | `@focaldom/extension`: Mode A Manifest V3 live recording & WebSocket telemetry | ✅ Done |
 
 ---
 
