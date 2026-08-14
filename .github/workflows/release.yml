@@ -48,7 +48,7 @@ jobs:
         run: pnpm typecheck
 
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps chromium chromium-headless-shell
+        run: pnpm --filter @focaldom/capture-playwright exec playwright install --with-deps chromium chromium-headless-shell
 
       - name: Run Vitest Unit Tests
         run: pnpm test
