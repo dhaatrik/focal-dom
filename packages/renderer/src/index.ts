@@ -4,5 +4,9 @@
  */
 
 export * from '@focaldom/core';
+export * from './engine';
+export * from './layers';
+export * from './shaders';
+export * from './export';
 
 export const RENDERER_VERSION = '0.1.0';
