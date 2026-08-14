@@ -43,5 +43,8 @@ jobs:
       - name: Build Monorepo Packages
         run: pnpm build
 
+      - name: Install Playwright Browsers
+        run: pnpm --filter @focaldom/capture-playwright exec playwright install --with-deps chromium chromium-headless-shell
+
       - name: Run Vitest Unit Tests
         run: pnpm test
