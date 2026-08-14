@@ -46,33 +46,21 @@ packages/core/
 ## 🛠️ Phases & Sub-Phases
 
 ### Phase 01.1: Event & Project Data Schemas (`packages/core/src/events/`)
-- [ ] **Sub-phase 01.1.1:** Implement `DOMElementRect` and `DOMEventFrame` interfaces:
-  - Supports `eventType`: `click`, `scroll`, `hover`, `focus`, `input`, `navigation`.
-  - Captures `cursor` $(x, y)$, `scrollOffset` $(x, y)$, `viewport` (width, height, dpr).
-  - Captures `activeStickyRegions: DOMElementRect[]`.
-- [ ] **Sub-phase 01.1.2:** Define `CameraKeyframe` and `FocalDOMProject` schemas:
-  - Timeline keyframes: `id`, `timestampMs`, `zoomScale`, `panOffset`, `easingCurve`, `autoZoomGenerated`.
-  - Project configuration: `aspectRatio` (16:9, 9:16, 1:1, 4:3), `windowFrame` styles, `backgroundStyle`, `keyframes`, `events`.
+- [x] **Sub-phase 01.1.1:** Implement `DOMElementRect` and `DOMEventFrame` interfaces.
+- [x] **Sub-phase 01.1.2:** Define `CameraKeyframe` and `FocalDOMProject` schemas.
 
 ### Phase 01.2: Spring Camera Physics & Look-Ahead System (`packages/core/src/camera/`)
-- [ ] **Sub-phase 01.2.1:** Implement `SpringCamera` with second-order differential equation solvers:
-  $$a = \frac{\text{stiffness} \cdot (\text{target} - \text{current}) - \text{damping} \cdot v}{\text{mass}}$$
-- [ ] **Sub-phase 01.2.2:** Implement `LookAheadBuffer`:
-  - Scans DOM event timeline for upcoming click/focus events at timestamp $T$.
-  - Generates an anticipatory camera transition starting at $T - 400\text{ms}$.
-- [ ] **Sub-phase 01.2.3:** Implement matrix transformation utilities ($2\times3$ affine matrices) for zoom/pan coordinates.
+- [x] **Sub-phase 01.2.1:** Implement `SpringCamera` with second-order differential equation solvers.
+- [x] **Sub-phase 01.2.2:** Implement `LookAheadBuffer` generating 400ms anticipatory keyframes.
+- [x] **Sub-phase 01.2.3:** Implement matrix transformation utilities ($2\times3$ affine matrices) for zoom/pan coordinates.
 
 ### Phase 01.3: Sticky Header & Viewport Avoidance (`packages/core/src/avoidance/`)
-- [ ] **Sub-phase 01.3.1:** Implement `computeUsableViewport`:
-  - Merges overlapping fixed/sticky rects into top, bottom, and side deadzones.
-- [ ] **Sub-phase 01.3.2:** Implement `setTargetWithAvoidance`:
-  - Clamps zoom scale so target elements are framed cleanly inside unobstructed viewport real estate with default 1.8x padding.
+- [x] **Sub-phase 01.3.1:** Implement `computeViewportDeadZones` aggregating sticky/fixed header regions.
+- [x] **Sub-phase 01.3.2:** Implement `calculateTargetFromElement` with safe-zone clamping and 1.8x padding.
 
 ### Phase 01.4: Vector Cursor Path Smoothing & Ripple Math (`packages/core/src/cursor/`)
-- [ ] **Sub-phase 01.4.1:** Implement `CubicBezierSmoother`:
-  - Reconstructs jittery mouse point clouds into continuous $C^1$-smooth Bezier spline trajectories.
-- [ ] **Sub-phase 01.4.2:** Implement `ClickRippleSimulator`:
-  - Calculates instantaneous radius $r(t) = R_{\max} \cdot (1 - e^{-k t})$ and alpha decay $\alpha(t) = e^{-\lambda t}$.
+- [x] **Sub-phase 01.4.1:** Implement `CubicBezierSmoother` for continuous smooth cursor trajectories.
+- [x] **Sub-phase 01.4.2:** Implement `evaluateClickRipple` for radial expansion and alpha decay.
 
 ---
 
