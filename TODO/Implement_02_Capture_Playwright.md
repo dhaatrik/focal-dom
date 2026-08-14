@@ -45,30 +45,30 @@ packages/capture-playwright/
 ## 🛠️ Phases & Sub-Phases
 
 ### Phase 02.1: In-Page DOM Logger & Telemetry Injector (`src/injected/`)
-- [ ] **Sub-phase 02.1.1:** Implement `dom-logger.ts`:
+- [x] **Sub-phase 02.1.1:** Implement `dom-logger.ts`:
   - Hook `window.addEventListener('click', ..., true)`, `mousemove`, `scroll`, `input`, `focus`.
   - Traverse DOM tree on target elements to detect `position: fixed` and `position: sticky`.
   - Collect `boundingRect` for all active fixed/sticky elements per tick.
   - Store event frames in `window.__FOCAL_EVENT_LOG__`.
-- [ ] **Sub-phase 02.1.2:** Inject script during initial navigation using `page.addInitScript()`.
+- [x] **Sub-phase 02.1.2:** Inject script during initial navigation using `page.addInitScript()`.
 
 ### Phase 02.2: Deterministic Virtual Frame Clock & CDP Screencast (`src/runner/`)
-- [ ] **Sub-phase 02.2.1:** Implement `VirtualClock`:
+- [x] **Sub-phase 02.2.1:** Implement `VirtualClock`:
   - Intercept `requestAnimationFrame`, `performance.now()`, `Date.now()`, and CSS animations in page context.
   - Provide `window.__focal_tick(frameIndex, deltaTime)` allowing external step-by-step frame advancement.
-- [ ] **Sub-phase 02.2.2:** Implement `CDPScreencastCollector`:
+- [x] **Sub-phase 02.2.2:** Implement `CDPScreencastCollector`:
   - Attach CDP session via `page.context().newCDPSession(page)`.
   - Capture frame buffers at target FPS (60 or 120 FPS).
   - Write raw sequential frames (or PNG cache) with zero dropped frames.
 
 ### Phase 02.3: Declarative Scenario Parser (`src/scenario/`)
-- [ ] **Sub-phase 02.3.1:** Define scenario schema (YAML/JSON):
+- [x] **Sub-phase 02.3.1:** Define scenario schema (YAML/JSON):
   - Configuration: `viewport`, `devicePixelRatio`, `fps`, `targetUrl`.
   - Steps: `goto`, `wait`, `click`, `hover`, `type`, `press`, `scroll`, `assertVisible`.
-- [ ] **Sub-phase 02.3.2:** Implement step dispatcher executing actions while synchronizing frame ticks.
+- [x] **Sub-phase 02.3.2:** Implement step dispatcher executing actions while synchronizing frame ticks.
 
 ### Phase 02.4: TypeScript Playwright SDK (`src/sdk/`)
-- [ ] **Sub-phase 02.4.1:** Provide `FocalPage` wrapper:
+- [x] **Sub-phase 02.4.1:** Provide `FocalPage` wrapper:
   ```typescript
   export class FocalPage {
     constructor(private page: Page, private session: FocalCaptureSession) {}
@@ -78,11 +78,11 @@ packages/capture-playwright/
     async focalScroll(x: number, y: number): Promise<void>;
   }
   ```
-- [ ] **Sub-phase 02.4.2:** Export `launchFocalSession({ fps, viewport, headless })`.
+- [x] **Sub-phase 02.4.2:** Export `launchFocalSession({ fps, viewport, headless })`.
 
 ### Phase 02.5: CLI Executable (`src/cli.ts`)
-- [ ] **Sub-phase 02.5.1:** Build binary `focaldom capture <scenario-path> --output <dir> --fps 60`.
-- [ ] **Sub-phase 02.5.2:** Emit output artifacts:
+- [x] **Sub-phase 02.5.1:** Build binary `focaldom capture <scenario-path> --output <dir> --fps 60`.
+- [x] **Sub-phase 02.5.2:** Emit output artifacts:
   - `<output>/frames/frame_000001.png` (or sequential raw buffer)
   - `<output>/events.json` (Structured `DOMEventFrame[]`)
   - `<output>/manifest.json` (Project metadata)
