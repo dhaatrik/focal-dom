@@ -127,9 +127,9 @@ export class ExtensionDOMTracker {
       const rect = targetElement.getBoundingClientRect();
       targetInfo = {
         tagName: targetElement.tagName.toLowerCase(),
-        id: targetElement.id || undefined,
-        className: targetElement.className ? String(targetElement.className) : undefined,
-        boundingClientRect: {
+        id: targetElement.id || '',
+        classList: targetElement.classList ? Array.from(targetElement.classList) : [],
+        boundingRect: {
           top: rect.top,
           left: rect.left,
           width: rect.width,
