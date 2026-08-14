@@ -74,7 +74,7 @@ export class FocalPixiApp {
   /**
    * Extracts raw uncompressed RGBA pixel buffer from current canvas
    */
-  public async extractRawPixels(): Promise<Uint8Array | null> {
+  public async extractRawPixels(): Promise<Uint8Array | Uint8ClampedArray | null> {
     if (!this.app) return null;
     try {
       const pixels = this.app.renderer.extract.pixels(this.app.stage);

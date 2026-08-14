@@ -49,26 +49,35 @@ void main(void) {
 
 export class MotionBlurFilter extends Filter {
   constructor(velocityX: number = 0, velocityY: number = 0, intensity: number = 0.005) {
-    const glProgram = GlProgram.from({
-      vertex: defaultVertex,
-      fragment: fragmentSource,
-      name: 'motion-blur-filter',
-    });
+    if (typeof document !== 'undefined') {
+      const glProgram = GlProgram.from({
+        vertex: defaultVertex,
+        fragment: fragmentSource,
+        name: 'motion-blur-filter',
+      });
 
-    super({
-      glProgram,
-      resources: {
-        motionBlurUniforms: {
-          uVelocity: { value: [velocityX, velocityY], type: 'vec2<f32>' },
-          uIntensity: { value: intensity, type: 'f32' },
+      super({
+        glProgram,
+        resources: {
+          motionBlurUniforms: {
+            uVelocity: { value: [velocityX, velocityY], type: 'vec2<f32>' },
+            uIntensity: { value: intensity, type: 'f32' },
+          },
         },
-      },
-    });
+      });
+    } else {
+      // Headless / Node testing fallback
+      super({});
+    }
   }
 
   public setVelocity(vx: number, vy: number): void {
-    const uniforms = this.resources.motionBlurUniforms.uniforms;
-    uniforms.uVelocity[0] = vx;
-    uniforms.uVelocity[1] = vy;
+    if (this.resources && this.resources.motionBlurUniforms) {
+      const uniforms = this.resources.motionBlurUniforms.uniforms;
+      if (uniforms && uniforms.uVelocity) {
+        uniforms.uVelocity[0] = vx;
+        uniforms.uVelocity[1] = vy;
+      }
+    }
   }
 }
