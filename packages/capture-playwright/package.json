@@ -20,7 +20,10 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@focaldom/core": "workspace:*"
+    "@focaldom/core": "workspace:*",
+    "cac": "^6.7.14",
+    "playwright": "^1.50.1",
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
     "tsup": "^8.4.0",
