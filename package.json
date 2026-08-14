@@ -6,7 +6,7 @@
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
   "scripts": {
-    "build": "pnpm -r --filter=!@focaldom/desktop run build",
+    "build": "pnpm -r --filter \"!@focaldom/desktop\" run build",
     "dev": "pnpm -r --parallel run dev",
     "test": "vitest run",
     "test:watch": "vitest",

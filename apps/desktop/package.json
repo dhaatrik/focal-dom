@@ -7,7 +7,7 @@
   "main": "./dist/main.js",
   "scripts": {
     "dev": "echo \"Desktop dev running...\"",
-    "build": "echo \"Desktop build running...\"",
+    "build": "tsc -b",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
