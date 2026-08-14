@@ -47,23 +47,23 @@ packages/renderer/
 ## 🛠️ Phases & Sub-Phases
 
 ### Phase 03.1: Pixi.js Scene Graph & Layer Composition (`src/engine/` & `src/layers/`)
-- [ ] **Sub-phase 03.1.1:** Initialize PixiJS `Application` configured with high-performance WebGL2/WebGPU backend.
-- [ ] **Sub-phase 03.1.2:** Implement `BackgroundLayer`:
+- [x] **Sub-phase 03.1.1:** Initialize PixiJS `Application` configured with high-performance WebGL2/WebGPU backend.
+- [x] **Sub-phase 03.1.2:** Implement `BackgroundLayer`:
   - Renders customizable radial gradients, modern mesh gradients, or solid backgrounds.
-- [ ] **Sub-phase 03.1.3:** Implement `WindowLayer`:
+- [x] **Sub-phase 03.1.3:** Implement `WindowLayer`:
   - Renders rounded window container (`borderRadius: 16px`), customizable titlebar controls, and ambient drop shadow.
-- [ ] **Sub-phase 03.1.4:** Implement `VideoViewportLayer`:
+- [x] **Sub-phase 03.1.4:** Implement `VideoViewportLayer`:
   - Transforms the video/frame texture according to `SpringCamera` matrix $(x, y, \text{scale})$.
-- [ ] **Sub-phase 03.1.5:** Implement `VectorCursorLayer`:
+- [x] **Sub-phase 03.1.5:** Implement `VectorCursorLayer`:
   - Draws sharp vector cursors and animated expanding click ripples over the window canvas.
 
 ### Phase 03.2: Multi-Pass Sub-Frame Motion Blur (`src/shaders/`)
-- [ ] **Sub-phase 03.2.1:** Implement `MotionBlurFilter`:
+- [x] **Sub-phase 03.2.1:** Implement `MotionBlurFilter`:
   - Custom GLSL / WGSL fragment shader executing 4 temporal accumulation samples per frame.
   - Dynamically weights sample opacity proportional to camera velocity vector $(\Delta x, \Delta y, \Delta \text{scale})$.
 
 ### Phase 03.3: High-Throughput Raw RGBA FFmpeg Export Pipeline (`src/export/`)
-- [ ] **Sub-phase 03.3.1:** Implement `FFmpegStreamer`:
+- [x] **Sub-phase 03.3.1:** Implement `FFmpegStreamer`:
   - Spawns FFmpeg child process on Windows:
     ```bash
     ffmpeg -y -f rawvideo -pix_fmt rgba -s 3840x2160 -r 60 -i pipe:0 \
@@ -71,13 +71,13 @@ packages/renderer/
       -movflags +faststart output.mp4
     ```
   - Directly pipes uncompressed RGBA pixel buffers (`gl.readPixels` / `renderer.extract.pixels`) into FFmpeg `stdin`.
-- [ ] **Sub-phase 03.3.2:** Provide presets:
+- [x] **Sub-phase 03.3.2:** Provide presets:
   - YouTube (3840x2160 @ 60 FPS, H.264 CRF 16)
   - Twitter / Web (1920x1080 @ 60 FPS, H.264 CRF 18)
   - Shorts / Reels (1080x1920 @ 60 FPS, 9:16 vertical crop/fit)
   - Apple ProRes (4K ProRes 422 HQ)
   - GitHub GIF (Palettized high-framerate GIF)
-- [ ] **Sub-phase 03.3.3:** Real-time progress callback emitting `currentFrame`, `totalFrames`, `fpsThroughput`, and `percentComplete`.
+- [x] **Sub-phase 03.3.3:** Real-time progress callback emitting `currentFrame`, `totalFrames`, `fpsThroughput`, and `percentComplete`.
 
 ---
 
