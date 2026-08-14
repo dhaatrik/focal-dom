@@ -1,6 +1,4 @@
-/**
- * @focaldom/studio
- * React NLE timeline studio
- */
-
-export const STUDIO_VERSION = '0.1.0';
+export * from './App';
+export * from './components';
+export * from './store';
+export * from './hooks';
