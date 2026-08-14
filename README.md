@@ -39,4 +39,4 @@ For complete technical specifications, see [docs/Technical Architecture & Engine
 
 ## 📜 License
 
-[MIT License](LICENSE) © 2026 Dhaatrik
+[MIT License](LICENSE) © 2026 Dhaatrik Chowdhury
