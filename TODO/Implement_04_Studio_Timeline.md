@@ -59,32 +59,32 @@ packages/studio/
 ## 🛠️ Phases & Sub-Phases
 
 ### Phase 04.1: State Management & Project Model (`src/store/`)
-- [ ] **Sub-phase 04.1.1:** Implement Zustand `projectStore`:
+- [x] **Sub-phase 04.1.1:** Implement Zustand `projectStore`:
   - Load project (`FocalDOMProject`), add/remove/update keyframes, undo/redo history stack.
-- [ ] **Sub-phase 04.1.2:** Implement Zustand `playbackStore`:
+- [x] **Sub-phase 04.1.2:** Implement Zustand `playbackStore`:
   - `currentTimeMs`, `durationMs`, `isPlaying`, `playbackRate` $(0.25\times - 4\times)$, `loop`.
 
 ### Phase 04.2: Interactive Multi-Track Timeline (`src/components/timeline/`)
-- [ ] **Sub-phase 04.2.1:** Implement `TimelineHeader` with sub-millisecond timecode ruler, zoomable scale ($1\text{s} = 50\text{px} \dots 500\text{px}$), and draggable playhead.
-- [ ] **Sub-phase 04.2.2:** Implement `KeyframeTrack`:
+- [x] **Sub-phase 04.2.1:** Implement `TimelineHeader` with sub-millisecond timecode ruler, zoomable scale ($1\text{s} = 50\text{px} \dots 500\text{px}$), and draggable playhead.
+- [x] **Sub-phase 04.2.2:** Implement `KeyframeTrack`:
   - Visual blocks representing active zoom intervals.
   - Left/right handles to drag duration; double click to edit zoom scale; delete key to remove.
-- [ ] **Sub-phase 04.2.3:** Implement `EventTrack`:
+- [x] **Sub-phase 04.2.3:** Implement `EventTrack`:
   - Visual icons for DOM clicks (🎯), text input (⌨️), scroll (📜), and hover (👆).
   - Hovering an event reveals element tagName, id, class, and bounding box dimensions.
 
 ### Phase 04.3: Real-Time Canvas Viewport & Inspector Panel (`src/components/viewport/` & `src/components/inspector/`)
-- [ ] **Sub-phase 04.3.1:** Embed `@focaldom/renderer` Pixi.js canvas within `CanvasViewport`.
-- [ ] **Sub-phase 04.3.2:** Implement `PhysicsTuner`:
+- [x] **Sub-phase 04.3.1:** Embed `@focaldom/renderer` Pixi.js canvas within `CanvasViewport`.
+- [x] **Sub-phase 04.3.2:** Implement `PhysicsTuner`:
   - Sliders for Stiffness ($20 \dots 400$), Damping ($5 \dots 50$), Mass ($0.1 \dots 5$), Lookahead ($0 \dots 1000\text{ms}$).
   - Live feedback updates camera physics immediately on playback.
-- [ ] **Sub-phase 04.3.3:** Implement `StylingPanel`:
+- [x] **Sub-phase 04.3.3:** Implement `StylingPanel`:
   - Aspect Ratio presets (`16:9`, `9:16`, `1:1`, `4:3`).
   - Window frame styling (Show titlebar, corner radius, shadow spread/blur).
   - Background options: Gradient presets, solid color picker, blurred background image.
 
 ### Phase 04.4: Export Modal with Progress Monitoring (`src/components/modal/`)
-- [ ] **Sub-phase 04.4.1:** Implement `ExportModal`:
+- [x] **Sub-phase 04.4.1:** Implement `ExportModal`:
   - Resolution selector (4K 2160p, 1440p, 1080p, 720p).
   - Framerate (30, 60, 120 FPS).
   - Codec (H.264 MP4, HEVC H.265, ProRes 422, GIF).
