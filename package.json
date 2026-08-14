@@ -1,0 +1,24 @@
+{
+  "name": "focal-dom-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "DOM-Aware Intelligent Video Recording & Dynamic Virtual Camera Studio",
+  "author": "Dhaatrik Chowdhury",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm -r --filter=!@focaldom/desktop run build",
+    "dev": "pnpm -r --parallel run dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b",
+    "lint": "echo \"Linting workspace...\"",
+    "clean": "pnpm -r exec rm -rf dist node_modules"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  },
+  "packageManager": "pnpm@11.21.0"
+}

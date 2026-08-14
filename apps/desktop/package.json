@@ -1,0 +1,21 @@
+{
+  "name": "@focaldom/desktop",
+  "version": "0.1.0",
+  "description": "Electron Windows desktop shell for FocalDOM",
+  "author": "Dhaatrik Chowdhury",
+  "license": "MIT",
+  "main": "./dist/main.js",
+  "scripts": {
+    "dev": "echo \"Desktop dev running...\"",
+    "build": "echo \"Desktop build running...\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@focaldom/core": "workspace:*",
+    "@focaldom/renderer": "workspace:*",
+    "@focaldom/studio": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

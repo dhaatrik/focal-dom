@@ -1,0 +1,20 @@
+{
+  "name": "@focaldom/extension",
+  "version": "0.1.0",
+  "description": "Mode A Chrome Extension (Manifest V3) live DOM tracker and streamer for FocalDOM",
+  "author": "Dhaatrik Chowdhury",
+  "license": "MIT",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "dev": "echo \"Extension dev running...\"",
+    "build": "echo \"Extension build running...\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@focaldom/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
