@@ -1,8 +1,7 @@
-import { app } from 'electron';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import { spawn } from 'node:child_process';
-import { FFmpegStreamer, ExportPreset } from '@focaldom/renderer';
+import { FFmpegStreamer, ExportPreset, EXPORT_PRESETS, ExportProgressCallback } from '@focaldom/renderer';
 
 export class DesktopFFmpegManager {
   private static cachedPath: string | null = null;
@@ -15,13 +14,21 @@ export class DesktopFFmpegManager {
       return this.cachedPath;
     }
 
-    const isPackaged = app ? app.isPackaged : process.env.NODE_ENV === 'production';
+    let electronApp: typeof import('electron').app | null = null;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      electronApp = require('electron').app;
+    } catch {
+      // Running in unit test or non-electron node process
+    }
+
+    const isPackaged = electronApp ? electronApp.isPackaged : process.env.NODE_ENV === 'production';
     const isWindows = process.platform === 'win32';
     const binaryName = isWindows ? 'ffmpeg.exe' : 'ffmpeg';
 
     const candidatePaths: string[] = [];
 
-    if (isPackaged && app) {
+    if (isPackaged && electronApp) {
       // 1. Packaged Electron extraResources directory
       candidatePaths.push(path.join(process.resourcesPath, 'bin', binaryName));
       candidatePaths.push(path.join(process.resourcesPath, binaryName));
@@ -69,15 +76,17 @@ export class DesktopFFmpegManager {
    */
   static async createStreamer(options: {
     outputPath: string;
-    width: number;
-    height: number;
-    fps?: number;
+    totalFrames: number;
     preset?: ExportPreset;
+    onProgress?: ExportProgressCallback;
   }): Promise<FFmpegStreamer> {
     const ffmpegPath = await this.resolveFFmpegPath();
     return new FFmpegStreamer({
-      ...options,
+      preset: options.preset ?? EXPORT_PRESETS.youtube4k,
+      outputPath: options.outputPath,
+      totalFrames: options.totalFrames,
       ffmpegPath,
+      onProgress: options.onProgress,
     });
   }
 }

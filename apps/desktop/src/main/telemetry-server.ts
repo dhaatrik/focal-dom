@@ -1,6 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { EventEmitter } from 'node:events';
-import { DOMEventFrame, DOMEventFrameSchema } from '@focaldom/core';
+import { DOMEventFrame, isValidDOMEventFrame } from '@focaldom/core';
 
 export interface TelemetryServerOptions {
   port?: number;
@@ -13,6 +13,7 @@ export class DesktopTelemetryServer extends EventEmitter {
   private host: string;
   private bufferedEvents: DOMEventFrame[] = [];
   private isListening = false;
+  private activeClients = new Set<WebSocket>();
 
   constructor(options: TelemetryServerOptions = {}) {
     super();
@@ -42,6 +43,7 @@ export class DesktopTelemetryServer extends EventEmitter {
       });
 
       this.wss.on('connection', (ws: WebSocket) => {
+        this.activeClients.add(ws);
         this.emit('client-connected');
 
         ws.on('message', (data: Buffer | string) => {
@@ -50,11 +52,9 @@ export class DesktopTelemetryServer extends EventEmitter {
             const parsed = JSON.parse(rawJson);
 
             // Validate frame schema
-            const validated = DOMEventFrameSchema.safeParse(parsed);
-            if (validated.success) {
-              const frame = validated.data as DOMEventFrame;
-              this.bufferedEvents.push(frame);
-              this.emit('event-frame', frame);
+            if (isValidDOMEventFrame(parsed)) {
+              this.bufferedEvents.push(parsed);
+              this.emit('event-frame', parsed);
             }
           } catch (err) {
             this.emit('parse-error', err);
@@ -62,6 +62,7 @@ export class DesktopTelemetryServer extends EventEmitter {
         });
 
         ws.on('close', () => {
+          this.activeClients.delete(ws);
           this.emit('client-disconnected');
         });
       });
@@ -78,6 +79,16 @@ export class DesktopTelemetryServer extends EventEmitter {
         resolve();
         return;
       }
+
+      // Close all connected client sockets
+      for (const client of this.activeClients) {
+        try {
+          client.terminate();
+        } catch {
+          // Ignore
+        }
+      }
+      this.activeClients.clear();
 
       this.wss.close(() => {
         this.isListening = false;

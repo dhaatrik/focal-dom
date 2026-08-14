@@ -1,4 +1,3 @@
-import { dialog, BrowserWindow } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import AdmZip from 'adm-zip';
@@ -70,9 +69,19 @@ export class DesktopFileManager {
    * Opens native Windows Open File dialog to pick and load a .focal project.
    */
   static async promptOpenProject(
-    parentWindow?: BrowserWindow
+    parentWindow?: any
   ): Promise<{ project: FocalDOMProject; filePath: string } | null> {
-    const result = await dialog.showOpenDialog(parentWindow as any, {
+    let electronDialog: typeof import('electron').dialog | null = null;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      electronDialog = require('electron').dialog;
+    } catch {
+      return null;
+    }
+
+    if (!electronDialog) return null;
+
+    const result = await electronDialog.showOpenDialog(parentWindow, {
       title: 'Open FocalDOM Project',
       filters: [
         { name: 'FocalDOM Project (*.focal)', extensions: ['focal'] },
@@ -95,10 +104,20 @@ export class DesktopFileManager {
    */
   static async promptSaveProject(
     project: FocalDOMProject,
-    parentWindow?: BrowserWindow,
+    parentWindow?: any,
     defaultPath?: string
   ): Promise<{ success: boolean; filePath: string }> {
-    const result = await dialog.showSaveDialog(parentWindow as any, {
+    let electronDialog: typeof import('electron').dialog | null = null;
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      electronDialog = require('electron').dialog;
+    } catch {
+      return { success: false, filePath: '' };
+    }
+
+    if (!electronDialog) return { success: false, filePath: '' };
+
+    const result = await electronDialog.showSaveDialog(parentWindow, {
       title: 'Save FocalDOM Project',
       defaultPath: defaultPath || `${project.title || 'Untitled'}.focal`,
       filters: [
