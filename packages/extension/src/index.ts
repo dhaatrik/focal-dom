@@ -1,6 +1,3 @@
-/**
- * @focaldom/extension
- * Manifest V3 live recording extension
- */
-
-export const EXTENSION_VERSION = '0.1.0';
+export * from './content/dom-tracker';
+export * from './content/visual-overlay';
+export * from './background/websocket-client';
