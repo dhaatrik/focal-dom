@@ -1,0 +1,30 @@
+{
+  "name": "@focaldom/capture-playwright",
+  "version": "0.1.0",
+  "description": "Mode B deterministic Playwright and CDP capture engine for FocalDOM",
+  "author": "Dhaatrik Chowdhury",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "focaldom": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@focaldom/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

@@ -36,42 +36,25 @@ focal-dom/
 ## 🛠️ Phases & Sub-Phases
 
 ### Phase 00.1: Workspace Configuration
-- [ ] **Sub-phase 00.1.1:** Create `pnpm-workspace.yaml` defining package and app glob directories:
+- [x] **Sub-phase 00.1.1:** Create `pnpm-workspace.yaml` defining package and app glob directories:
   ```yaml
   packages:
     - 'packages/*'
     - 'apps/*'
   ```
-- [ ] **Sub-phase 00.1.2:** Configure root `package.json` with workspace script shortcuts:
+- [x] **Sub-phase 00.1.2:** Configure root `package.json` with workspace script shortcuts:
   - `pnpm build`: Builds all packages in dependency order.
   - `pnpm dev`: Runs studio and desktop in development watch mode.
   - `pnpm test`: Runs Vitest across all unit test suites.
   - `pnpm lint`: Runs ESLint check across all TS/TSX source files.
 
 ### Phase 00.2: TypeScript Shared Base Configuration
-- [ ] **Sub-phase 00.2.1:** Create `tsconfig.base.json` with strict typing, ES2022 target, NodeNext/Bundler module resolution, and path mappings:
-  ```json
-  {
-    "compilerOptions": {
-      "target": "ES2022",
-      "module": "ESNext",
-      "moduleResolution": "Bundler",
-      "lib": ["ES2022", "DOM", "DOM.Iterable"],
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "declaration": true,
-      "declarationMap": true,
-      "sourceMap": true,
-      "isolatedModules": true
-    }
-  }
-  ```
-- [ ] **Sub-phase 00.2.2:** Set up package-level `tsconfig.json` files extending `../../tsconfig.base.json`.
+- [x] **Sub-phase 00.2.1:** Create `tsconfig.base.json` with strict typing, ES2022 target, NodeNext/Bundler module resolution, and path mappings.
+- [x] **Sub-phase 00.2.2:** Set up package-level `tsconfig.json` files extending `../../tsconfig.base.json`.
 
 ### Phase 00.3: Shared Build & Testing Infrastructure
-- [ ] **Sub-phase 00.3.1:** Configure `tsup` / `vite` build configs for package bundling.
-- [ ] **Sub-phase 00.3.2:** Configure `vitest` at root for lightning-fast unit testing across `@focaldom/core` and math calculations.
+- [x] **Sub-phase 00.3.1:** Configure `tsup` / `vite` build configs for package bundling.
+- [x] **Sub-phase 00.3.2:** Configure `vitest` at root for lightning-fast unit testing across `@focaldom/core` and math calculations.
 
 ---
 

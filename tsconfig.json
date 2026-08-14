@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/capture-playwright" },
+    { "path": "./packages/renderer" },
+    { "path": "./packages/studio" },
+    { "path": "./packages/extension" },
+    { "path": "./apps/desktop" }
+  ]
+}

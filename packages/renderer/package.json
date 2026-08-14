@@ -1,0 +1,27 @@
+{
+  "name": "@focaldom/renderer",
+  "version": "0.1.0",
+  "description": "Pixi.js WebGL2/WebGPU canvas composition, motion blur, and FFmpeg streaming engine",
+  "author": "Dhaatrik Chowdhury",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@focaldom/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

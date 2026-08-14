@@ -25,7 +25,7 @@ graph TD
 
 | Part | Document | Primary Scope | Status |
 | :--- | :--- | :--- | :--- |
-| **00** | [Implement_00_Foundation_Monorepo.md](Implement_00_Foundation_Monorepo.md) | PNPM workspaces, TypeScript configs, build pipelines, shared tooling | ⏳ Ready |
+| **00** | [Implement_00_Foundation_Monorepo.md](Implement_00_Foundation_Monorepo.md) | PNPM workspaces, TypeScript configs, build pipelines, shared tooling | ✅ Done |
 | **01** | [Implement_01_Core_Engine.md](Implement_01_Core_Engine.md) | `@focaldom/core`: Spring physics, Bezier cursor math, sticky avoidance, data schemas | ⏳ Ready |
 | **02** | [Implement_02_Capture_Playwright.md](Implement_02_Capture_Playwright.md) | `@focaldom/capture-playwright`: Mode B deterministic CDP frame clock, in-page logger, scenario runner | ⏳ Ready |
 | **03** | [Implement_03_Renderer_Engine.md](Implement_03_Renderer_Engine.md) | `@focaldom/renderer`: Pixi.js composition, motion blur shaders, raw RGBA FFmpeg pipe | ⏳ Ready |
