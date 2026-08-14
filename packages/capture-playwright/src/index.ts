@@ -4,5 +4,6 @@
  */
 
 export * from '@focaldom/core';
+export * from './scenario';
 
 export const CAPTURE_PLAYWRIGHT_VERSION = '0.1.0';
