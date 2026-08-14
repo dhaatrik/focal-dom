@@ -43,6 +43,28 @@ export function registerIpcHandlers(
     return await DesktopFFmpegManager.resolveFFmpegPath();
   });
 
+  // Export Video
+  ipcMain.handle(
+    'focal:export-video',
+    async (_event, args: { project: FocalDOMProject; outputPath: string; preset?: any; fps?: number }) => {
+      try {
+        const totalDurationMs = args.project.events?.length
+          ? args.project.events[args.project.events.length - 1].timestamp
+          : 6000;
+        const totalFrames = Math.max(1, Math.round((totalDurationMs / 1000) * (args.fps || 60)));
+        const streamer = await DesktopFFmpegManager.createStreamer({
+          outputPath: args.outputPath,
+          totalFrames,
+          preset: args.preset,
+        });
+        await streamer.start();
+        return { success: true, outputPath: args.outputPath };
+      } catch (err: any) {
+        return { success: false, outputPath: args.outputPath, error: err.message };
+      }
+    }
+  );
+
   // Platform & Environment Info
   ipcMain.handle('focal:get-platform-info', (): PlatformInfo => {
     return {
