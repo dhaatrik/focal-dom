@@ -12,9 +12,9 @@ export default defineConfig({
     },
   },
   test: {
-    projects: [
-      'packages/*',
-      'apps/*',
+    include: [
+      'packages/**/tests/**/*.test.ts',
+      'apps/**/tests/**/*.test.ts',
     ],
   },
 });
