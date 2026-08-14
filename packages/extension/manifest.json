@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "FocalDOM Live Recorder",
+  "version": "0.1.0",
+  "description": "DOM-Aware Intelligent Video Recording & Dynamic Virtual Camera Studio",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "dist/background/service-worker.js"
+  },
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_title": "FocalDOM Live Recorder"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["dist/content/content-script.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
