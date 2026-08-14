@@ -1,6 +1,4 @@
-/**
- * @focaldom/desktop
- * Electron Windows shell
- */
-
-export const DESKTOP_VERSION = '0.1.0';
+export * from './main/file-manager';
+export * from './main/ffmpeg-manager';
+export * from './main/telemetry-server';
+export * from './preload/types';

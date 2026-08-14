@@ -9,6 +9,7 @@ export default defineConfig({
       '@focaldom/renderer': resolve(__dirname, 'packages/renderer/src/index.ts'),
       '@focaldom/studio': resolve(__dirname, 'packages/studio/src/index.ts'),
       '@focaldom/extension': resolve(__dirname, 'packages/extension/src/index.ts'),
+      '@focaldom/desktop': resolve(__dirname, 'apps/desktop/src/index.ts'),
     },
   },
   test: {
