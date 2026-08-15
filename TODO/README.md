@@ -28,6 +28,7 @@ graph TD
 | [**AUDIT_REPORT.md**](AUDIT_REPORT.md) | Comprehensive line-by-line codebase audit, metrics, and ratings out of 10 | ✅ Complete | **9.81 / 10** |
 | [**Improve_Now.md**](Improve_Now.md) | Actionable implementation blueprints & subphases to elevate codebase to perfection | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Core.md**](Improve_Core.md) | Exhaustive flaw investigation and 5-phase hardening plan for Core Math & Physics Engine | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_Capture_Playwright.md**](Improve_Capture_Playwright.md) | Exhaustive flaw investigation and 5-phase hardening plan for Playwright Capture Engine | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Extension.md**](Improve_Extension.md) | Exhaustive flaw investigation and 5-phase hardening plan for Chrome Extension Mode A | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Renderer.md**](Improve_Renderer.md) | Exhaustive flaw investigation and 5-phase hardening plan for Pixi.js & FFmpeg Renderer | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Studio.md**](Improve_Studio.md) | Exhaustive flaw investigation and 5-phase hardening plan for Studio Timeline NLE UI | 🚀 Active Plan | **10.0 / 10** |
