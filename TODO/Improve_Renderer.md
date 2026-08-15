@@ -90,17 +90,17 @@ flowchart TD
 ## 🛠️ Granular Phase-Wise Implementation Checklist
 
 ### Phase 01: Dual WGSL WebGPU & WebGL2 Shader Pipeline (`src/shaders/`)
-- [ ] **Sub-phase 01.1: WebGPU Native WGSL Motion Blur Program (`motion-blur-filter.ts`)**
-  - [ ] Author WGSL vertex and fragment compute shaders for WebGPU backend in Pixi.js v8.
-  - [ ] Configure `GpuProgram` alongside `GlProgram` in `MotionBlurFilter` constructor.
-  - [ ] Implement 4-tap directional accumulation sampling in both WGSL and GLSL.
-  - [ ] Handle headless / non-browser execution gracefully.
-- [ ] **Sub-phase 01.2: Hardware-Accelerated Drop Shadow Filter & Window Elevation (`shadow-filter.ts`, `window-layer.ts`)**
-  - [ ] Enhance `DropShadowFilter` with configurable blur radius, alpha, color, and offset.
-  - [ ] Cleanly integrate `DropShadowFilter` into `WindowLayer` and simplify geometry loops.
-- [ ] **Sub-phase 01.3: Shader Unit Tests (`tests/render-pipeline.test.ts`)**
-  - [ ] Verify `MotionBlurFilter` creates valid filter instances with velocity uniforms in test environments.
-  - [ ] Verify `DropShadowFilter` parameters.
+- [x] **Sub-phase 01.1: WebGPU Native WGSL Motion Blur Program (`motion-blur-filter.ts`)**
+  - [x] Author WGSL vertex and fragment compute shaders for WebGPU backend in Pixi.js v8.
+  - [x] Configure `GpuProgram` alongside `GlProgram` in `MotionBlurFilter` constructor.
+  - [x] Implement 4-tap directional accumulation sampling in both WGSL and GLSL.
+  - [x] Handle headless / non-browser execution gracefully.
+- [x] **Sub-phase 01.2: Hardware-Accelerated Drop Shadow Filter & Window Elevation (`shadow-filter.ts`, `window-layer.ts`)**
+  - [x] Enhance `DropShadowFilter` with configurable blur radius, alpha, color, and offset.
+  - [x] Cleanly integrate `DropShadowFilter` into `WindowLayer` and simplify geometry loops.
+- [x] **Sub-phase 01.3: Shader Unit Tests (`tests/render-pipeline.test.ts`)**
+  - [x] Verify `MotionBlurFilter` creates valid filter instances with velocity uniforms in test environments.
+  - [x] Verify `DropShadowFilter` parameters.
 
 ---
 

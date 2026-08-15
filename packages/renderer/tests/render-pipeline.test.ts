@@ -3,6 +3,8 @@ import { FocalDOMProject } from '@focaldom/core';
 import { FrameTicker } from '../src/engine/frame-ticker';
 import { FocalSceneGraph } from '../src/engine/scene-graph';
 import { RenderDimensions } from '../src/engine/scene-types';
+import { MotionBlurFilter } from '../src/shaders/motion-blur-filter';
+import { DropShadowFilter } from '../src/shaders/shadow-filter';
 
 describe('Renderer Engine & Scene Graph Pipeline', () => {
   const mockProject: FocalDOMProject = {
@@ -113,5 +115,16 @@ describe('Renderer Engine & Scene Graph Pipeline', () => {
     const evalResult = ticker.evaluate(500);
 
     expect(() => scene.updateFromEvaluation(evalResult)).not.toThrow();
+  });
+
+  it('instantiates MotionBlurFilter and DropShadowFilter properly', () => {
+    const motionBlur = new MotionBlurFilter(10, -5, 0.01);
+    expect(motionBlur).toBeDefined();
+    expect(() => motionBlur.setVelocity(20, -10)).not.toThrow();
+
+    const dropShadow = new DropShadowFilter({ blurRadius: 20, quality: 3, alpha: 0.5 });
+    expect(dropShadow).toBeDefined();
+    expect(dropShadow.shadowAlpha).toBe(0.5);
+    expect(dropShadow.offsetX).toBe(0);
   });
 });
