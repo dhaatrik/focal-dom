@@ -1,7 +1,7 @@
 {
   "name": "@focaldom/extension",
-  "version": "0.1.0",
-  "description": "Mode A Chrome Extension (Manifest V3) live DOM tracker and streamer for FocalDOM",
+  "version": "0.1.3",
+  "description": "Chrome MV3 DOM Event Sensor Extension for FocalDOM",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
   "main": "./dist/index.js",

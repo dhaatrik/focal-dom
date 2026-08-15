@@ -1,7 +1,7 @@
 {
   "name": "@focaldom/core",
-  "version": "0.1.0",
-  "description": "Shared mathematical models, spring camera physics, and DOM event schemas for FocalDOM",
+  "version": "0.1.3",
+  "description": "Core deterministic timing and DOM event replay engine",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
   "main": "./dist/index.js",
