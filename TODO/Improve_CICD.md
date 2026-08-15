@@ -1,7 +1,7 @@
 # FocalDOM CI/CD Investigation, Flaw Analysis & Autonomous SemVer Plan 🚀📦
 
 **Document Path:** `TODO/Improve_CICD.md`  
-**Parent Plan:** [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md)  
+**Parent Architecture:** [docs/README.md](../docs/README.md)  
 **Audit Reference:** [TODO/AUDIT_REPORT.md](AUDIT_REPORT.md)  
 **Suggested Implementation Branch:** `feat/release-please-cicd`  
 **Status:** 🚀 Ready for Implementation  

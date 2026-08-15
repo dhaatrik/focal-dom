@@ -1,7 +1,7 @@
 # FocalDOM Playwright Capture Engine Deep Investigation & Improvement Plan 🎭📸
 
 **Document Path:** `TODO/Improve_Capture_Playwright.md`  
-**Parent Plan:** [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md)  
+**Parent Architecture:** [docs/README.md](../docs/README.md)  
 **Audit Reference:** [TODO/AUDIT_REPORT.md](AUDIT_REPORT.md)  
 **Suggested Implementation Branch:** `feat/capture-playwright-perfection`  
 **Target Package:** `packages/capture-playwright` (`@focaldom/capture-playwright`)  

@@ -1,7 +1,7 @@
 # FocalDOM Desktop App Deep Investigation, Flaw Analysis & Improvement Plan 🖥️🛡️
 
 **Document Path:** `TODO/Improve_Desktop_App.md`  
-**Parent Plan:** [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md)  
+**Parent Architecture:** [docs/README.md](../docs/README.md)  
 **Audit Reference:** [TODO/AUDIT_REPORT.md](AUDIT_REPORT.md)  
 **Suggested Implementation Branch:** `feat/desktop-app-perfection`  
 **Target Package:** `apps/desktop` (`@focaldom/desktop`)  

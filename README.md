@@ -17,7 +17,7 @@
 
 *Bridges deterministic browser automation and post-processing virtual camera rendering to produce studio-grade web product demos.*
 
-[Technical Architecture](docs/Technical%20Architecture%20&%20Engineering%20Plan.md) • [Engineering Roadmaps](TODO/README.md) • [Audit Report](TODO/AUDIT_REPORT.md) • [Report Issue](https://github.com/dhaatrik/focal-dom/issues)
+[Technical Architecture](docs/README.md) • [Engineering Roadmaps](TODO/README.md) • [Audit Report](TODO/AUDIT_REPORT.md) • [Report Issue](https://github.com/dhaatrik/focal-dom/issues)
 
 </div>
 
@@ -122,8 +122,11 @@ flowchart TD
 
 ```
 focal-dom/
-├── docs/                            # Formal architecture and technical specifications
-│   └── Technical Architecture & Engineering Plan.md
+├── docs/                            # Living technical architecture and user guides
+│   ├── README.md                    # Documentation hub index
+│   ├── architecture/                # System overview, physics math, schemas, WebGPU render
+│   ├── guides/                      # Mode A, Mode B, and Studio NLE guides
+│   └── archive/                     # Historical initial engineering foundation plan
 ├── TODO/                            # Actionable engineering improvement blueprints
 │   ├── README.md                    # Roadmap hub and dependency graph
 │   ├── AUDIT_REPORT.md              # Comprehensive line-by-line codebase audit (9.81/10)

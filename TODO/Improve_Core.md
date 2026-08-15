@@ -1,7 +1,7 @@
 # FocalDOM Core Math & Physics Deep Investigation, Flaw Analysis & Improvement Plan 📐⚡
 
 **Document Path:** `TODO/Improve_Core.md`  
-**Parent Plan:** [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md)  
+**Parent Architecture:** [docs/README.md](../docs/README.md)  
 **Audit Reference:** [TODO/AUDIT_REPORT.md](AUDIT_REPORT.md)  
 **Suggested Implementation Branch:** `feat/core-engine-perfection`  
 **Target Package:** `packages/core` (`@focaldom/core`)  

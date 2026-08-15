@@ -4,7 +4,7 @@
 **Audit Date:** August 14, 2026  
 **Auditor:** Antigravity AI Engineering Team  
 **Git Branch:** `audit/codebase-health-and-docs`  
-**Parent Plan:** [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md)  
+**Parent Architecture:** [docs/README.md](../docs/README.md)  
 **Implementation Roadmap:** [TODO/README.md](README.md)  
 
 ---

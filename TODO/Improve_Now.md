@@ -1,7 +1,7 @@
 # FocalDOM Engineering Improvement Roadmap: 9.8 ➔ Flawless 10/10 🎯💎
 
 **Document Path:** `TODO/Improve_Now.md`  
-**Parent Architecture:** [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md)  
+**Parent Architecture:** [docs/README.md](../docs/README.md)  
 **Audit Reference:** [TODO/AUDIT_REPORT.md](AUDIT_REPORT.md)  
 **Suggested Implementation Branch:** `feat/flawless-10-improvements`  
 **Status:** 🚀 Active Execution Plan  

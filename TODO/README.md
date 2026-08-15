@@ -1,6 +1,6 @@
 # FocalDOM Implementation Roadmap & Engineering Hub 🎯🧭
 
-Welcome to the **FocalDOM** architecture, audit, and improvement repository. This directory connects the architectural specification in [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md) with deep-dive flaw analyses, audit scorecards, and actionable 10/10 implementation plans.
+Welcome to the **FocalDOM** architecture, audit, and improvement repository. This directory connects the living architectural specification in [docs/README.md](../docs/README.md) with deep-dive flaw analyses, audit scorecards, and actionable 10/10 implementation plans.
 
 ---
 
