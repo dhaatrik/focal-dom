@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from 'vitest';
-import { existsSync, rmSync, readFileSync } from 'node:fs';
+import { existsSync, rmSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { launchFocalSession } from '../src/runner/session';
 import { executeScenario } from '../src/scenario/executor';
@@ -14,7 +14,7 @@ describe('Playwright Capture Session & Scenario Execution', () => {
     }
   });
 
-  it('launches session, executes scenario on HTML page, and exports aligned artifacts', async () => {
+  it('launches session, executes scenario on HTML page, and exports aligned artifacts with disk streaming', async () => {
     const htmlContent = encodeURIComponent(`
       <!DOCTYPE html>
       <html>
@@ -46,6 +46,7 @@ describe('Playwright Capture Session & Scenario Execution', () => {
       fps: 30,
       viewport: { width: 1280, height: 720 },
       headless: true,
+      outputDir: testOutputDir,
     });
 
     await executeScenario(scenario, session);
@@ -56,11 +57,17 @@ describe('Playwright Capture Session & Scenario Execution', () => {
     expect(existsSync(result.manifestPath)).toBe(true);
     expect(existsSync(result.eventsPath)).toBe(true);
 
+    const framesDir = join(testOutputDir, 'frames');
+    expect(existsSync(framesDir)).toBe(true);
+    const files = readdirSync(framesDir);
+    expect(files.length).toBe(result.frameCount);
+
     const manifest = JSON.parse(readFileSync(result.manifestPath, 'utf-8'));
     expect(manifest.fps).toBe(30);
     expect(manifest.frameCount).toBe(result.frameCount);
 
     const events = JSON.parse(readFileSync(result.eventsPath, 'utf-8'));
     expect(Array.isArray(events)).toBe(true);
+    expect(events.length).toBeGreaterThan(0);
   }, 30000); // 30s timeout for browser automation
 });

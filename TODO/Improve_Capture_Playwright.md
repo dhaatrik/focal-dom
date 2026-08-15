@@ -5,7 +5,7 @@
 **Audit Reference:** [TODO/AUDIT_REPORT.md](AUDIT_REPORT.md)  
 **Suggested Implementation Branch:** `feat/capture-playwright-perfection`  
 **Target Package:** `packages/capture-playwright` (`@focaldom/capture-playwright`)  
-**Status:** 🚀 In Progress (Implementation Branch Active)  
+**Status:** ✅ Completed (All 5 Phases Implemented & Verified)  
 
 ---
 
@@ -81,55 +81,55 @@ flowchart TD
 ## 🛠️ Granular Phase-Wise Implementation Checklist
 
 ### Phase 01: Direct-to-Disk Streaming Frame Collector (`src/runner/cdp-screencast.ts`)
-- [ ] **Sub-phase 01.1: Direct-to-Disk Frame Streaming Implementation**
-  - [ ] Update `CDPScreencastCollector` to support streaming frames directly to disk (`outputDir/frames`) upon capture.
-  - [ ] Store lightweight frame metadata `{ frameIndex, timestampMs, filePath }` instead of holding full PNG `Buffer` objects in memory.
-  - [ ] Provide optional in-memory fallback for unit tests and short mock captures.
-  - [ ] Update `FocalCaptureSession` to support disk streaming during `tick()`.
-- [ ] **Sub-phase 01.2: Bounded Memory & Disk Cleanup**
-  - [ ] Ensure garbage collection can free raw frame buffers immediately after disk write.
-  - [ ] Verify memory footprint remains bounded ($< 150\text{MB}$) regardless of total frame count.
+- [x] **Sub-phase 01.1: Direct-to-Disk Frame Streaming Implementation**
+  - [x] Update `CDPScreencastCollector` to support streaming frames directly to disk (`outputDir/frames`) upon capture.
+  - [x] Store lightweight frame metadata `{ frameIndex, timestampMs, filePath }` instead of holding full PNG `Buffer` objects in memory.
+  - [x] Provide optional in-memory fallback for unit tests and short mock captures.
+  - [x] Update `FocalCaptureSession` to support disk streaming during `tick()`.
+- [x] **Sub-phase 01.2: Bounded Memory & Disk Cleanup**
+  - [x] Ensure garbage collection can free raw frame buffers immediately after disk write.
+  - [x] Verify memory footprint remains bounded ($< 150\text{MB}$) regardless of total frame count.
 
 ---
 
 ### Phase 02: Deep Shadow DOM & Iframe Telemetry Piercing (`src/injected/dom-logger-source.ts`)
-- [ ] **Sub-phase 02.1: Composed Path & Shadow DOM Target Extraction**
-  - [ ] Implement `getDeepestTarget(event)` utilizing `event.composedPath()[0]` to pierce open shadow roots and custom Web Components.
-  - [ ] Extract deep bounding rects, tags, roles, and classes for inner shadow DOM elements.
-- [ ] **Sub-phase 02.2: Synchronized Sticky Scanning on Virtual Ticks**
-  - [ ] Trigger `scanStickyRegions()` directly inside `window.__focal_tick()` and remove uncoordinated `setInterval` wall-clock timers.
-  - [ ] Add `MutationObserver` trigger to update sticky regions whenever DOM elements are added or modified.
+- [x] **Sub-phase 02.1: Composed Path & Shadow DOM Target Extraction**
+  - [x] Implement `getDeepestTarget(event)` utilizing `event.composedPath()[0]` to pierce open shadow roots and custom Web Components.
+  - [x] Extract deep bounding rects, tags, roles, and classes for inner shadow DOM elements.
+- [x] **Sub-phase 02.2: Synchronized Sticky Scanning on Virtual Ticks**
+  - [x] Trigger `scanStickyRegions()` directly inside `window.__focal_tick()` and remove uncoordinated `setInterval` wall-clock timers.
+  - [x] Add `MutationObserver` trigger to update sticky regions whenever DOM elements are added or modified.
 
 ---
 
 ### Phase 03: Virtual Web Audio & Document Timeline Synchronization (`src/runner/virtual-clock.ts`)
-- [ ] **Sub-phase 03.1: Intercept `AudioContext.prototype.currentTime` & `BaseAudioContext`**
-  - [ ] Hook `AudioContext.prototype.currentTime` getter to return `window.__focal_virtual_time__ / 1000`.
-  - [ ] Hook `BaseAudioContext.prototype.currentTime` if defined.
-- [ ] **Sub-phase 03.2: Intercept `document.timeline.currentTime`**
-  - [ ] Hook `document.timeline.currentTime` getter to return `window.__focal_virtual_time__` for deterministic CSS and Web Animations API progression.
+- [x] **Sub-phase 03.1: Intercept `AudioContext.prototype.currentTime` & `BaseAudioContext`**
+  - [x] Hook `AudioContext.prototype.currentTime` getter to return `window.__focal_virtual_time__ / 1000`.
+  - [x] Hook `BaseAudioContext.prototype.currentTime` if defined.
+- [x] **Sub-phase 03.2: Intercept `document.timeline.currentTime`**
+  - [x] Hook `document.timeline.currentTime` getter to return `window.__focal_virtual_time__` for deterministic CSS and Web Animations API progression.
 
 ---
 
 ### Phase 04: Multi-Frame Virtual Mouse Trajectory & Rich Actions in Executor (`src/scenario/`)
-- [ ] **Sub-phase 04.1: Continuous Multi-Tick Mouse Movement (`src/scenario/executor.ts`)**
-  - [ ] Interpolate cursor position across 6–12 virtual frames ($100\text{ms} \dots 200\text{ms}$) before clicking or hovering.
-  - [ ] Call `session.tick()` at each intermediary position so video and telemetry capture smooth, continuous mouse paths.
-- [ ] **Sub-phase 04.2: Implement `dragAndDrop` and `uploadFile` Actions**
-  - [ ] Add `dragAndDrop` step definition `{ action: 'dragAndDrop', sourceSelector, targetSelector, durationMs? }` to `scenario-types.ts`.
-  - [ ] Add `uploadFile` step definition `{ action: 'uploadFile', selector, filePaths }` to `scenario-types.ts`.
-  - [ ] Update `parser.ts` validator to support new step actions.
-  - [ ] Implement step execution logic in `executor.ts`.
+- [x] **Sub-phase 04.1: Continuous Multi-Tick Mouse Movement (`src/scenario/executor.ts`)**
+  - [x] Interpolate cursor position across 6–12 virtual frames ($100\text{ms} \dots 200\text{ms}$) before clicking or hovering.
+  - [x] Call `session.tick()` at each intermediary position so video and telemetry capture smooth, continuous mouse paths.
+- [x] **Sub-phase 04.2: Implement `dragAndDrop` and `uploadFile` Actions**
+  - [x] Add `dragAndDrop` step definition `{ action: 'dragAndDrop', sourceSelector, targetSelector, durationMs? }` to `scenario-types.ts`.
+  - [x] Add `uploadFile` step definition `{ action: 'uploadFile', selector, filePaths }` to `scenario-types.ts`.
+  - [x] Update `parser.ts` validator to support new step actions.
+  - [x] Implement step execution logic in `executor.ts`.
 
 ---
 
 ### Phase 05: Package Integration, Clean Exports & Monorepo Verification
-- [ ] **Sub-phase 05.1: Package Exports & Build Verification**
-  - [ ] Export all new scenario types and runner options from `packages/capture-playwright/src/index.ts`.
-  - [ ] Run `pnpm --filter @focaldom/capture-playwright run build` with zero TypeScript errors.
-- [ ] **Sub-phase 05.2: Full Monorepo Regression Testing**
-  - [ ] Update unit tests in `scenario-parser.test.ts` and `capture-session.test.ts`.
-  - [ ] Run `pnpm test` across all workspace packages and verify 100% pass rate.
+- [x] **Sub-phase 05.1: Package Exports & Build Verification**
+  - [x] Export all new scenario types and runner options from `packages/capture-playwright/src/index.ts`.
+  - [x] Run `pnpm --filter @focaldom/capture-playwright run build` with zero TypeScript errors.
+- [x] **Sub-phase 05.2: Full Monorepo Regression Testing**
+  - [x] Update unit tests in `scenario-parser.test.ts` and `capture-session.test.ts`.
+  - [x] Run `pnpm test` across all workspace packages and verify 100% pass rate.
 
 ---
 

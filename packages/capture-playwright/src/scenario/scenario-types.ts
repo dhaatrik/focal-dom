@@ -6,6 +6,8 @@ export type ScenarioStep =
   | { action: 'type'; selector: string; text: string; delayMs?: number }
   | { action: 'press'; key: string; delayAfterMs?: number }
   | { action: 'scroll'; x: number; y: number; delayAfterMs?: number }
+  | { action: 'dragAndDrop'; sourceSelector: string; targetSelector: string; durationMs?: number; delayAfterMs?: number }
+  | { action: 'uploadFile'; selector: string; filePaths: string | string[]; delayAfterMs?: number }
   | { action: 'assertVisible'; selector: string; timeoutMs?: number };
 
 export interface ScenarioDefinition {
