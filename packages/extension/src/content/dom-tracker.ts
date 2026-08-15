@@ -2,6 +2,21 @@ import { DOMEventFrame, DOMElementRect, DOMEventType } from '@focaldom/core';
 
 export type EventFrameCallback = (frame: DOMEventFrame) => void;
 
+function getDeepestTarget(e: Event): HTMLElement | null {
+  if (e && typeof e.composedPath === 'function') {
+    const path = e.composedPath();
+    if (path && path.length > 0) {
+      for (let i = 0; i < path.length; i++) {
+        const node = path[i];
+        if (node instanceof HTMLElement || node instanceof SVGElement) {
+          return node as HTMLElement;
+        }
+      }
+    }
+  }
+  return (e.target as HTMLElement) || null;
+}
+
 export class ExtensionDOMTracker {
   private isTracking = false;
   private frameIndex = 0;
@@ -9,6 +24,7 @@ export class ExtensionDOMTracker {
   private callback: EventFrameCallback | null = null;
   private stickyRegionCache: DOMElementRect[] = [];
   private lastStickyScanTime = 0;
+  private mutationObserver: MutationObserver | null = null;
 
   constructor(callback?: EventFrameCallback) {
     if (callback) {
@@ -32,6 +48,18 @@ export class ExtensionDOMTracker {
       window.addEventListener('click', this.handleClick, { passive: true, capture: true });
       window.addEventListener('scroll', this.handleScroll, { passive: true });
       window.addEventListener('input', this.handleInput, { passive: true, capture: true });
+
+      if (typeof MutationObserver !== 'undefined' && document.documentElement) {
+        this.mutationObserver = new MutationObserver(() => {
+          this.stickyRegionCache = []; // invalidate cache on DOM changes
+        });
+        this.mutationObserver.observe(document.documentElement, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ['class', 'style'],
+        });
+      }
     }
   }
 
@@ -47,17 +75,24 @@ export class ExtensionDOMTracker {
       window.removeEventListener('click', this.handleClick, true);
       window.removeEventListener('scroll', this.handleScroll);
       window.removeEventListener('input', this.handleInput, true);
+
+      if (this.mutationObserver) {
+        this.mutationObserver.disconnect();
+        this.mutationObserver = null;
+      }
     }
   }
 
   private handlePointerMove = (e: PointerEvent): void => {
     this.lastCursor = { x: e.clientX, y: e.clientY };
-    this.emitEvent('hover', e.clientX, e.clientY, e.target as HTMLElement);
+    const target = getDeepestTarget(e);
+    this.emitEvent('hover', e.clientX, e.clientY, target);
   };
 
   private handleClick = (e: MouseEvent): void => {
     this.lastCursor = { x: e.clientX, y: e.clientY };
-    this.emitEvent('click', e.clientX, e.clientY, e.target as HTMLElement);
+    const target = getDeepestTarget(e);
+    this.emitEvent('click', e.clientX, e.clientY, target);
   };
 
   private handleScroll = (): void => {
@@ -65,46 +100,55 @@ export class ExtensionDOMTracker {
   };
 
   private handleInput = (e: Event): void => {
-    this.emitEvent('input', this.lastCursor.x, this.lastCursor.y, e.target as HTMLElement);
+    const target = getDeepestTarget(e);
+    this.emitEvent('input', this.lastCursor.x, this.lastCursor.y, target);
   };
 
   /**
-   * Scans DOM for fixed/sticky headers and extracts bounding geometry.
+   * Scans DOM for fixed/sticky headers with targeted queries and 500ms caching to eliminate layout thrashing.
    */
   public scanStickyRegions(): DOMElementRect[] {
     if (typeof document === 'undefined') return [];
 
     const now = performance.now();
-    // Cache sticky scan for 200ms to avoid unnecessary layout reflows
-    if (now - this.lastStickyScanTime < 200 && this.stickyRegionCache.length > 0) {
+    // Cache sticky scan for 500ms during active user scrolling
+    if (now - this.lastStickyScanTime < 500 && this.stickyRegionCache.length > 0) {
       return this.stickyRegionCache;
     }
 
     this.lastStickyScanTime = now;
     const regions: DOMElementRect[] = [];
-    const elements = document.querySelectorAll('*');
 
-    for (let i = 0; i < Math.min(elements.length, 500); i++) {
-      const el = elements[i] as HTMLElement;
+    // Query targeted sticky candidates instead of universal wildcard query
+    const targetedElements = document.querySelectorAll(
+      'header, nav, [class*="sticky"], [class*="fixed"], [class*="header"], [class*="navbar"], [style*="position"], [data-sticky]'
+    );
+
+    const elementsToScan = targetedElements.length > 0 ? targetedElements : document.querySelectorAll('*');
+
+    for (let i = 0; i < Math.min(elementsToScan.length, 100); i++) {
+      const el = elementsToScan[i] as HTMLElement;
       if (!el || typeof el.getBoundingClientRect !== 'function') continue;
 
-      const style = window.getComputedStyle(el);
-      const pos = style.position;
+      try {
+        const style = window.getComputedStyle(el);
+        const pos = style.position;
 
-      if (pos === 'fixed' || pos === 'sticky') {
-        const rect = el.getBoundingClientRect();
-        if (rect.width > 0 && rect.height > 0) {
-          const zIndex = parseInt(style.zIndex, 10);
-          regions.push({
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
-            height: rect.height,
-            isFixedOrSticky: true,
-            computedZIndex: isNaN(zIndex) ? 0 : zIndex,
-          });
+        if (pos === 'fixed' || pos === 'sticky') {
+          const rect = el.getBoundingClientRect();
+          if (rect.width > 0 && rect.height > 0) {
+            const zIndex = parseInt(style.zIndex, 10);
+            regions.push({
+              top: rect.top,
+              left: rect.left,
+              width: rect.width,
+              height: rect.height,
+              isFixedOrSticky: true,
+              computedZIndex: isNaN(zIndex) ? 0 : zIndex,
+            });
+          }
         }
-      }
+      } catch {}
     }
 
     this.stickyRegionCache = regions;
@@ -129,11 +173,13 @@ export class ExtensionDOMTracker {
         tagName: targetElement.tagName.toLowerCase(),
         id: targetElement.id || '',
         classList: targetElement.classList ? Array.from(targetElement.classList) : [],
+        role: targetElement.getAttribute('role') || undefined,
+        innerTextSnippet: (targetElement.innerText || '').slice(0, 80).trim(),
         boundingRect: {
-          top: rect.top,
-          left: rect.left,
-          width: rect.width,
-          height: rect.height,
+          top: Math.round(rect.top * 100) / 100,
+          left: Math.round(rect.left * 100) / 100,
+          width: Math.round(rect.width * 100) / 100,
+          height: Math.round(rect.height * 100) / 100,
           isFixedOrSticky: false,
           computedZIndex: 0,
         },

@@ -36,6 +36,12 @@ body {
   justify-content: space-between;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -88,6 +94,69 @@ body {
 
 .status-pill.offline .status-dot {
   background-color: var(--text-muted);
+}
+
+.settings-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+
+.settings-btn:hover {
+  opacity: 1;
+}
+
+.settings-drawer {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.settings-drawer.hidden {
+  display: none;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.settings-row input {
+  width: 80px;
+  background: #020617;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.save-settings-btn {
+  background: #1e293b;
+  color: var(--text-primary);
+  border: 1px solid #334155;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.save-settings-btn:hover {
+  background: #334155;
 }
 
 .popup-body {

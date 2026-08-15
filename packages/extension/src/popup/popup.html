@@ -14,11 +14,23 @@
         <span class="brand-dot"></span>
         <span class="brand-title">FocalDOM</span>
       </div>
-      <div id="desktop-status" class="status-pill offline">
-        <span class="status-dot"></span>
-        <span id="status-text">Connecting...</span>
+      <div class="header-right">
+        <div id="desktop-status" class="status-pill offline">
+          <span class="status-dot"></span>
+          <span id="status-text">Connecting...</span>
+        </div>
+        <button id="settings-toggle-btn" class="settings-btn" title="Settings">⚙️</button>
       </div>
     </header>
+
+    <!-- Settings Drawer -->
+    <div id="settings-drawer" class="settings-drawer hidden">
+      <div class="settings-row">
+        <label for="ws-port-input">Desktop Port:</label>
+        <input id="ws-port-input" type="number" min="1024" max="65535" value="48480" />
+      </div>
+      <button id="save-settings-btn" class="save-settings-btn">Save Port</button>
+    </div>
 
     <!-- Main Content -->
     <main class="popup-body">
