@@ -111,17 +111,17 @@ flowchart TD
 ---
 
 ### Phase 02: Smart Event Clustering & Lookahead Intelligence (`src/camera/lookahead-buffer.ts`)
-- [ ] **Sub-phase 02.1: Temporal & Spatial Event Clustering Engine**
-  - [ ] Add `clusterThresholdMs?: number` (default 2000ms) to `LookAheadOptions`.
-  - [ ] Group consecutive interaction events (click, input, focus) that occur within `clusterThresholdMs` into cohesive clusters.
-  - [ ] For clustered events, compute an encompassing bounding rect or progressive smooth transition instead of resetting camera to 1.0x (eliminates zoom pumping).
-  - [ ] Ensure single isolated events maintain standard lookahead ease-in and hold duration.
-- [ ] **Sub-phase 02.2: Configurable Easing Curve & Option Propagation**
-  - [ ] Add `defaultEasingCurve?: EasingCurve` to `LookAheadOptions` (defaulting to `'spring'`).
-  - [ ] Propagate caller-specified `easingCurve` to generated `CameraKeyframe` objects.
-- [ ] **Sub-phase 02.3: Unit Tests for Event Clustering & Easing Options (`tests/lookahead-buffer.test.ts`)**
-  - [ ] Test rapid successive clicks within 1500ms and verify keyframes merge or hold zoom without pumping.
-  - [ ] Test custom easing curve option propagation in keyframe output.
+- [x] **Sub-phase 02.1: Temporal & Spatial Event Clustering Engine**
+  - [x] Add `clusterThresholdMs?: number` (default 2000ms) to `LookAheadOptions`.
+  - [x] Group consecutive interaction events (click, input, focus) that occur within `clusterThresholdMs` into cohesive clusters.
+  - [x] For clustered events, compute an encompassing bounding rect or progressive smooth transition instead of resetting camera to 1.0x (eliminates zoom pumping).
+  - [x] Ensure single isolated events maintain standard lookahead ease-in and hold duration.
+- [x] **Sub-phase 02.2: Configurable Easing Curve & Option Propagation**
+  - [x] Add `defaultEasingCurve?: EasingCurve` to `LookAheadOptions` (defaulting to `'spring'`).
+  - [x] Propagate caller-specified `easingCurve` to generated `CameraKeyframe` objects.
+- [x] **Sub-phase 02.3: Unit Tests for Event Clustering & Easing Options (`tests/lookahead-buffer.test.ts`)**
+  - [x] Test rapid successive clicks within 1500ms and verify keyframes merge or hold zoom without pumping.
+  - [x] Test custom easing curve option propagation in keyframe output.
 
 ---
 
