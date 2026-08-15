@@ -286,24 +286,9 @@ See [TODO/Improve_CICD.md](TODO/Improve_CICD.md) for full release architecture d
 
 ## Contributing
 
-Contributions, feature requests, and feedback are welcome:
+Contributions, feature requests, and discussions are warmly welcomed!
 
-1. **Fork the repository** on GitHub.
-2. **Create a feature branch**:
-   ```bash
-   git checkout -b feat/your-feature-name
-   ```
-3. **Commit your changes** following Conventional Commits:
-   ```bash
-   git commit -m "feat(camera): add exponential decay damping mode"
-   ```
-4. **Push to your branch**:
-   ```bash
-   git push origin feat/your-feature-name
-   ```
-5. **Open a Pull Request** against the `main` branch.
-
-Please ensure all tests (`pnpm test`) and typechecks (`pnpm typecheck`) pass before submitting.
+Please read our [**Contributing Guide (CONTRIBUTING.md)**](CONTRIBUTING.md) for details on our code of conduct, branch naming conventions (`feat/`, `fix/`), Conventional Commits specifications, and the pull request submission process.
 
 ---
 
@@ -322,9 +307,9 @@ Let's connect, collaborate, and build something extraordinary:
 
 <div align="left">
 
-- **LinkedIn:** [linkedin.com/in/dhaatrik](https://www.linkedin.com/in/dhaatrik)
-- **X / Twitter:** [@dhaatrik](https://x.com/dhaatrik)
-- **GitHub:** [@dhaatrik](https://github.com/dhaatrik)
-- **Personal Website:** [dhaatrik.github.io](https://dhaatrik.github.io/)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/dhaatrik)
+[![X / Twitter](https://img.shields.io/badge/X-000000?style=flat&logo=x&logoColor=white)](https://x.com/dhaatrik)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat&logo=github&logoColor=white)](https://github.com/dhaatrik)
+[![Portfolio Website](https://img.shields.io/badge/Website-2563EB?style=flat&logo=googlechrome&logoColor=white)](https://dhaatrik.github.io/)
 
 </div>
