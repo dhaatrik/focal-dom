@@ -142,13 +142,13 @@ flowchart TD
 ---
 
 ### Phase 04: Stable Finite-Difference Velocity in Bezier Smoother (`src/cursor/`)
-- [ ] **Sub-phase 04.1: Velocity Estimation Clamping & Edge-Case Protection (`src/cursor/bezier-smoother.ts`)**
-  - [ ] Add a minimum duration threshold of $16.6\text{ms}$ ($1/60\text{s}$) to finite difference velocity calculation to eliminate division spikes.
-  - [ ] Guard against zero-duration or duplicate timestamp samples.
-  - [ ] Ensure calculated velocity coordinates $(v_x, v_y)$ are always finite numbers.
-- [ ] **Sub-phase 04.2: Unit Tests for Cursor Smoothing & Velocity Stability (`tests/bezier-smoother.test.ts`)**
-  - [ ] Add tests for cursor points with identical timestamps ($0\text{ms}$ delta).
-  - [ ] Add tests for sub-millisecond jitter timestamps and verify finite, smooth velocity outputs.
+- [x] **Sub-phase 04.1: Velocity Estimation Clamping & Edge-Case Protection (`src/cursor/bezier-smoother.ts`)**
+  - [x] Add a minimum duration threshold of $16.6\text{ms}$ ($1/60\text{s}$) to finite difference velocity calculation to eliminate division spikes.
+  - [x] Guard against zero-duration or duplicate timestamp samples.
+  - [x] Ensure calculated velocity coordinates $(v_x, v_y)$ are always finite numbers.
+- [x] **Sub-phase 04.2: Unit Tests for Cursor Smoothing & Velocity Stability (`tests/bezier-smoother.test.ts`)**
+  - [x] Add tests for cursor points with identical timestamps ($0\text{ms}$ delta).
+  - [x] Add tests for sub-millisecond jitter timestamps and verify finite, smooth velocity outputs.
 
 ---
 

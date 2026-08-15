@@ -10,7 +10,7 @@ export function getCubicBezierPoint(
   p3: { x: number; y: number },
   t: number
 ): { x: number; y: number } {
-  const clampedT = Math.max(0, Math.min(1, t));
+  const clampedT = Math.max(0, Math.min(1, isFinite(t) ? t : 0));
   const u = 1 - clampedT;
   const tt = clampedT * clampedT;
   const uu = u * u;
@@ -31,7 +31,7 @@ export class CubicBezierSmoother {
   private points: CursorPoint[] = [];
 
   constructor(points: CursorPoint[] = []) {
-    this.points = [...points].sort((a, b) => a.timestampMs - b.timestampMs);
+    this.setPoints(points);
   }
 
   public setPoints(points: CursorPoint[]): void {
@@ -47,7 +47,7 @@ export class CubicBezierSmoother {
    * Samples the smoothed cursor state at an exact timestamp
    */
   public sample(timestampMs: number): VectorCursorState {
-    if (this.points.length === 0) {
+    if (this.points.length === 0 || !isFinite(timestampMs)) {
       return {
         x: 0,
         y: 0,
@@ -90,8 +90,10 @@ export class CubicBezierSmoother {
     const p2 = this.points[Math.min(this.points.length - 1, idx + 1)];
     const p3 = this.points[Math.min(this.points.length - 1, idx + 2)];
 
-    const segmentDuration = Math.max(1, p2.timestampMs - p1.timestampMs);
-    const t = (timestampMs - p1.timestampMs) / segmentDuration;
+    // Minimum segment duration baseline of 16.6ms to avoid division by zero or sub-millisecond noise spikes
+    const rawDuration = p2.timestampMs - p1.timestampMs;
+    const segmentDuration = Math.max(1, rawDuration);
+    const t = rawDuration <= 0 ? 1 : (timestampMs - p1.timestampMs) / segmentDuration;
 
     // Compute Catmull-Rom style control points derived from neighboring tangent slopes
     const tension = 0.5;
@@ -106,11 +108,15 @@ export class CubicBezierSmoother {
 
     const currentPos = getCubicBezierPoint(p1, cp1, cp2, p2, t);
 
-    // Estimate instantaneous velocity using finite difference
+    // Estimate instantaneous velocity using finite difference with minimum 16.6ms (60fps) time baseline
     const dt = 0.01;
+    const effectiveDurationSeconds = Math.max(0.0166, segmentDuration / 1000);
     const nextPos = getCubicBezierPoint(p1, cp1, cp2, p2, Math.min(1, t + dt));
-    const vx = (nextPos.x - currentPos.x) / (dt * (segmentDuration / 1000));
-    const vy = (nextPos.y - currentPos.y) / (dt * (segmentDuration / 1000));
+    const rawVx = (nextPos.x - currentPos.x) / (dt * effectiveDurationSeconds);
+    const rawVy = (nextPos.y - currentPos.y) / (dt * effectiveDurationSeconds);
+
+    const vx = isFinite(rawVx) ? rawVx : 0;
+    const vy = isFinite(rawVy) ? rawVy : 0;
 
     return {
       x: Math.round(currentPos.x * 100) / 100,
