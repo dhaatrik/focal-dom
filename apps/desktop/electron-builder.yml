@@ -3,7 +3,7 @@ productName: FocalDOM
 copyright: Copyright (c) 2026 Dhaatrik Chowdhury
 
 directories:
-  output: release
+  output: dist-package
   buildResources: build
 
 files:
