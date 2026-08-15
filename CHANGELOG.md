@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.4](https://github.com/dhaatrik/focal-dom/compare/FocalDOM-v0.1.3...FocalDOM-v0.1.4) (2026-08-15)
+
+
+### Bug Fixes
+
+* **release:** sync all package versions to 0.1.3 and configure linked-versions in release-please ([429c153](https://github.com/dhaatrik/focal-dom/commit/429c15384167f224cd2ee19a8104b3dfd747207e))
+
 ## [0.1.3](https://github.com/dhaatrik/focal-dom/compare/FocalDOM-v0.1.2...FocalDOM-v0.1.3) (2026-08-15)
 
 
