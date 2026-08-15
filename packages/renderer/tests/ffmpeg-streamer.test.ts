@@ -39,6 +39,36 @@ describe('FFmpeg Streamer & Export Presets Pipeline', () => {
     expect(args[args.length - 1]).toBe('./out.mp4');
   });
 
+  it('generates synchronized audio muxing arguments when audioInputPath is supplied', () => {
+    const preset = EXPORT_PRESETS['youtube-4k'];
+    const streamer = new FFmpegStreamer({
+      preset,
+      outputPath: './out.mp4',
+      totalFrames: 300,
+      audioInputPath: './audio.wav',
+    });
+
+    const args = streamer.getFFmpegCommandArgs();
+    expect(args).toContain('-i');
+    expect(args).toContain('./audio.wav');
+    expect(args).toContain('-c:a');
+    expect(args).toContain('aac');
+    expect(args).toContain('192k');
+    expect(args).toContain('-shortest');
+  });
+
+  it('safely rejects writeFrame when stream is inactive or process is null', async () => {
+    const preset = EXPORT_PRESETS['youtube-4k'];
+    const streamer = new FFmpegStreamer({
+      preset,
+      outputPath: './out.mp4',
+      totalFrames: 300,
+    });
+
+    const dummyBuffer = new Uint8Array(100);
+    await expect(streamer.writeFrame(dummyBuffer)).rejects.toThrow('FFmpeg stream is not active');
+  });
+
   it('accurately computes throughput and progress percentage', () => {
     let latestProgress: ExportProgress | null = null;
     const tracker = new ExportProgressTracker(100, (p) => {

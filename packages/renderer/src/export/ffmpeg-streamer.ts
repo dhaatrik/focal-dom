@@ -6,6 +6,7 @@ export interface StreamerOptions {
   preset: ExportPreset;
   outputPath: string;
   totalFrames: number;
+  audioInputPath?: string;
   ffmpegPath?: string;
   onProgress?: ExportProgressCallback;
 }
@@ -14,6 +15,7 @@ export class FFmpegStreamer {
   private process: ChildProcess | null = null;
   private tracker: ExportProgressTracker;
   private isStreaming: boolean = false;
+  private processError: Error | null = null;
   private ffmpegPath: string;
 
   constructor(private options: StreamerOptions) {
@@ -22,17 +24,22 @@ export class FFmpegStreamer {
   }
 
   public getFFmpegCommandArgs(): string[] {
-    const { preset, outputPath } = this.options;
-    return [
+    const { preset, outputPath, audioInputPath } = this.options;
+    const args = [
       '-y',
       '-f', 'rawvideo',
       '-pix_fmt', 'rgba',
       '-s', `${preset.width}x${preset.height}`,
       '-r', `${preset.fps}`,
       '-i', 'pipe:0',
-      ...preset.ffmpegArgs,
-      outputPath,
     ];
+
+    if (audioInputPath) {
+      args.push('-i', audioInputPath, '-c:a', 'aac', '-b:a', '192k', '-shortest');
+    }
+
+    args.push(...preset.ffmpegArgs, outputPath);
+    return args;
   }
 
   public async start(): Promise<void> {
@@ -46,9 +53,16 @@ export class FFmpegStreamer {
         });
 
         this.isStreaming = true;
+        this.processError = null;
         this.tracker.start();
 
-        this.process.on('error', (err) => {
+        this.process.stdin?.on('error', (err: Error) => {
+          this.processError = err;
+          this.isStreaming = false;
+        });
+
+        this.process.on('error', (err: Error) => {
+          this.processError = err;
           this.isStreaming = false;
           reject(new Error(`Failed to spawn FFmpeg at "${this.ffmpegPath}": ${err.message}`));
         });
@@ -63,22 +77,36 @@ export class FFmpegStreamer {
 
   /**
    * Writes a single raw uncompressed RGBA pixel buffer to FFmpeg stdin
+   * with EPIPE / broken pipe safety guards.
    */
   public async writeFrame(pixelBuffer: Uint8Array | Buffer): Promise<boolean> {
-    if (!this.process || !this.process.stdin || !this.isStreaming) {
-      throw new Error('FFmpeg stream is not active');
+    if (!this.process || !this.process.stdin || !this.isStreaming || this.processError) {
+      throw new Error(`FFmpeg stream is not active: ${this.processError?.message || 'Process terminated'}`);
     }
 
     const buffer = Buffer.isBuffer(pixelBuffer) ? pixelBuffer : Buffer.from(pixelBuffer);
 
-    return new Promise((resolve) => {
-      const canContinue = this.process!.stdin!.write(buffer);
-      this.tracker.advanceFrame();
+    return new Promise((resolve, reject) => {
+      try {
+        const canContinue = this.process!.stdin!.write(buffer, (err) => {
+          if (err) {
+            this.processError = err;
+            this.isStreaming = false;
+            return reject(new Error(`FFmpeg stdin write error: ${err.message}`));
+          }
+        });
+        this.tracker.advanceFrame();
 
-      if (!canContinue) {
-        this.process!.stdin!.once('drain', () => resolve(true));
-      } else {
-        resolve(true);
+        if (!canContinue) {
+          this.process!.stdin!.once('drain', () => resolve(true));
+        } else {
+          resolve(true);
+        }
+      } catch (err: unknown) {
+        this.isStreaming = false;
+        const error = err instanceof Error ? err : new Error(String(err));
+        this.processError = error;
+        reject(new Error(`FFmpeg broken pipe (EPIPE): ${error.message}`));
       }
     });
   }

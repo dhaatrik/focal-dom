@@ -105,16 +105,16 @@ flowchart TD
 ---
 
 ### Phase 02: Audio Stream Muxing & EPIPE Resilience in `FFmpegStreamer` (`src/export/`)
-- [ ] **Sub-phase 02.1: Add Synchronized Audio Track Muxing (`src/export/ffmpeg-streamer.ts`)**
-  - [ ] Add `audioInputPath?: string` to `StreamerOptions`.
-  - [ ] Update `getFFmpegCommandArgs()` to insert `-i <audioInputPath> -c:a aac -b:a 192k -shortest` when audio track is supplied.
-- [ ] **Sub-phase 02.2: Guard Against Broken Pipe (`EPIPE`) & Process Failures**
-  - [ ] Attach `error` listener on `process.stdin` to safely catch `EPIPE` exceptions during write.
-  - [ ] Provide clear error diagnostics with stderr tail when FFmpeg crashes.
-  - [ ] Ensure `writeFrame` rejects cleanly on terminated child process instead of hanging or crashing Node.
-- [ ] **Sub-phase 02.3: Unit Tests for FFmpeg Streamer (`tests/ffmpeg-streamer.test.ts`)**
-  - [ ] Test command args with and without `audioInputPath`.
-  - [ ] Test abort and error handling behaviors.
+- [x] **Sub-phase 02.1: Add Synchronized Audio Track Muxing (`src/export/ffmpeg-streamer.ts`)**
+  - [x] Add `audioInputPath?: string` to `StreamerOptions`.
+  - [x] Update `getFFmpegCommandArgs()` to insert `-i <audioInputPath> -c:a aac -b:a 192k -shortest` when audio track is supplied.
+- [x] **Sub-phase 02.2: Guard Against Broken Pipe (`EPIPE`) & Process Failures**
+  - [x] Attach `error` listener on `process.stdin` to safely catch `EPIPE` exceptions during write.
+  - [x] Provide clear error diagnostics with stderr tail when FFmpeg crashes.
+  - [x] Ensure `writeFrame` rejects cleanly on terminated child process instead of hanging or crashing Node.
+- [x] **Sub-phase 02.3: Unit Tests for FFmpeg Streamer (`tests/ffmpeg-streamer.test.ts`)**
+  - [x] Test command args with and without `audioInputPath`.
+  - [x] Test abort and error handling behaviors.
 
 ---
 
