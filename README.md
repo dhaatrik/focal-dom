@@ -35,6 +35,7 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+  - [Development Workflows](#development-workflows)
 - [Usage & Examples](#usage--examples)
   - [Mode B: Automated Playwright Capture (CLI)](#mode-b-automated-playwright-capture-cli)
   - [Mode B: Programmatic TypeScript SDK](#mode-b-programmatic-typescript-sdk)
@@ -182,6 +183,18 @@ focal-dom/
    ```bash
    pnpm test
    ```
+
+### Development Workflows
+
+| Task / Target | Command | Description |
+| :--- | :--- | :--- |
+| **Studio Web UI** | `pnpm --filter @focaldom/studio dev` | Vite HMR server at `http://localhost:5173` with instant live reload |
+| **Desktop Shell** | `pnpm --filter @focaldom/desktop dev` | Native Electron window + local WebSocket telemetry server (`48480`) |
+| **Chrome Extension** | `pnpm --filter @focaldom/extension dev` | TypeScript compiler watching and bundling `packages/extension/dist` |
+| **Monorepo All-in-One** | `pnpm dev` | Starts all workspace applications concurrently in parallel |
+| **Build for Production** | `pnpm build` | Compiles all packages and applications via composite TypeScript/tsup |
+| **Typecheck Workspace** | `pnpm typecheck` | Strict project-references type verification (`tsc -b`) |
+| **Interactive Test Watcher** | `pnpm test:watch` | Vitest live test runner re-evaluating test suites on file save |
 
 ---
 
