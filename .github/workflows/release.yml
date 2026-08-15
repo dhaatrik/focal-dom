@@ -8,16 +8,22 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
   # Job 1: Release Please — autonomous SemVer, changelogs & release PR
+  #
+  # Prerequisite (one-time repo setting):
+  #   Settings → Actions → General → Workflow permissions →
+  #   enable "Allow GitHub Actions to create and approve pull requests"
   # ─────────────────────────────────────────────────────────────────────────
   release-please:
     name: Release Please (SemVer & Changelogs)
     runs-on: ubuntu-latest
     outputs:
-      releases_created: ${{ steps.release.outputs.releases_created }}
+      # v4 correct key: release_created (singular), not releases_created
+      release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
       paths_released: ${{ steps.release.outputs.paths_released }}
     steps:
@@ -25,17 +31,19 @@ jobs:
         uses: google-github-actions/release-please-action@v4
         id: release
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
   # ─────────────────────────────────────────────────────────────────────────
   # Job 2: Build Windows installer & upload assets to GitHub Release
-  # Only runs when Release Please has actually created a new release
+  # Only runs when Release Please has actually created a new release.
   # ─────────────────────────────────────────────────────────────────────────
   build-and-publish-windows:
     name: Build Windows Installer & Upload Release Assets
     needs: release-please
-    if: ${{ needs.release-please.outputs.releases_created == 'true' }}
+    # v4 fix: release_created (singular) — not releases_created
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
     runs-on: windows-latest
 
     env:
