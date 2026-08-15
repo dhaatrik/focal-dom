@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useProjectStore } from '../../store/project-store';
 import { usePlaybackStore } from '../../store/playback-store';
-import { FocalPixiApp } from '@focaldom/renderer';
+import { FocalPixiApp, RenderDimensions } from '@focaldom/renderer';
 
 export const CanvasViewport: React.FC = () => {
   const project = useProjectStore((state) => state.project);
@@ -12,7 +12,7 @@ export const CanvasViewport: React.FC = () => {
   const appRef = useRef<FocalPixiApp | null>(null);
 
   // Compute aspect ratio dimensions
-  const getCanvasDimensions = () => {
+  const getCanvasDimensions = (): { width: number; height: number } => {
     switch (project.aspectRatio) {
       case '9:16':
         return { width: 1080, height: 1920 };
@@ -26,17 +26,20 @@ export const CanvasViewport: React.FC = () => {
     }
   };
 
+  // Initialize Pixi Application once
   useEffect(() => {
-    if (!canvasRef.current) return;
+    if (!canvasRef.current || appRef.current) return;
 
-    const dimensions = getCanvasDimensions();
+    const baseDim = getCanvasDimensions();
+    const dimensions: RenderDimensions = {
+      width: baseDim.width,
+      height: baseDim.height,
+      aspectRatio: project.aspectRatio,
+      devicePixelRatio: Math.min(2, window.devicePixelRatio || 1),
+    };
+
     const app = new FocalPixiApp({
-      dimensions: {
-        width: dimensions.width,
-        height: dimensions.height,
-        aspectRatio: project.aspectRatio,
-        devicePixelRatio: Math.min(2, window.devicePixelRatio || 1),
-      },
+      dimensions,
       project,
       enableMotionBlur: true,
     });
@@ -52,6 +55,21 @@ export const CanvasViewport: React.FC = () => {
         appRef.current = null;
       }
     };
+  }, []);
+
+  // Handle aspect ratio changes with zero-flicker dynamic resize
+  useEffect(() => {
+    if (appRef.current) {
+      const baseDim = getCanvasDimensions();
+      const dimensions: RenderDimensions = {
+        width: baseDim.width,
+        height: baseDim.height,
+        aspectRatio: project.aspectRatio,
+        devicePixelRatio: Math.min(2, window.devicePixelRatio || 1),
+      };
+      appRef.current.resize(dimensions, project);
+      appRef.current.renderFrame(currentTimeMs);
+    }
   }, [project.aspectRatio]);
 
   // Update canvas on time or project changes
@@ -60,6 +78,20 @@ export const CanvasViewport: React.FC = () => {
       appRef.current.renderFrame(currentTimeMs);
     }
   }, [currentTimeMs, project]);
+
+  // Responsive ResizeObserver for viewport bounds
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const observer = new ResizeObserver(() => {
+      if (appRef.current) {
+        appRef.current.renderFrame(currentTimeMs);
+      }
+    });
+
+    observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, [currentTimeMs]);
 
   return (
     <div ref={containerRef} className="canvas-viewport-container">

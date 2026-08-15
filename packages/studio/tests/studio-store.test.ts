@@ -3,8 +3,9 @@ import { useProjectStore } from '../src/store/project-store';
 import { usePlaybackStore } from '../src/store/playback-store';
 import { useUIStore } from '../src/store/ui-store';
 import { CameraKeyframe } from '@focaldom/core';
+import { findMagneticSnapPoint } from '../src/hooks/useMagneticSnapping';
 
-describe('FocalDOM Studio State Stores', () => {
+describe('FocalDOM Studio State Stores & Timeline Utilities', () => {
   beforeEach(() => {
     // Reset stores to default state
     useProjectStore.getState().setProject(useProjectStore.getState().project);
@@ -23,7 +24,7 @@ describe('FocalDOM Studio State Stores', () => {
     });
   });
 
-  describe('ProjectStore & Undo/Redo', () => {
+  describe('ProjectStore & Undo/Redo & Split', () => {
     it('updates title and pushes to history stack', () => {
       const initialTitle = useProjectStore.getState().project.title;
       useProjectStore.getState().setTitle('New Demo Title');
@@ -39,6 +40,38 @@ describe('FocalDOM Studio State Stores', () => {
       // Redo
       useProjectStore.getState().redo();
       expect(useProjectStore.getState().project.title).toBe('New Demo Title');
+    });
+
+    it('caps history stack at 50 steps during extensive editing', () => {
+      for (let i = 0; i < 75; i++) {
+        useProjectStore.getState().setTitle(`Title ${i}`);
+      }
+      expect(useProjectStore.getState().history.length).toBe(50);
+    });
+
+    it('splits a keyframe into two contiguous segments', () => {
+      const newKf: CameraKeyframe = {
+        id: 'kf-split-test',
+        timestampMs: 1000,
+        durationMs: 1000,
+        zoomScale: 2.0,
+        panOffset: { x: 0, y: 0 },
+        easingCurve: 'spring',
+        autoZoomGenerated: false,
+      };
+
+      useProjectStore.getState().addKeyframe(newKf);
+      useProjectStore.getState().splitKeyframe('kf-split-test', 1400);
+
+      const keyframes = useProjectStore.getState().project.keyframes;
+      const kf1 = keyframes.find((k) => k.id === 'kf-split-test');
+      expect(kf1).toBeDefined();
+      expect(kf1?.durationMs).toBe(400);
+
+      const kf2 = keyframes.find((k) => k.timestampMs === 1400);
+      expect(kf2).toBeDefined();
+      expect(kf2?.durationMs).toBe(600);
+      expect(kf2?.zoomScale).toBe(2.0);
     });
 
     it('adds, updates, duplicates, and removes keyframes', () => {
@@ -71,6 +104,23 @@ describe('FocalDOM Studio State Stores', () => {
 
       useProjectStore.getState().setAspectRatio('9:16');
       expect(useProjectStore.getState().project.aspectRatio).toBe('9:16');
+    });
+  });
+
+  describe('Magnetic Snapping Utility', () => {
+    it('snaps target timestamp when within pixel threshold distance', () => {
+      const snapTargets = [0, 500, 1000, 2500];
+      const zoom = 100; // 100px / sec => 1px = 10ms, 10px = 100ms threshold
+
+      // Within 100ms of 500ms
+      const snap1 = findMagneticSnapPoint(540, snapTargets, zoom, 10);
+      expect(snap1.isSnapped).toBe(true);
+      expect(snap1.snappedMs).toBe(500);
+
+      // Outside threshold
+      const snap2 = findMagneticSnapPoint(650, snapTargets, zoom, 10);
+      expect(snap2.isSnapped).toBe(false);
+      expect(snap2.snappedMs).toBe(650);
     });
   });
 

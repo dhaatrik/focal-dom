@@ -5,10 +5,18 @@ import { useUIStore } from '../store/ui-store';
 
 export function useKeyboardShortcuts() {
   const togglePlay = usePlaybackStore((state) => state.togglePlay);
+  const isPlaying = usePlaybackStore((state) => state.isPlaying);
+  const pause = usePlaybackStore((state) => state.pause);
+  const play = usePlaybackStore((state) => state.play);
   const stepFrame = usePlaybackStore((state) => state.stepFrame);
+  const seek = usePlaybackStore((state) => state.seek);
+  const currentTimeMs = usePlaybackStore((state) => state.currentTimeMs);
+  const durationMs = usePlaybackStore((state) => state.durationMs);
+
   const selectedKeyframeId = useUIStore((state) => state.selectedKeyframeId);
   const setSelectedKeyframeId = useUIStore((state) => state.setSelectedKeyframeId);
   const removeKeyframe = useProjectStore((state) => state.removeKeyframe);
+  const splitKeyframe = useProjectStore((state) => state.splitKeyframe);
   const undo = useProjectStore((state) => state.undo);
   const redo = useProjectStore((state) => state.redo);
 
@@ -28,6 +36,52 @@ export function useKeyboardShortcuts() {
       if (e.code === 'Space') {
         e.preventDefault();
         togglePlay();
+        return;
+      }
+
+      // S key: Split selected keyframe at current playhead position
+      if (e.code === 'KeyS' && !e.ctrlKey && !e.metaKey) {
+        if (selectedKeyframeId) {
+          e.preventDefault();
+          splitKeyframe(selectedKeyframeId, currentTimeMs);
+        }
+        return;
+      }
+
+      // Home: Seek to 0ms
+      if (e.code === 'Home') {
+        e.preventDefault();
+        seek(0);
+        return;
+      }
+
+      // End: Seek to end
+      if (e.code === 'End') {
+        e.preventDefault();
+        seek(durationMs);
+        return;
+      }
+
+      // J / K / L Shuttle keys
+      if (e.code === 'KeyJ' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        stepFrame(-5);
+        return;
+      }
+
+      if (e.code === 'KeyK' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        pause();
+        return;
+      }
+
+      if (e.code === 'KeyL' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        if (!isPlaying) {
+          play();
+        } else {
+          stepFrame(5);
+        }
         return;
       }
 
@@ -74,5 +128,20 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [togglePlay, stepFrame, selectedKeyframeId, removeKeyframe, setSelectedKeyframeId, undo, redo]);
+  }, [
+    togglePlay,
+    isPlaying,
+    pause,
+    play,
+    stepFrame,
+    seek,
+    currentTimeMs,
+    durationMs,
+    selectedKeyframeId,
+    removeKeyframe,
+    splitKeyframe,
+    setSelectedKeyframeId,
+    undo,
+    redo,
+  ]);
 }

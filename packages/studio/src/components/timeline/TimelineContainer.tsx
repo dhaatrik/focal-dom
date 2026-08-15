@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { TimelineHeader } from './TimelineHeader';
 import { KeyframeTrack } from './KeyframeTrack';
 import { EventTrack } from './EventTrack';
@@ -12,7 +12,22 @@ export const TimelineContainer: React.FC = () => {
   const setTimelineZoom = useUIStore((state) => state.setTimelineZoom);
   const durationMs = usePlaybackStore((state) => state.durationMs);
 
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const totalWidthPx = Math.max(800, (durationMs / 1000) * timelineZoom + 100);
+
+  const handleWheel = (e: React.WheelEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+      // Zoom centered around scroll
+      const zoomDelta = e.deltaY < 0 ? 15 : -15;
+      const newZoom = Math.min(600, Math.max(30, timelineZoom + zoomDelta));
+      setTimelineZoom(newZoom);
+    } else if (e.shiftKey) {
+      if (scrollAreaRef.current) {
+        scrollAreaRef.current.scrollLeft += e.deltaY;
+      }
+    }
+  };
 
   return (
     <div className="timeline-panel">
@@ -26,22 +41,22 @@ export const TimelineContainer: React.FC = () => {
         <div className="timeline-zoom-controls">
           <button
             className="timeline-zoom-btn"
-            onClick={() => setTimelineZoom(timelineZoom - 20)}
+            onClick={() => setTimelineZoom(Math.max(30, timelineZoom - 20))}
             title="Zoom Out"
           >
             <ZoomOut size={14} />
           </button>
           <input
             type="range"
-            min="40"
-            max="400"
+            min="30"
+            max="600"
             value={timelineZoom}
             onChange={(e) => setTimelineZoom(Number(e.target.value))}
             className="timeline-zoom-slider"
           />
           <button
             className="timeline-zoom-btn"
-            onClick={() => setTimelineZoom(timelineZoom + 20)}
+            onClick={() => setTimelineZoom(Math.min(600, timelineZoom + 20))}
             title="Zoom In"
           >
             <ZoomIn size={14} />
@@ -69,7 +84,11 @@ export const TimelineContainer: React.FC = () => {
         </div>
 
         {/* Tracks Content Area */}
-        <div className="timeline-scroll-area">
+        <div
+          ref={scrollAreaRef}
+          className="timeline-scroll-area"
+          onWheel={handleWheel}
+        >
           <div className="timeline-tracks-content" style={{ width: `${totalWidthPx}px` }}>
             <TimelineHeader />
             <KeyframeTrack />

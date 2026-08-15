@@ -15,13 +15,15 @@ export const TimelineHeader: React.FC = () => {
 
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!rulerRef.current) return;
-    const rect = rulerRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
+    const initialRect = rulerRef.current.getBoundingClientRect();
+    const offsetX = Math.max(0, e.clientX - initialRect.left);
     const targetTimestampMs = (offsetX / timelineZoom) * 1000;
     seek(targetTimestampMs);
 
     const onPointerMove = (moveEvent: PointerEvent) => {
-      const moveOffsetX = moveEvent.clientX - rect.left;
+      if (!rulerRef.current) return;
+      const currentRect = rulerRef.current.getBoundingClientRect();
+      const moveOffsetX = Math.max(0, moveEvent.clientX - currentRect.left);
       seek((moveOffsetX / timelineZoom) * 1000);
     };
 
