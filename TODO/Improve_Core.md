@@ -153,14 +153,14 @@ flowchart TD
 ---
 
 ### Phase 05: Complete Schema Validation Suite & Type Guards (`src/events/validation.ts`)
-- [ ] **Sub-phase 05.1: Implement Comprehensive Schema Type Guards**
-  - [ ] Implement `isValidCameraKeyframe(kf: unknown): kf is CameraKeyframe` with scale bounds ($1.0 \dots 5.0$), valid IDs, positive durations, and valid `EasingCurve` types.
-  - [ ] Implement `isValidSpringConfig(config: unknown): config is SpringConfig` ensuring positive finite numbers.
-  - [ ] Implement `isValidFocalDOMProject(project: unknown): project is FocalDOMProject` performing complete recursive validation of all top-level project fields, nested objects, keyframes, and event arrays.
-- [ ] **Sub-phase 05.2: Unit Tests for Schema Validators (`tests/events.test.ts`)**
-  - [ ] Test `isValidCameraKeyframe` with valid, corrupt, and out-of-bound keyframes.
-  - [ ] Test `isValidSpringConfig` with valid, empty, and invalid configs.
-  - [ ] Test `isValidFocalDOMProject` with valid projects, missing required fields, and corrupt nested arrays.
+- [x] **Sub-phase 05.1: Implement Comprehensive Schema Type Guards**
+  - [x] Implement `isValidCameraKeyframe(kf: unknown): kf is CameraKeyframe` with scale bounds ($1.0 \dots 5.0$), valid IDs, positive durations, and valid `EasingCurve` types.
+  - [x] Implement `isValidSpringConfig(config: unknown): config is SpringConfig` ensuring positive finite numbers.
+  - [x] Implement `isValidFocalDOMProject(project: unknown): project is FocalDOMProject` performing complete recursive validation of all top-level project fields, nested objects, keyframes, and event arrays.
+- [x] **Sub-phase 05.2: Unit Tests for Schema Validators (`tests/events.test.ts`)**
+  - [x] Test `isValidCameraKeyframe` with valid, corrupt, and out-of-bound keyframes.
+  - [x] Test `isValidSpringConfig` with valid, empty, and invalid configs.
+  - [x] Test `isValidFocalDOMProject` with valid projects, missing required fields, and corrupt nested arrays.
 
 ---
 

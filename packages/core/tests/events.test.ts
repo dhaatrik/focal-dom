@@ -2,9 +2,13 @@ import { describe, it, expect } from 'vitest';
 import {
   isValidDOMElementRect,
   isValidDOMEventFrame,
+  isValidSpringConfig,
+  isValidCameraKeyframe,
+  isValidFocalDOMProject,
   createProject,
   DOMEventFrame,
   DOMElementRect,
+  CameraKeyframe,
 } from '../src/events/index';
 
 describe('DOM Event & Project Schemas', () => {
@@ -40,7 +44,39 @@ describe('DOM Event & Project Schemas', () => {
     expect(isValidDOMEventFrame(invalidFrame)).toBe(false);
   });
 
-  it('creates default FocalDOM project structure', () => {
+  it('validates SpringConfig objects', () => {
+    expect(isValidSpringConfig({ stiffness: 140, damping: 16, mass: 1.0 })).toBe(true);
+    expect(isValidSpringConfig({ stiffness: 140, damping: 16, mass: 1.0, precision: 0.001 })).toBe(true);
+    expect(isValidSpringConfig({ stiffness: -10, damping: 16, mass: 1.0 })).toBe(false);
+    expect(isValidSpringConfig({ stiffness: 140, damping: 0, mass: 1.0 })).toBe(false);
+    expect(isValidSpringConfig(null)).toBe(false);
+  });
+
+  it('validates CameraKeyframe structures', () => {
+    const validKeyframe: CameraKeyframe = {
+      id: 'kf_1',
+      timestampMs: 500,
+      durationMs: 1200,
+      zoomScale: 1.5,
+      panOffset: { x: 50, y: -20 },
+      easingCurve: 'easeInOutCubic',
+      autoZoomGenerated: true,
+      targetElementSelector: '#input-field',
+    };
+    expect(isValidCameraKeyframe(validKeyframe)).toBe(true);
+
+    // Invalid scale out of bounds (< 1.0 or > 5.0)
+    expect(isValidCameraKeyframe({ ...validKeyframe, zoomScale: 0.5 })).toBe(false);
+    expect(isValidCameraKeyframe({ ...validKeyframe, zoomScale: 10.0 })).toBe(false);
+
+    // Invalid duration
+    expect(isValidCameraKeyframe({ ...validKeyframe, durationMs: 0 })).toBe(false);
+
+    // Invalid easing
+    expect(isValidCameraKeyframe({ ...validKeyframe, easingCurve: 'invalidCurve' })).toBe(false);
+  });
+
+  it('creates and validates complete FocalDOM project structure', () => {
     const project = createProject({
       id: 'proj_123',
       title: 'Demo Walkthrough',
@@ -53,5 +89,11 @@ describe('DOM Event & Project Schemas', () => {
     expect(project.springConfig.damping).toBe(16);
     expect(project.keyframes).toEqual([]);
     expect(project.events).toEqual([]);
+
+    expect(isValidFocalDOMProject(project)).toBe(true);
+
+    // Reject corrupt project bundle
+    expect(isValidFocalDOMProject({ ...project, aspectRatio: '99:99' })).toBe(false);
+    expect(isValidFocalDOMProject({ ...project, windowFrame: null })).toBe(false);
   });
 });
