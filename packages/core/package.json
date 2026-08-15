@@ -1,6 +1,6 @@
 {
   "name": "@focaldom/core",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Core deterministic timing and DOM event replay engine",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",

@@ -1,6 +1,6 @@
 {
   "name": "focal-dom-monorepo",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": true,
   "description": "DOM-Aware Intelligent Video Recording & Dynamic Virtual Camera Studio",
   "author": "Dhaatrik Chowdhury",
