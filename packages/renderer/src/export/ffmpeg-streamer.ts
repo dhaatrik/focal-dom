@@ -1,4 +1,4 @@
-import { spawn, ChildProcess } from 'node:child_process';
+import type { ChildProcess } from 'node:child_process';
 import { ExportPreset } from './export-presets';
 import { ExportProgressTracker, ExportProgressCallback } from './export-progress';
 
@@ -37,6 +37,7 @@ export class FFmpegStreamer {
 
   public async start(): Promise<void> {
     const args = this.getFFmpegCommandArgs();
+    const { spawn } = await import('node:child_process');
 
     return new Promise((resolve, reject) => {
       try {
