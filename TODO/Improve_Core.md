@@ -5,7 +5,7 @@
 **Audit Reference:** [TODO/AUDIT_REPORT.md](AUDIT_REPORT.md)  
 **Suggested Implementation Branch:** `feat/core-engine-perfection`  
 **Target Package:** `packages/core` (`@focaldom/core`)  
-**Status:** 🚀 Ready for Implementation  
+**Status:** 🚀 In Progress (Implementation Branch Active)  
 
 ---
 
@@ -13,7 +13,7 @@
 
 A comprehensive, line-by-line mathematical and architectural audit of all source files in `packages/core/` (`spring-camera.ts`, `lookahead-buffer.ts`, `viewport-avoidance.ts`, `sticky-detector.ts`, `bezier-smoother.ts`, `ripple-math.ts`, and `validation.ts`) revealed opportunities to eliminate zoom-pumping artifacts through event clustering, add closed-form analytical easing curves alongside spring ODEs, protect extreme aspect ratios ($32:9 \dots 9:16$) against canvas overflow, and provide complete runtime project schema guards.
 
-This document details all investigated flaws, classifies them by severity and root cause, and provides an actionable 5-phase engineering remediation plan to elevate `packages/core` to a **10.0 / 10.0**.
+This document details all investigated flaws, classifies them by severity and root cause, and provides an actionable, finely divided multi-phase engineering remediation plan with granular checklists to elevate `packages/core` to a **10.0 / 10.0**.
 
 ---
 
@@ -92,76 +92,85 @@ flowchart TD
 
 ---
 
-## 🛠️ Phase-Wise Solution & Implementation Checklist
+## 🛠️ Granular Phase-Wise Implementation Checklist
 
-### Phase 01: Multi-Curve Analytical Easing Module (`src/camera/easing.ts`)
-- [ ] **Sub-phase 01.1: Author Closed-Form Analytical Easing Functions**
-  - Implement `evaluateEasingCurve(curve: EasingCurve, t: number): number`:
-    ```typescript
-    export function evaluateEasingCurve(curve: EasingCurve, t: number): number {
-      const clampedT = Math.max(0, Math.min(1, t));
-      switch (curve) {
-        case 'linear':
-          return clampedT;
-        case 'easeInOutCubic':
-          return clampedT < 0.5
-            ? 4 * clampedT * clampedT * clampedT
-            : 1 - Math.pow(-2 * clampedT + 2, 3) / 2;
-        case 'spring':
-        default:
-          return clampedT; // Spring evaluated via ODE
-      }
-    }
-    ```
-- [ ] **Sub-phase 01.2: Add Safe Mass Boundary in `SpringCamera`**
-  - Ensure `this.mass = Math.max(0.05, cfg.mass)` preventing numerical division by zero.
+### Phase 01: Multi-Curve Analytical Easing Module & Spring Stability (`src/camera/`)
+- [ ] **Sub-phase 01.1: Closed-Form Analytical Easing Functions (`src/camera/easing.ts`)**
+  - [ ] Implement `evaluateEasingCurve(curve: EasingCurve, t: number): number` handling `linear`, `easeInOutCubic`, and `spring` with input clamping $t \in [0, 1]$.
+  - [ ] Implement state interpolation helper `interpolateCameraState(from: CameraState, to: CameraState, t: number, curve: EasingCurve): CameraState`.
+  - [ ] Implement helper `evaluateEasingVelocity(curve: EasingCurve, t: number, durationSeconds: number): number` for analytical derivatives.
+  - [ ] Export easing utilities from `src/camera/index.ts`.
+- [ ] **Sub-phase 01.2: Numerical Stability & Mass Guard in `SpringCamera` (`src/camera/spring-camera.ts`)**
+  - [ ] Enforce safe mass boundary `this.mass = Math.max(0.05, cfg.mass ?? 1.0)` to eliminate divide-by-zero risks.
+  - [ ] Enforce safe positive boundaries for `stiffness` (`Math.max(1.0, cfg.stiffness)`) and `damping` (`Math.max(0.1, cfg.damping)`).
+  - [ ] Add `NaN` and non-finite number guards in `step(deltaTimeSeconds)` and `setTarget(target)`.
+- [ ] **Sub-phase 01.3: Easing & Spring Numerical Unit Tests (`tests/easing.test.ts`, `tests/spring-camera.test.ts`)**
+  - [ ] Create `packages/core/tests/easing.test.ts` verifying boundary values ($t=0, t=1$), out-of-range inputs, and monotonicity.
+  - [ ] Add tests in `packages/core/tests/spring-camera.test.ts` for zero/negative mass configurations and non-finite delta times.
 
 ---
 
-### Phase 02: Smart Event Clustering in Lookahead Buffer (`src/camera/lookahead-buffer.ts`)
-- [ ] **Sub-phase 02.1: Interaction Event Clustering**
-  - If a subsequent click/input occurs within $2000\text{ms}$ of an active keyframe:
-    - Extend keyframe duration and compute an encompassing bounding box rather than creating separate zoom cycles.
-- [ ] **Sub-phase 02.2: Configurable Easing Selection**
-  - Allow callers to pass default `easingCurve: EasingCurve` in `LookAheadOptions`.
+### Phase 02: Smart Event Clustering & Lookahead Intelligence (`src/camera/lookahead-buffer.ts`)
+- [ ] **Sub-phase 02.1: Temporal & Spatial Event Clustering Engine**
+  - [ ] Add `clusterThresholdMs?: number` (default 2000ms) to `LookAheadOptions`.
+  - [ ] Group consecutive interaction events (click, input, focus) that occur within `clusterThresholdMs` into cohesive clusters.
+  - [ ] For clustered events, compute an encompassing bounding rect or progressive smooth transition instead of resetting camera to 1.0x (eliminates zoom pumping).
+  - [ ] Ensure single isolated events maintain standard lookahead ease-in and hold duration.
+- [ ] **Sub-phase 02.2: Configurable Easing Curve & Option Propagation**
+  - [ ] Add `defaultEasingCurve?: EasingCurve` to `LookAheadOptions` (defaulting to `'spring'`).
+  - [ ] Propagate caller-specified `easingCurve` to generated `CameraKeyframe` objects.
+- [ ] **Sub-phase 02.3: Unit Tests for Event Clustering & Easing Options (`tests/lookahead-buffer.test.ts`)**
+  - [ ] Test rapid successive clicks within 1500ms and verify keyframes merge or hold zoom without pumping.
+  - [ ] Test custom easing curve option propagation in keyframe output.
 
 ---
 
-### Phase 03: Safe Viewport & Extreme Aspect Ratio Clamping (`src/avoidance/`)
-- [ ] **Sub-phase 03.1: Implement `clampTargetToBounds`**
-  - Ensure calculated pan offset guarantees content does not overflow canvas margins under extreme aspect ratios ($32:9$, $21:9$, $9:16$):
-    ```typescript
-    export function clampTargetToBounds(
-      target: CameraState,
-      viewport: ViewportDimensions,
-      marginPx = 24
-    ): CameraState {
-      const maxPanX = (viewport.width * (target.scale - 1)) / 2 - marginPx;
-      const maxPanY = (viewport.height * (target.scale - 1)) / 2 - marginPx;
-
-      return {
-        scale: target.scale,
-        x: Math.max(-maxPanX, Math.min(maxPanX, target.x)),
-        y: Math.max(-maxPanY, Math.min(maxPanY, target.y)),
-      };
-    }
-    ```
-- [ ] **Sub-phase 03.2: Dead Zone Ceiling Cap**
-  - Limit total sticky obstruction to maximum $65\%$ of viewport height/width.
+### Phase 03: Safe Viewport, Extreme Aspect Ratio Clamping & Dead Zone Bounds (`src/avoidance/`)
+- [ ] **Sub-phase 03.1: Aspect Ratio Clamping Guardrails (`src/avoidance/viewport-avoidance.ts`)**
+  - [ ] Implement `clampTargetToBounds(target: CameraState, viewport: ViewportDimensions, marginPx?: number): CameraState`.
+  - [ ] Prevent camera panning from exposing canvas margins beyond safe boundaries across extreme aspect ratios ($32:9$, $21:9$, $16:9$, $1:1$, $9:16$).
+  - [ ] Integrate `clampTargetToBounds` into `calculateTargetFromElement`.
+- [ ] **Sub-phase 03.2: Dead Zone Ceiling Cap & Collapse Protection (`src/avoidance/sticky-detector.ts`)**
+  - [ ] Limit total sticky dead zone obstruction to maximum $65\%$ of viewport width and height (`maxObstructionRatio = 0.65`).
+  - [ ] Prevent `usableWidth` and `usableHeight` from collapsing to near-zero when huge fixed headers/banners exist.
+  - [ ] Ensure zoom calculation remains stable even with $90\%$ screen coverage of sticky elements.
+- [ ] **Sub-phase 03.3: Unit Tests for Viewport Clamping & Extreme Ratios (`tests/sticky-avoidance.test.ts`)**
+  - [ ] Test target calculation with $32:9$ ultrawide and $9:16$ vertical viewport configurations.
+  - [ ] Test oversized sticky elements ($>80\%$ viewport) and verify zoom scale remains capped within safe limits.
+  - [ ] Verify `clampTargetToBounds` edge clamping with varied zoom levels.
 
 ---
 
 ### Phase 04: Stable Finite-Difference Velocity in Bezier Smoother (`src/cursor/`)
-- [ ] **Sub-phase 04.1: Clamp Finite-Difference Denominator**
-  - Ensure velocity estimation uses a minimum $\Delta t$ baseline of $16.6\text{ms}$ ($1/60\text{s}$) to avoid numerical spikes.
+- [ ] **Sub-phase 04.1: Velocity Estimation Clamping & Edge-Case Protection (`src/cursor/bezier-smoother.ts`)**
+  - [ ] Add a minimum duration threshold of $16.6\text{ms}$ ($1/60\text{s}$) to finite difference velocity calculation to eliminate division spikes.
+  - [ ] Guard against zero-duration or duplicate timestamp samples.
+  - [ ] Ensure calculated velocity coordinates $(v_x, v_y)$ are always finite numbers.
+- [ ] **Sub-phase 04.2: Unit Tests for Cursor Smoothing & Velocity Stability (`tests/bezier-smoother.test.ts`)**
+  - [ ] Add tests for cursor points with identical timestamps ($0\text{ms}$ delta).
+  - [ ] Add tests for sub-millisecond jitter timestamps and verify finite, smooth velocity outputs.
 
 ---
 
-### Phase 05: Complete Schema Validation Suite (`src/events/validation.ts`)
-- [ ] **Sub-phase 05.1: Implement `isValidCameraKeyframe`**
-  - Validate keyframe properties, timestamp order, and scale bounds ($1.0 \dots 5.0$).
-- [ ] **Sub-phase 05.2: Implement `isValidFocalDOMProject`**
-  - Comprehensive structural validator for imported `.focal` project bundles.
+### Phase 05: Complete Schema Validation Suite & Type Guards (`src/events/validation.ts`)
+- [ ] **Sub-phase 05.1: Implement Comprehensive Schema Type Guards**
+  - [ ] Implement `isValidCameraKeyframe(kf: unknown): kf is CameraKeyframe` with scale bounds ($1.0 \dots 5.0$), valid IDs, positive durations, and valid `EasingCurve` types.
+  - [ ] Implement `isValidSpringConfig(config: unknown): config is SpringConfig` ensuring positive finite numbers.
+  - [ ] Implement `isValidFocalDOMProject(project: unknown): project is FocalDOMProject` performing complete recursive validation of all top-level project fields, nested objects, keyframes, and event arrays.
+- [ ] **Sub-phase 05.2: Unit Tests for Schema Validators (`tests/events.test.ts`)**
+  - [ ] Test `isValidCameraKeyframe` with valid, corrupt, and out-of-bound keyframes.
+  - [ ] Test `isValidSpringConfig` with valid, empty, and invalid configs.
+  - [ ] Test `isValidFocalDOMProject` with valid projects, missing required fields, and corrupt nested arrays.
+
+---
+
+### Phase 06: Package Integration, Clean Exports & Monorepo Verification
+- [ ] **Sub-phase 06.1: Core Barrel Exports & Type Hygiene**
+  - [ ] Update `src/camera/index.ts`, `src/avoidance/index.ts`, `src/cursor/index.ts`, `src/events/index.ts`, and `src/index.ts` to export all new functions, types, and constants.
+  - [ ] Run `pnpm run build` / `tsc -b` to verify clean build without TypeScript errors.
+- [ ] **Sub-phase 06.2: Full Monorepo Regression Testing**
+  - [ ] Run all unit tests across all workspace packages (`pnpm test`).
+  - [ ] Confirm 100% pass rate with zero regressions.
 
 ---
 
@@ -171,3 +180,4 @@ flowchart TD
 2. **Zero Zoom-Pumping:** Rapid sequential form clicks generate smooth, continuous panning without disorienting zoom retractions.
 3. **Extreme Ratio Safe:** 32:9 ultra-wide and 9:16 vertical viewports maintain content bounds without background leakage.
 4. **Complete Schema Protection:** `isValidFocalDOMProject` rejects corrupt or partially-formed JSON data safely.
+5. **100% Test Coverage:** All new modules and edge cases have thorough unit tests passing in Vitest.
