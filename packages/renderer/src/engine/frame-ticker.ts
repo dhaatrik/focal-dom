@@ -3,8 +3,12 @@ import {
   SpringCamera,
   CubicBezierSmoother,
   evaluateClickRipple,
+  evaluateEasingCurve,
+  interpolateCameraState,
+  evaluateEasingVelocity,
   CameraState,
   CursorPoint,
+  CameraKeyframe,
 } from '@focaldom/core';
 import { FrameEvaluationResult } from './scene-types';
 
@@ -41,6 +45,7 @@ export class FrameTicker {
 
   /**
    * Evaluates the complete camera, cursor, and ripple state at timestamp `t` (in milliseconds)
+   * with seek discontinuity protection and dual analytical/spring easing support.
    */
   public evaluate(timestampMs: number): FrameEvaluationResult {
     // 1. Find active keyframe for camera
@@ -55,14 +60,49 @@ export class FrameTicker {
       targetPanY = activeKeyframe.panOffset.y;
     }
 
-    const dt = Math.max(0.001, (timestampMs - this.lastEvaluatedTime) / 1000);
+    // Detect non-monotonic seek (backward scrubbing) or large jumps
+    const isDiscontinuousSeek =
+      timestampMs < this.lastEvaluatedTime ||
+      Math.abs(timestampMs - this.lastEvaluatedTime) > 500;
+
+    let currentCamera: CameraState;
+    let velocityX = 0;
+    let velocityY = 0;
+
+    if (activeKeyframe && activeKeyframe.easingCurve && activeKeyframe.easingCurve !== 'spring') {
+      // Analytical closed-form curve evaluation (linear / easeInOutCubic)
+      const duration = Math.max(1, activeKeyframe.durationMs);
+      const normalizedT = Math.max(0, Math.min(1, (timestampMs - activeKeyframe.timestampMs) / duration));
+
+      const fromState: CameraState = { x: 0, y: 0, scale: 1.0 };
+      const toState: CameraState = { x: targetPanX, y: targetPanY, scale: targetZoom };
+
+      currentCamera = interpolateCameraState(fromState, toState, normalizedT, activeKeyframe.easingCurve);
+
+      const velRate = evaluateEasingVelocity(activeKeyframe.easingCurve, normalizedT, duration / 1000);
+      velocityX = (targetPanX - fromState.x) * velRate;
+      velocityY = (targetPanY - fromState.y) * velRate;
+
+      this.camera.snapTo(currentCamera);
+    } else {
+      // 2nd-order ODE Spring simulation
+      this.camera.setTarget({ x: targetPanX, y: targetPanY, scale: targetZoom });
+
+      if (isDiscontinuousSeek) {
+        // Snap directly to target on seek / backward scrub to eliminate velocity explosion
+        this.camera.snapTo({ x: targetPanX, y: targetPanY, scale: targetZoom });
+        currentCamera = this.camera.getCurrent();
+        velocityX = 0;
+        velocityY = 0;
+      } else {
+        const dt = Math.max(0.001, (timestampMs - this.lastEvaluatedTime) / 1000);
+        currentCamera = this.camera.step(dt);
+        velocityX = (currentCamera.x - this.lastCameraState.x) / dt;
+        velocityY = (currentCamera.y - this.lastCameraState.y) / dt;
+      }
+    }
+
     this.lastEvaluatedTime = timestampMs;
-
-    this.camera.setTarget({ x: targetPanX, y: targetPanY, scale: targetZoom });
-    const currentCamera = this.camera.step(dt);
-
-    const velocityX = (currentCamera.x - this.lastCameraState.x) / dt;
-    const velocityY = (currentCamera.y - this.lastCameraState.y) / dt;
     this.lastCameraState = { ...currentCamera };
 
     // 2. Evaluate smoothed cursor position
@@ -77,8 +117,8 @@ export class FrameTicker {
         zoomScale: currentCamera.scale,
         panX: currentCamera.x,
         panY: currentCamera.y,
-        velocityX,
-        velocityY,
+        velocityX: isFinite(velocityX) ? velocityX : 0,
+        velocityY: isFinite(velocityY) ? velocityY : 0,
       },
       cursor: {
         x: sampledCursor.x,
@@ -89,7 +129,7 @@ export class FrameTicker {
     };
   }
 
-  private findActiveKeyframe(timestampMs: number) {
+  private findActiveKeyframe(timestampMs: number): CameraKeyframe | undefined {
     for (const kf of this.project.keyframes) {
       if (timestampMs >= kf.timestampMs && timestampMs <= kf.timestampMs + kf.durationMs) {
         return kf;

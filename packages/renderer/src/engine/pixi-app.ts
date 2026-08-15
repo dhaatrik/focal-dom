@@ -1,12 +1,14 @@
 import { Application, Texture } from 'pixi.js';
-import { RendererOptions } from './scene-types';
+import { RenderDimensions, RendererOptions } from './scene-types';
 import { FocalSceneGraph } from './scene-graph';
 import { FrameTicker } from './frame-ticker';
+import { FocalDOMProject } from '@focaldom/core';
 
 export class FocalPixiApp {
   private app: Application | null = null;
   private sceneGraph: FocalSceneGraph | null = null;
   private ticker: FrameTicker;
+  private currentVideoTexture: Texture | null = null;
   private isInitialized: boolean = false;
 
   constructor(private options: RendererOptions) {
@@ -50,7 +52,43 @@ export class FocalPixiApp {
     return this.sceneGraph;
   }
 
+  public getTicker(): FrameTicker {
+    return this.ticker;
+  }
+
+  /**
+   * Resizes the canvas and updates scene graph layout without destroying the WebGL/WebGPU context
+   */
+  public resize(dimensions: RenderDimensions, project?: FocalDOMProject): void {
+    this.options.dimensions = dimensions;
+    if (project) {
+      this.options.project = project;
+      this.ticker.updateProject(project);
+    }
+
+    if (this.app) {
+      this.app.renderer.resize(
+        dimensions.width,
+        dimensions.height,
+        dimensions.devicePixelRatio || 1
+      );
+    }
+
+    if (this.sceneGraph) {
+      this.sceneGraph.updateDimensions(dimensions, project);
+    }
+  }
+
   public setVideoTexture(texture: Texture): void {
+    if (this.currentVideoTexture && this.currentVideoTexture !== texture && this.currentVideoTexture !== Texture.WHITE) {
+      // Release previous transient GPU texture if dynamic
+      try {
+        this.currentVideoTexture.destroy(true);
+      } catch {
+        // Safe fallback
+      }
+    }
+    this.currentVideoTexture = texture;
     if (this.sceneGraph) {
       this.sceneGraph.setVideoTexture(texture);
     }
@@ -63,7 +101,7 @@ export class FocalPixiApp {
     if (!this.app || !this.sceneGraph) return;
 
     if (videoTexture) {
-      this.sceneGraph.setVideoTexture(videoTexture);
+      this.setVideoTexture(videoTexture);
     }
 
     const evalResult = this.ticker.evaluate(timestampMs);
@@ -85,6 +123,15 @@ export class FocalPixiApp {
   }
 
   public destroy(): void {
+    if (this.currentVideoTexture && this.currentVideoTexture !== Texture.WHITE) {
+      try {
+        this.currentVideoTexture.destroy(true);
+      } catch {
+        // Safe fallback
+      }
+      this.currentVideoTexture = null;
+    }
+
     if (this.app) {
       this.app.destroy(true, { children: true, texture: true });
       this.app = null;

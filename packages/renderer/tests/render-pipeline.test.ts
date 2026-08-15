@@ -5,6 +5,7 @@ import { FocalSceneGraph } from '../src/engine/scene-graph';
 import { RenderDimensions } from '../src/engine/scene-types';
 import { MotionBlurFilter } from '../src/shaders/motion-blur-filter';
 import { DropShadowFilter } from '../src/shaders/shadow-filter';
+import { FocalPixiApp } from '../src/engine/pixi-app';
 
 describe('Renderer Engine & Scene Graph Pipeline', () => {
   const mockProject: FocalDOMProject = {
@@ -41,6 +42,15 @@ describe('Renderer Engine & Scene Graph Pipeline', () => {
         panOffset: { x: -120, y: -80 },
         easingCurve: 'spring',
         autoZoomGenerated: true,
+      },
+      {
+        id: 'kf-2',
+        timestampMs: 2500,
+        durationMs: 1000,
+        zoomScale: 1.8,
+        panOffset: { x: 200, y: 100 },
+        easingCurve: 'easeInOutCubic',
+        autoZoomGenerated: false,
       },
     ],
     events: [
@@ -81,6 +91,40 @@ describe('Renderer Engine & Scene Graph Pipeline', () => {
     expect(frameMid.cursor.x).toBe(400);
   });
 
+  it('evaluates analytical easeInOutCubic keyframes with exact mathematical trajectory', () => {
+    const ticker = new FrameTicker(mockProject);
+
+    // Keyframe 2 starts at t=2500ms and lasts 1000ms (target: x=200, y=100, scale=1.8)
+    const frameStart = ticker.evaluate(2500);
+    expect(frameStart.camera.zoomScale).toBe(1.0);
+    expect(frameStart.camera.panX).toBe(0);
+
+    const frameMid = ticker.evaluate(3000); // t=0.5
+    expect(frameMid.camera.zoomScale).toBeCloseTo(1.4, 2); // 1.0 + (1.8 - 1.0)*0.5 = 1.4
+    expect(frameMid.camera.panX).toBeCloseTo(100, 1); // 0 + 200*0.5 = 100
+    expect(frameMid.camera.panY).toBeCloseTo(50, 1); // 0 + 100*0.5 = 50
+    expect(isFinite(frameMid.camera.velocityX)).toBe(true);
+    expect(isFinite(frameMid.camera.velocityY)).toBe(true);
+
+    const frameEnd = ticker.evaluate(3500); // t=1.0
+    expect(frameEnd.camera.zoomScale).toBe(1.8);
+    expect(frameEnd.camera.panX).toBe(200);
+    expect(frameEnd.camera.panY).toBe(100);
+  });
+
+  it('stabilizes backward timeline scrubbing without velocity explosion', () => {
+    const ticker = new FrameTicker(mockProject);
+
+    // Advance to 3000ms
+    ticker.evaluate(3000);
+
+    // Scrub backward to 500ms
+    const scrubbed = ticker.evaluate(500);
+    expect(isFinite(scrubbed.camera.velocityX)).toBe(true);
+    expect(isFinite(scrubbed.camera.velocityY)).toBe(true);
+    expect(Math.abs(scrubbed.camera.velocityX)).toBeLessThan(10000);
+  });
+
   it('evaluates click ripple expansion during active ripple window', () => {
     const ticker = new FrameTicker(mockProject);
 
@@ -91,7 +135,7 @@ describe('Renderer Engine & Scene Graph Pipeline', () => {
     expect(frameRipple.activeRipples[0].alpha).toBeGreaterThan(0);
   });
 
-  it('instantiates FocalSceneGraph and updates layer properties without error', () => {
+  it('instantiates FocalSceneGraph and updates layer properties and dimensions without error', () => {
     const dimensions: RenderDimensions = {
       width: 1920,
       height: 1080,
@@ -115,6 +159,39 @@ describe('Renderer Engine & Scene Graph Pipeline', () => {
     const evalResult = ticker.evaluate(500);
 
     expect(() => scene.updateFromEvaluation(evalResult)).not.toThrow();
+
+    // Test dynamic resize on scene graph
+    const newDimensions: RenderDimensions = {
+      width: 1080,
+      height: 1920,
+      aspectRatio: '9:16',
+      devicePixelRatio: 1,
+    };
+    expect(() => scene.updateDimensions(newDimensions)).not.toThrow();
+  });
+
+  it('supports FocalPixiApp dynamic resize method', () => {
+    const dimensions: RenderDimensions = {
+      width: 1920,
+      height: 1080,
+      aspectRatio: '16:9',
+      devicePixelRatio: 1,
+    };
+
+    const app = new FocalPixiApp({
+      dimensions,
+      project: mockProject,
+    });
+
+    const newDimensions: RenderDimensions = {
+      width: 1080,
+      height: 1080,
+      aspectRatio: '1:1',
+      devicePixelRatio: 1,
+    };
+
+    expect(() => app.resize(newDimensions)).not.toThrow();
+    expect(app.getTicker()).toBeDefined();
   });
 
   it('instantiates MotionBlurFilter and DropShadowFilter properly', () => {

@@ -119,27 +119,27 @@ flowchart TD
 ---
 
 ### Phase 03: Dynamic Canvas Resizing & Zero-Flicker Viewport (`src/engine/pixi-app.ts`)
-- [ ] **Sub-phase 03.1: Zero-Flicker Dynamic `resize()` Method (`src/engine/pixi-app.ts`)**
-  - [ ] Implement `public resize(dimensions: RenderDimensions, project?: FocalDOMProject): void` on `FocalPixiApp`.
-  - [ ] Dynamically update Pixi renderer dimensions, stage bounds, background layer, and window layer without destroying context.
-  - [ ] Update `FocalSceneGraph` and `BackgroundLayer` / `WindowLayer` with clean update methods.
-- [ ] **Sub-phase 03.2: Texture Cache Management & Cleanup**
-  - [ ] Track transient video textures and destroy stale textures safely upon change.
-- [ ] **Sub-phase 03.3: Unit Tests for Dynamic Canvas Resizing (`tests/render-pipeline.test.ts`)**
-  - [ ] Test dynamic resize call and dimension updates without app destruction.
+- [x] **Sub-phase 03.1: Zero-Flicker Dynamic `resize()` Method (`src/engine/pixi-app.ts`)**
+  - [x] Implement `public resize(dimensions: RenderDimensions, project?: FocalDOMProject): void` on `FocalPixiApp`.
+  - [x] Dynamically update Pixi renderer dimensions, stage bounds, background layer, and window layer without destroying context.
+  - [x] Update `FocalSceneGraph` and `BackgroundLayer` / `WindowLayer` with clean update methods.
+- [x] **Sub-phase 03.2: Texture Cache Management & Cleanup**
+  - [x] Track transient video textures and destroy stale textures safely upon change.
+- [x] **Sub-phase 03.3: Unit Tests for Dynamic Canvas Resizing (`tests/render-pipeline.test.ts`)**
+  - [x] Test dynamic resize call and dimension updates without app destruction.
 
 ---
 
 ### Phase 04: Frame Ticker Seek Stability & Multi-Curve Analytical Easing (`src/engine/frame-ticker.ts`)
-- [ ] **Sub-phase 04.1: Backward Scrubbing & Seek Discontinuity Guard**
-  - [ ] Detect non-monotonic or large jumps ($t_{\text{current}} < t_{\text{last}}$ or $|t_{\text{current}} - t_{\text{last}}| > 500\text{ms}$).
-  - [ ] Reset spring camera velocity and snap/re-anchor to target state to eliminate velocity explosion when scrubbing.
-- [ ] **Sub-phase 04.2: Support Closed-Form Analytical Easing (`easeInOutCubic`, `linear`)**
-  - [ ] When active keyframe specifies `easingCurve: 'easeInOutCubic'` or `'linear'`, evaluate camera pose analytically using `evaluateEasingCurve` and `interpolateCameraState` from `@focaldom/core`.
-  - [ ] Compute analytical velocity via `evaluateEasingVelocity` during keyframe transitions.
-- [ ] **Sub-phase 04.3: Unit Tests for Frame Ticker (`tests/render-pipeline.test.ts`)**
-  - [ ] Test backward timeline seek and verify zero velocity spike.
-  - [ ] Test analytical keyframe evaluation (`easeInOutCubic` and `linear`).
+- [x] **Sub-phase 04.1: Backward Scrubbing & Seek Discontinuity Guard**
+  - [x] Detect non-monotonic or large jumps ($t_{\text{current}} < t_{\text{last}}$ or $|t_{\text{current}} - t_{\text{last}}| > 500\text{ms}$).
+  - [x] Reset spring camera velocity and snap/re-anchor to target state to eliminate velocity explosion when scrubbing.
+- [x] **Sub-phase 04.2: Support Closed-Form Analytical Easing (`easeInOutCubic`, `linear`)**
+  - [x] When active keyframe specifies `easingCurve: 'easeInOutCubic'` or `'linear'`, evaluate camera pose analytically using `evaluateEasingCurve` and `interpolateCameraState` from `@focaldom/core`.
+  - [x] Compute analytical velocity via `evaluateEasingVelocity` during keyframe transitions.
+- [x] **Sub-phase 04.3: Unit Tests for Frame Ticker (`tests/render-pipeline.test.ts`)**
+  - [x] Test backward timeline seek and verify zero velocity spike.
+  - [x] Test analytical keyframe evaluation (`easeInOutCubic` and `linear`).
 
 ---
 
