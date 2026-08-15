@@ -50,7 +50,8 @@ graph TD
 ## 🛠️ Detailed Implementation Parts & Subphases
 
 ### Part 01: Core Math & Multi-Curve Easing Engine (`@focaldom/core`)
-**Target Rating:** `10.0 / 10` | **Focus:** Analytical transitions & extreme viewport bounds
+**Target Rating:** `10.0 / 10` | **Focus:** Analytical transitions & extreme viewport bounds  
+📖 **Dedicated Plan:** [Improve_Core.md](Improve_Core.md)
 
 #### 🎯 Engineering Goals
 1. Add analytical closed-form mathematical functions for `easeInOutCubic` and `linear` camera transitions alongside existing 2nd-order ODE spring physics.
@@ -73,7 +74,8 @@ graph TD
 ---
 
 ### Part 02: Shadow DOM & Iframe Ingestion (`@focaldom/capture-playwright`)
-**Target Rating:** `10.0 / 10` | **Focus:** Deep component traversal & deterministic audio sync
+**Target Rating:** `10.0 / 10` | **Focus:** Deep component traversal & deterministic audio sync  
+📖 **Dedicated Plan:** [Improve_Capture_Playwright.md](Improve_Capture_Playwright.md)
 
 #### 🎯 Engineering Goals
 1. Pierce Shadow DOM boundaries and traverse accessible same-origin `<iframe>` contexts to extract telemetry from complex web components.
@@ -97,7 +99,8 @@ graph TD
 ---
 
 ### Part 03: Dual WebGPU WGSL & Audio Muxing Engine (`@focaldom/renderer`)
-**Target Rating:** `10.0 / 10` | **Focus:** WebGPU native compute parity & audio streaming
+**Target Rating:** `10.0 / 10` | **Focus:** WebGPU native compute parity & audio streaming  
+📖 **Dedicated Plan:** [Improve_Renderer.md](Improve_Renderer.md)
 
 #### 🎯 Engineering Goals
 1. Add native WGSL WebGPU shader definition to `MotionBlurFilter` for zero-overhead WebGPU pipeline execution.
@@ -128,7 +131,8 @@ graph TD
 ---
 
 ### Part 04: Magnetic Snapping & Timeline Ergonomics (`@focaldom/studio`)
-**Target Rating:** `10.0 / 10` | **Focus:** Snapping precision, zoom gestures & split editing
+**Target Rating:** `10.0 / 10` | **Focus:** Snapping precision, zoom gestures & split editing  
+📖 **Dedicated Plan:** [Improve_Studio.md](Improve_Studio.md)
 
 #### 🎯 Engineering Goals
 1. Add magnetic snap-to-event collision detection when dragging keyframe edges near click/input markers.
@@ -150,7 +154,8 @@ graph TD
 ---
 
 ### Part 05: Real-Time IPC Progress & Desktop Resilience (`apps/desktop`)
-**Target Rating:** `10.0 / 10` | **Focus:** Live encoding feedback & window state preservation
+**Target Rating:** `10.0 / 10` | **Focus:** Live encoding feedback & window state preservation  
+📖 **Dedicated Plan:** [Improve_Desktop_App.md](Improve_Desktop_App.md)
 
 #### 🎯 Engineering Goals
 1. Stream live FFmpeg encoding progress events over IPC from main process to Studio UI.
@@ -168,7 +173,8 @@ graph TD
 ---
 
 ### Part 06: Resilient Telemetry & Configurable Ports (`@focaldom/extension`)
-**Target Rating:** `10.0 / 10` | **Focus:** Reconnect resilience & flexible network configuration
+**Target Rating:** `10.0 / 10` | **Focus:** Reconnect resilience & flexible network configuration  
+📖 **Dedicated Plan:** [Improve_Extension.md](Improve_Extension.md)
 
 #### 🎯 Engineering Goals
 1. Implement jittered exponential backoff for WebSocket reconnection to handle desktop app launches gracefully.

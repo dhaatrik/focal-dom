@@ -41,7 +41,7 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 ## 🔍 Detailed Sub-Phase Audit
 
 ### Part 00: Foundation & PNPM Monorepo Setup
-**Score: `10.0 / 10`** | **Document:** [Implement_00_Foundation_Monorepo.md](Implement_00_Foundation_Monorepo.md)
+**Score: `10.0 / 10`** | **Action Plan:** [Improve_Now.md](Improve_Now.md)
 
 #### Sub-Phase Verification
 - [x] **00.1.1 Workspace Definition:** `pnpm-workspace.yaml` cleanly includes `packages/*` and `apps/*` with native binary configuration.
@@ -58,7 +58,7 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 ---
 
 ### Part 01: Core Math, Physics & Schemas (`@focaldom/core`)
-**Score: `9.9 / 10`** | **Document:** [Implement_01_Core_Engine.md](Implement_01_Core_Engine.md)
+**Score: `9.9 / 10`** | **Action Plan:** [Improve_Core.md](Improve_Core.md)
 
 #### Sub-Phase Verification
 - [x] **01.1.1 Event & Geometry Types:** `DOMElementRect`, `DOMEventFrame`, `DOMEventType` fully typed and immutable.
@@ -77,8 +77,8 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 
 ---
 
-### Part 02: Deterministic Playwright Capture Engine (`@focaldom/capture-playwright`)
-**Score: `9.8 / 10`** | **Document:** [Implement_02_Capture_Playwright.md](Implement_02_Capture_Playwright.md)
+### Part 02: Playwright CDP Capture Engine (`@focaldom/capture-playwright`)
+**Score: `9.8 / 10`** | **Action Plan:** [Improve_Capture_Playwright.md](Improve_Capture_Playwright.md)
 
 #### Sub-Phase Verification
 - [x] **02.1.1 In-Page DOM Logger:** Injected via `page.addInitScript()`; extracts bounding rectangles, computed z-index, classLists, and element tags.
@@ -95,8 +95,8 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 
 ---
 
-### Part 03: Pixi.js Canvas & High-Throughput Video Renderer (`@focaldom/renderer`)
-**Score: `9.7 / 10`** | **Document:** [Implement_03_Renderer_Engine.md](Implement_03_Renderer_Engine.md)
+### Part 03: Pixi.js Canvas & Motion Blur Renderer (`@focaldom/renderer`)
+**Score: `9.7 / 10`** | **Action Plan:** [Improve_Renderer.md](Improve_Renderer.md)
 
 #### Sub-Phase Verification
 - [x] **03.1.1 Scene Graph:** `FocalPixiApp` and `FocalSceneGraph` hierarchy (`BackgroundLayer` $\rightarrow$ `WindowLayer` $\rightarrow$ `VideoViewportLayer` $\rightarrow$ `VectorCursorLayer`).
@@ -114,7 +114,7 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 ---
 
 ### Part 04: Studio NLE Timeline UI (`@focaldom/studio`)
-**Score: `9.8 / 10`** | **Document:** [Implement_04_Studio_Timeline.md](Implement_04_Studio_Timeline.md)
+**Score: `9.8 / 10`** | **Action Plan:** [Improve_Studio.md](Improve_Studio.md)
 
 #### Sub-Phase Verification
 - [x] **04.1.1 State Management:** Zustand `projectStore` managing keyframes, styling, spring configs, with complete **Undo/Redo** history stacks.
@@ -131,7 +131,7 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 ---
 
 ### Part 05: Electron Desktop Application (`apps/desktop`)
-**Score: `9.7 / 10`** | **Document:** [Implement_05_Desktop_App.md](Implement_05_Desktop_App.md)
+**Score: `9.7 / 10`** | **Action Plan:** [Improve_Desktop_App.md](Improve_Desktop_App.md)
 
 #### Sub-Phase Verification
 - [x] **05.1.1 Electron Main Process:** Custom window lifecycle with hardware acceleration flags (`--enable-gpu-rasterization`, `--enable-zero-copy`).
@@ -147,8 +147,8 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 
 ---
 
-### Part 06: Mode A Live Recording Chrome Extension (`@focaldom/extension`)
-**Score: `9.8 / 10`** | **Document:** [Implement_06_Chrome_Extension.md](Implement_06_Chrome_Extension.md)
+### Part 06: Chrome Extension Live Recorder (`@focaldom/extension`)
+**Score: `9.8 / 10`** | **Action Plan:** [Improve_Extension.md](Improve_Extension.md)
 
 #### Sub-Phase Verification
 - [x] **06.1.1 Manifest V3:** Fully compliant `manifest.json` with `activeTab`, `scripting`, `storage`, and `tabs` permissions.
@@ -263,6 +263,6 @@ graph LR
 
 1. **Monorepo Integrity:** All 7 workspace packages/apps build cleanly and pass 100% of automated unit and integration tests.
 2. **Quality & Health:** Critical serialization and IPC bridge paths have been hardened and verified.
-3. **Roadmap Alignment:** All subphases across `Implement_00` through `Implement_06` are verified and complete.
+3. **Roadmap Alignment:** All actionable improvement plans across `Improve_Now.md`, `Improve_Core.md`, `Improve_Capture_Playwright.md`, `Improve_Renderer.md`, `Improve_Studio.md`, `Improve_Desktop_App.md`, `Improve_Extension.md`, and `Improve_CICD.md` are documented with 10/10 target specs.
 4. **Pathway to 10/10:** Complete engineering roadmap documented for elevating every subsystem to a perfect 10/10.
 
