@@ -7,6 +7,8 @@ import { FocalDOMProject } from '@focaldom/core';
 describe('DesktopFileManager (.focal project archiving)', () => {
   const tempDir = path.join(process.cwd(), 'scratch', 'test-focal-pkg');
   const tempFocalPath = path.join(tempDir, 'demo-test.focal');
+  const mediaFocalPath = path.join(tempDir, 'media-test.focal');
+  const sampleMediaPath = path.join(tempDir, 'sample-video.mp4');
 
   afterAll(async () => {
     try {
@@ -80,5 +82,38 @@ describe('DesktopFileManager (.focal project archiving)', () => {
     expect(unpacked.keyframes[0].zoomScale).toBe(2.0);
     expect(unpacked.events?.length).toBe(1);
     expect(unpacked.events?.[0].eventType).toBe('click');
+  });
+
+  it('embeds real local media files into .focal zip and unpacks to media cache', async () => {
+    await fs.mkdir(tempDir, { recursive: true });
+    await fs.writeFile(sampleMediaPath, Buffer.from('FAKE_MP4_VIDEO_STREAM_DATA_HEADER'));
+
+    const mockProjectWithMedia: FocalDOMProject = {
+      id: 'proj-media-2',
+      title: 'Media Bundled Project',
+      version: '0.1.0',
+      createdAt: 1700000000000,
+      updatedAt: 1700000005000,
+      rawVideoPath: sampleMediaPath,
+      aspectRatio: '16:9',
+      canvasPadding: 32,
+      backgroundStyle: { type: 'solid', color: '#000000' },
+      windowFrame: { showControls: true, borderRadius: 16, shadowBlur: 24, shadowSpread: 4 },
+      springConfig: { stiffness: 170, damping: 26, mass: 1.0 },
+      keyframes: [],
+      events: [],
+    };
+
+    // Pack with media
+    await DesktopFileManager.packProjectToFocalZip(mockProjectWithMedia, mediaFocalPath);
+    expect((await fs.stat(mediaFocalPath)).size).toBeGreaterThan(100);
+
+    // Unpack with media
+    const unpacked = await DesktopFileManager.unpackProjectFromFocalZip(mediaFocalPath);
+    expect(unpacked.rawVideoPath).toBeDefined();
+    expect(unpacked.rawVideoPath).not.toBe(sampleMediaPath); // Unpacked to cache
+
+    const mediaContent = await fs.readFile(unpacked.rawVideoPath!, 'utf-8');
+    expect(mediaContent).toBe('FAKE_MP4_VIDEO_STREAM_DATA_HEADER');
   });
 });

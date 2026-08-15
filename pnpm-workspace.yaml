@@ -2,6 +2,9 @@ packages:
   - 'packages/*'
   - 'apps/*'
 
+allowBuilds:
+  electron: true
+
 onlyBuiltDependencies:
   - electron
   - esbuild

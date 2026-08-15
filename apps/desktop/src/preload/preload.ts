@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from 'electron';
-import { FocalDesktopAPI, ExportVideoOptions } from './types';
+import { FocalDesktopAPI, ExportVideoOptions, ExportProgress } from './types';
 import { FocalDOMProject, DOMEventFrame } from '@focaldom/core';
 
 const focalApi: FocalDesktopAPI = {
@@ -11,6 +11,22 @@ const focalApi: FocalDesktopAPI = {
   getFFmpegPath: () => ipcRenderer.invoke('focal:get-ffmpeg-path'),
   exportVideo: (options: ExportVideoOptions) =>
     ipcRenderer.invoke('focal:export-video', options),
+  onExportProgress: (callback: (progress: ExportProgress) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, data: ExportProgress) => callback(data);
+    ipcRenderer.on('focal:export-progress', handler);
+    return () => {
+      ipcRenderer.removeListener('focal:export-progress', handler);
+    };
+  },
+  showItemInFolder: (filePath: string) =>
+    ipcRenderer.invoke('focal:show-item-in-folder', filePath),
+  onOpenFilePath: (callback: (filePath: string) => void) => {
+    const handler = (_event: Electron.IpcRendererEvent, filePath: string) => callback(filePath);
+    ipcRenderer.on('focal:open-file-path', handler);
+    return () => {
+      ipcRenderer.removeListener('focal:open-file-path', handler);
+    };
+  },
   onTelemetryEvent: (callback: (event: DOMEventFrame) => void) => {
     const handler = (_event: Electron.IpcRendererEvent, data: DOMEventFrame) => callback(data);
     ipcRenderer.on('focal:telemetry-event', handler);
