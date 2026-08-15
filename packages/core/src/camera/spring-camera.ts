@@ -14,10 +14,11 @@ export class SpringCamera {
 
   constructor(config: Partial<SpringConfig> = {}) {
     const cfg = { ...DEFAULT_SPRING_CONFIG, ...config };
-    this.stiffness = cfg.stiffness;
-    this.damping = cfg.damping;
-    this.mass = cfg.mass;
-    this.precision = cfg.precision ?? 0.001;
+    this.stiffness = Math.max(1.0, isFinite(cfg.stiffness) ? cfg.stiffness : DEFAULT_SPRING_CONFIG.stiffness);
+    this.damping = Math.max(0.1, isFinite(cfg.damping) ? cfg.damping : DEFAULT_SPRING_CONFIG.damping);
+    // Lower mass guard to prevent division by zero and numeric instability
+    this.mass = Math.max(0.05, isFinite(cfg.mass) ? cfg.mass : DEFAULT_SPRING_CONFIG.mass);
+    this.precision = Math.max(0.00001, isFinite(cfg.precision ?? 0.001) ? (cfg.precision ?? 0.001) : 0.001);
   }
 
   public getCurrent(): Readonly<CameraState> {
@@ -33,23 +34,23 @@ export class SpringCamera {
   }
 
   public setTarget(target: Partial<CameraState>): void {
-    if (target.x !== undefined) this.target.x = target.x;
-    if (target.y !== undefined) this.target.y = target.y;
-    if (target.scale !== undefined) this.target.scale = target.scale;
+    if (target.x !== undefined && isFinite(target.x)) this.target.x = target.x;
+    if (target.y !== undefined && isFinite(target.y)) this.target.y = target.y;
+    if (target.scale !== undefined && isFinite(target.scale) && target.scale > 0) this.target.scale = target.scale;
   }
 
   public snapTo(state: Partial<CameraState>): void {
-    if (state.x !== undefined) {
+    if (state.x !== undefined && isFinite(state.x)) {
       this.current.x = state.x;
       this.target.x = state.x;
       this.velocity.x = 0;
     }
-    if (state.y !== undefined) {
+    if (state.y !== undefined && isFinite(state.y)) {
       this.current.y = state.y;
       this.target.y = state.y;
       this.velocity.y = 0;
     }
-    if (state.scale !== undefined) {
+    if (state.scale !== undefined && isFinite(state.scale) && state.scale > 0) {
       this.current.scale = state.scale;
       this.target.scale = state.scale;
       this.velocity.scale = 0;
@@ -64,7 +65,7 @@ export class SpringCamera {
    * Advances the spring simulation by delta time (in seconds)
    */
   public step(deltaTimeSeconds: number): CameraState {
-    if (deltaTimeSeconds <= 0) return this.current;
+    if (deltaTimeSeconds <= 0 || !isFinite(deltaTimeSeconds)) return { ...this.current };
 
     // Numerical integration with sub-stepping for extreme stability
     const subSteps = Math.max(1, Math.ceil(deltaTimeSeconds / (1 / 120)));
