@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.3](https://github.com/dhaatrik/focal-dom/compare/FocalDOM-v0.1.2...FocalDOM-v0.1.3) (2026-08-15)
+
+
+### Bug Fixes
+
+* **ci:** add fallback output keys for FocalDOM tag and release_created ([e32dde2](https://github.com/dhaatrik/focal-dom/commit/e32dde2b415c4b5f6d0b6a9c6e39977ec98ebeba))
+* **ci:** add workflow_dispatch for manual installer builds and fix release_created condition ([839b36f](https://github.com/dhaatrik/focal-dom/commit/839b36fc5a0d63da4706b62f35894b4f215288a3))
+
 ## [0.1.2](https://github.com/dhaatrik/focal-dom/compare/FocalDOM-v0.1.1...FocalDOM-v0.1.2) (2026-08-15)
 
 
