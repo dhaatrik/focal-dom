@@ -4,6 +4,14 @@ on:
   push:
     branches:
       - main
+  # Manual trigger: lets you build & upload the .exe to any existing release tag.
+  # Usage: Actions → Automated Release → Run workflow → enter tag (e.g. FocalDOM-v0.1.2)
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Existing release tag to attach assets to (e.g. FocalDOM-v0.1.2)'
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -42,8 +50,8 @@ jobs:
   build-and-publish-windows:
     name: Build Windows Installer & Upload Release Assets
     needs: release-please
-    # v4 fix: release_created (singular) — not releases_created
-    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    # Runs when: (a) Release Please created a new release, OR (b) triggered manually via workflow_dispatch
+    if: ${{ needs.release-please.outputs.release_created == 'true' || github.event_name == 'workflow_dispatch' }}
     runs-on: windows-latest
 
     env:
@@ -97,7 +105,8 @@ jobs:
       - name: Upload Release Assets to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          # Use manual tag input when triggered via workflow_dispatch, otherwise use Release Please output
+          tag_name: ${{ github.event.inputs.tag_name || needs.release-please.outputs.tag_name }}
           files: |
             apps/desktop/dist-package/FocalDOM-Setup-*.exe
             apps/desktop/dist-package/FocalDOM-*.exe
