@@ -1,89 +1,90 @@
-# FocalDOM 🎯🎥
+# FocalDOM
 
 <div align="center">
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Node.js](https://img.shields.io/badge/Node.js-v22+-green.svg?style=flat-square&logo=node.js)](https://nodejs.org/)
-[![pnpm](https://img.shields.io/badge/pnpm-v11+-F69220.svg?style=flat-square&logo=pnpm)](https://pnpm.io/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-v5.7+-3178C6.svg?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
-[![Playwright](https://img.shields.io/badge/Playwright-CDP-2EAD33.svg?style=flat-square&logo=playwright)](https://playwright.dev/)
-[![PixiJS](https://img.shields.io/badge/PixiJS-WebGL2%20%2F%20WebGPU-E72264.svg?style=flat-square&logo=pixijs)](https://pixijs.com/)
-[![React](https://img.shields.io/badge/React-v19-61DAFB.svg?style=flat-square&logo=react)](https://react.dev/)
-[![Electron](https://img.shields.io/badge/Electron-Windows-47848F.svg?style=flat-square&logo=electron)](https://www.electronjs.org/)
-[![FFmpeg](https://img.shields.io/badge/FFmpeg-4K%20Stream-007808.svg?style=flat-square&logo=ffmpeg)](https://ffmpeg.org/)
-[![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-FCC72B.svg?style=flat-square&logo=vitest)](https://vitest.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-v22+-339933.svg?style=flat&logo=nodedotjs&logoColor=white)](https://nodejs.org/)
+[![pnpm](https://img.shields.io/badge/pnpm-v11+-F69220.svg?style=flat&logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-v5.7+-3178C6.svg?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Playwright](https://img.shields.io/badge/Playwright-CDP-2EAD33.svg?style=flat&logo=playwright&logoColor=white)](https://playwright.dev/)
+[![PixiJS](https://img.shields.io/badge/PixiJS-WebGL2%20%2F%20WebGPU-E72264.svg?style=flat&logo=pixijs&logoColor=white)](https://pixijs.com/)
+[![React](https://img.shields.io/badge/React-v19-61DAFB.svg?style=flat&logo=react&logoColor=black)](https://react.dev/)
+[![Electron](https://img.shields.io/badge/Electron-Windows-47848F.svg?style=flat&logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![FFmpeg](https://img.shields.io/badge/FFmpeg-4K%20Stream-007808.svg?style=flat&logo=ffmpeg&logoColor=white)](https://ffmpeg.org/)
+[![Vitest](https://img.shields.io/badge/Vitest-Unit%20Tests-FCC72B.svg?style=flat&logo=vitest&logoColor=black)](https://vitest.dev/)
 
 **DOM-Aware Intelligent Video Recording & Dynamic Virtual Camera Studio**
 
-*Bridges deterministic browser automation and post-processing virtual camera rendering to create studio-grade web product demos.*
+*Bridges deterministic browser automation and post-processing virtual camera rendering to produce studio-grade web product demos.*
 
-[Explore Architecture](docs/Technical%20Architecture%20&%20Engineering%20Plan.md) • [Implementation Roadmap](TODO/README.md) • [Report Issue](https://github.com/dhaatrik/focal-dom/issues)
+[Technical Architecture](docs/Technical%20Architecture%20&%20Engineering%20Plan.md) • [Engineering Roadmaps](TODO/README.md) • [Audit Report](TODO/AUDIT_REPORT.md) • [Report Issue](https://github.com/dhaatrik/focal-dom/issues)
 
 </div>
 
 ---
 
-## 📖 Table of Contents
+## Table of Contents
 
-- [Executive Overview](#-executive-overview)
+- [Executive Overview](#executive-overview)
   - [The Problem](#the-problem)
   - [The FocalDOM Solution](#the-focaldom-solution)
-- [System Architecture](#-system-architecture)
-- [Key Features](#-key-features)
-- [Tech Stack](#-tech-stack)
-- [Repository & Package Layout](#-repository--package-layout)
-- [Getting Started](#-getting-started)
+- [System Architecture](#system-architecture)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Repository & Package Architecture](#repository--package-architecture)
+- [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-- [Usage & Examples](#-usage--examples)
-  - [Mode B: Playwright Automated Capture (CLI)](#mode-b-playwright-automated-capture-cli)
-  - [Mode B: TypeScript SDK](#mode-b-typescript-sdk)
+- [Usage & Examples](#usage--examples)
+  - [Mode B: Automated Playwright Capture (CLI)](#mode-b-automated-playwright-capture-cli)
+  - [Mode B: Programmatic TypeScript SDK](#mode-b-programmatic-typescript-sdk)
   - [Mode A: Live Chrome Extension Recording](#mode-a-live-chrome-extension-recording)
-  - [Studio & Exporting](#studio--exporting)
-- [Testing & Quality Assurance](#-testing--quality-assurance)
-- [Contributing](#-contributing)
-- [License & Author](#-license--author)
-- [Connect & Community](#-connect--community)
+  - [Studio NLE & High-Throughput Exporting](#studio-nle--high-throughput-exporting)
+- [Testing & Quality Assurance](#testing--quality-assurance)
+- [Automated Versioning & Releases](#automated-versioning--releases)
+- [Contributing](#contributing)
+- [License & Author](#license--author)
+- [Connect & Community](#connect--community)
 
 ---
 
-## 💡 Executive Overview
+## Executive Overview
 
 ### The Problem
-Traditional screen recording tools are **DOM-blind pixel recorders**. When capturing web applications for product walkthroughs, teasers, or developer documentation:
-- Automated zooming requires painful manual keyframing.
-- Virtual cameras arbitrarily crop or obscure sticky headers and floating navigation bars.
-- Mouse recordings suffer from jerky sub-pixel jitter, missed hover states, and abrupt cuts.
-- Exporting multi-layer 4K 60/120 FPS videos on desktop machines quickly runs into CPU/memory bottlenecks.
+Traditional screen recording tools are **DOM-blind pixel recorders**. When capturing web applications for product walkthroughs, developer tutorials, or marketing trailers:
+- Automated zooming requires tedious, manual pan-and-scan keyframing.
+- Fixed navigation bars and sticky headers are arbitrarily obscured, cropped, or sliced by naive camera zooms.
+- Mouse recordings suffer from sub-pixel jitter, dropped hover states, and jarring cuts.
+- Rendering high-fidelity, multi-layer 4K 60/120 FPS videos on local machines creates severe CPU and memory bottlenecks.
 
 ### The FocalDOM Solution
-**FocalDOM** bridges deterministic browser automation (Playwright/CDP) and live browser telemetry with a hardware-accelerated post-processing virtual camera engine.
+**FocalDOM** pairs frame-accurate 60/120 FPS capture with **in-page semantic DOM metadata extraction**.
 
-By pairing frame-accurate 60/120 FPS video capture with **in-page semantic DOM metadata extraction**, FocalDOM automatically computes spring-physics camera transitions, applies intelligent sticky-header avoidance safe-zones, reconstructs continuous cubic Bezier vector cursors, and streams uncompressed raw RGBA frames directly into FFmpeg for 4K video generation.
+By tracking real-time element geometries, computed z-indices, class lists, and scroll offsets during browser interactions, FocalDOM computes natural 2nd-order ODE spring-physics camera transitions, applies intelligent sticky-header avoidance safe-zones, reconstructs continuous $C^1$-smooth cubic Bezier vector cursors, and streams uncompressed raw RGBA frames directly into FFmpeg for rapid 4K video encoding.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ```mermaid
 flowchart TD
-    subgraph Capture [Phase 1: Ingestion & Telemetry]
-        A1[Mode A: Live Human Recording<br/>Chrome Ext / Desktop Hook] -->|WebSocket Stream| D1[Dual Artifacts Engine]
-        A2[Mode B: Automated Playwright<br/>Deterministic CDP Frame Stepping] -->|rAF Virtual Clock| D1
+    subgraph Ingestion [1. Ingestion & Telemetry]
+        A1[Mode A: Live Recording<br/>Chrome Extension / Desktop WS] -->|WebSocket IPC| D1[Dual Artifacts Engine]
+        A2[Mode B: Playwright Automation<br/>Deterministic CDP Virtual Clock] -->|rAF Virtual Clock| D1
         D1 --> RAW[Raw Frame Sequence / Video]
         D1 --> JSON[Normalized DOM Event Log JSON]
     end
 
-    subgraph Core [Phase 2: Core Math & Physics]
-        M1[Spring Camera Physics<br/>2nd-Order Diff Eq]
+    subgraph CoreEngine [2. Core Math & Intelligence]
+        M1[Spring Camera Physics<br/>2nd-Order Differential ODE]
         M2[Sticky Header Viewport<br/>Avoidance Deadzones]
-        M3[Cubic Bezier Cursor<br/>Smoothing & Ripple Math]
+        M3[Cubic Bezier Cursor<br/>Spline Interpolation]
     end
 
-    subgraph Renderer [Phase 3: Post-Processing & Export]
-        RAW & JSON --> Core
-        Core --> PIXI[Pixi.js WebGL2 / WebGPU Canvas]
-        PIXI --> SHADER[4-Pass Temporal Motion Blur Shader]
+    subgraph Rendering [3. Post-Processing & Export]
+        RAW & JSON --> CoreEngine
+        CoreEngine --> PIXI[Pixi.js WebGL2 / WebGPU Canvas]
+        PIXI --> SHADER[4-Pass Temporal Motion Blur]
         SHADER --> STUDIO[React 19 + Zustand Multi-Track Studio]
         SHADER -->|Raw RGBA Byte Pipe| FFMPEG[FFmpeg Engine<br/>4K 60/120 FPS H.264/HEVC/ProRes]
     end
@@ -91,52 +92,54 @@ flowchart TD
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- **🎯 Semantic Auto-Framing:** Auto-focuses on target elements (buttons, inputs, cards) with natural spring-physics ease-in/ease-out curves and an anticipatory 400ms look-ahead buffer.
-- **🛡️ Sticky & Fixed Element Safe-Zones:** Analyzes `position: fixed` and `position: sticky` headers in real time, locking viewport deadzones to prevent critical navigation elements from being cropped.
-- **🖱️ Vector Cursor Smoothing:** Reconstructs mouse coordinates into continuous $C^1$-smooth cubic Bezier spline trajectories with animated click ripple pulses and state-aware cursor shapes.
-- **⚡ Hardware-Accelerated Motion Blur:** 4-sample sub-frame accumulation rendering via Pixi.js (WebGL2/WebGPU) delivering silky-smooth motion streaks.
-- **🎬 NLE Multi-Track Timeline Studio:** React 19 + Zustand timeline editor featuring draggable keyframe blocks, DOM event inspectors, and real-time physics tuning sliders.
-- **🚀 High-Throughput 4K Pipeline:** Streams uncompressed raw RGBA byte buffers directly to FFmpeg `stdin` (`-f rawvideo -pix_fmt rgba`) avoiding CPU-heavy PNG encoding overhead.
+- **Semantic Auto-Framing:** Auto-focuses on interactive elements (buttons, inputs, cards) with customizable spring-physics curves and an anticipatory 400ms look-ahead buffer.
+- **Sticky & Fixed Element Safe-Zones:** Real-time geometric analysis locks viewport deadzones, ensuring critical navigation bars are never cropped during camera zooms.
+- **Vector Cursor Smoothing:** Reconstructs raw mouse events into continuous cubic Bezier spline trajectories with animated click ripple pulses and style-aware cursor icons.
+- **Hardware-Accelerated Motion Blur:** 4-sample sub-frame accumulation rendering via Pixi.js (WebGL2/WebGPU) delivering smooth, cinema-grade motion blur.
+- **NLE Multi-Track Timeline Studio:** React 19 + Zustand timeline editor featuring magnetic event snapping (10px threshold), DOM event inspectors, and interactive physics tuning sliders.
+- **High-Throughput 4K Pipeline:** Streams uncompressed raw RGBA byte buffers directly to FFmpeg `stdin` (`-f rawvideo -pix_fmt rgba`), bypassing CPU-heavy PNG encoding bottlenecks.
 
 ---
 
-## 💻 Tech Stack
+## Technology Stack
 
-| Layer | Technology | Rationale & Justification |
+| Layer | Technology | Rationale & Architectural Purpose |
 | :--- | :--- | :--- |
-| **Monorepo & Tooling** | **PNPM Workspaces, TypeScript 5.7+** | High-speed dependency sharing, strict type safety, and fast composite builds. |
+| **Monorepo & Tooling** | **PNPM Workspaces, TypeScript 5.7+** | High-speed dependency linking, strict type safety, and composite incremental builds (`tsc -b`). |
 | **Core Physics & Schemas** | **`@focaldom/core` (Vanilla TS)** | Zero-dependency mathematical engine for spring equations, Bezier smoothing, and event schemas. |
-| **Automation Engine** | **Playwright + CDP** | Frame-by-frame deterministic virtual clock advancement (`window.__focal_tick()`) with zero dropped frames. |
-| **Canvas & Shaders** | **Pixi.js (WebGL2 / WebGPU)** | Hardware-accelerated 2D transforms, layer compositing, and multi-pass temporal motion blur. |
-| **NLE Timeline UI** | **React 19, Zustand, TailwindCSS** | High-performance reactive state management and modern multi-track timeline editing. |
-| **Desktop Shell** | **Electron (Windows)** | Native OS file access, bundled static FFmpeg binaries, and low-latency IPC. |
-| **Video Encoding** | **FFmpeg (Raw RGBA Pipe)** | Direct uncompressed frame streaming to H.264/HEVC/ProRes at $\ge 60\text{ FPS}$ compilation speed. |
-| **Test Framework** | **Vitest** | Workspace-wide lightning-fast unit and integration testing. |
+| **Automation Engine** | **Playwright + CDP** | Frame-by-frame deterministic virtual clock advancement (`window.__focal_tick()`) with zero temporal jitter. |
+| **Canvas & Shaders** | **Pixi.js (WebGL2 / WebGPU)** | Hardware-accelerated 2D transforms, layer compositing, and multi-pass temporal motion blur shaders. |
+| **NLE Timeline UI** | **React 19, Zustand, Vanilla CSS** | High-performance reactive state management and modern multi-track timeline editing. |
+| **Desktop Shell** | **Electron (Windows)** | Native OS file access, bundled FFmpeg binaries, and low-latency WebSocket telemetry server (`48480`). |
+| **Video Encoding** | **FFmpeg (Raw RGBA Pipe)** | Direct uncompressed frame streaming to H.264/HEVC/ProRes at $\ge 60\text{ FPS}$ encoding speeds. |
+| **Test Framework** | **Vitest** | Workspace-wide multi-package unit and integration testing suite. |
 
 ---
 
-## 📂 Repository & Package Layout
+## Repository & Package Architecture
 
 ```
 focal-dom/
 ├── docs/                            # Formal architecture and technical specifications
 │   └── Technical Architecture & Engineering Plan.md
-├── TODO/                            # Modular phase-by-phase implementation blueprints
-│   ├── README.md                    # Roadmap index & dependency graph
-│   ├── Implement_00_Foundation_Monorepo.md
-│   ├── Implement_01_Core_Engine.md
-│   ├── Implement_02_Capture_Playwright.md
-│   ├── Implement_03_Renderer_Engine.md
-│   ├── Implement_04_Studio_Timeline.md
-│   ├── Implement_05_Desktop_App.md
-│   └── Implement_06_Chrome_Extension.md
+├── TODO/                            # Actionable engineering improvement blueprints
+│   ├── README.md                    # Roadmap hub and dependency graph
+│   ├── AUDIT_REPORT.md              # Comprehensive line-by-line codebase audit (9.81/10)
+│   ├── Improve_Now.md               # 6-part master perfection roadmap (9.8 -> 10.0)
+│   ├── Improve_Core.md              # @focaldom/core engineering plan
+│   ├── Improve_Capture_Playwright.md# @focaldom/capture-playwright engineering plan
+│   ├── Improve_Renderer.md          # @focaldom/renderer engineering plan
+│   ├── Improve_Studio.md            # @focaldom/studio engineering plan
+│   ├── Improve_Desktop_App.md       # apps/desktop engineering plan
+│   ├── Improve_Extension.md         # @focaldom/extension engineering plan
+│   └── Improve_CICD.md              # CI/CD hardening and automated SemVer release plan
 ├── packages/
-│   ├── core/                        # @focaldom/core: SpringCamera, Bezier math, DOM schemas
+│   ├── core/                        # @focaldom/core: SpringCamera, Bezier math, schemas
 │   ├── capture-playwright/          # @focaldom/capture-playwright: Mode B runner & CLI
 │   ├── renderer/                    # @focaldom/renderer: Pixi.js WebGPU engine & FFmpeg streamer
-│   ├── studio/                      # @focaldom/studio: React NLE timeline editor
+│   ├── studio/                      # @focaldom/studio: React 19 NLE timeline editor
 │   └── extension/                   # @focaldom/extension: Manifest V3 Chrome Extension
 └── apps/
     └── desktop/                     # @focaldom/desktop: Electron Windows shell
@@ -144,7 +147,7 @@ focal-dom/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -166,24 +169,24 @@ focal-dom/
    pnpm install
    ```
 
-3. **Verify typecheck and build packages:**
+3. **Verify typecheck and build all packages:**
    ```bash
    pnpm typecheck
    pnpm build
    ```
 
-4. **Run test suites:**
+4. **Execute workspace test suites:**
    ```bash
    pnpm test
    ```
 
 ---
 
-## 🕹️ Usage & Examples
+## Usage & Examples
 
-### Mode B: Playwright Automated Capture (CLI)
+### Mode B: Automated Playwright Capture (CLI)
 
-Define a declarative user recording scenario in YAML (`scenario.yaml`):
+Define a declarative user interaction scenario in YAML (`scenario.yaml`):
 
 ```yaml
 name: "Product Tour Demo"
@@ -210,7 +213,7 @@ Execute the recording via the CLI:
 pnpm --filter @focaldom/capture-playwright focaldom capture scenario.yaml --output ./recordings/demo
 ```
 
-### Mode B: TypeScript SDK
+### Mode B: Programmatic TypeScript SDK
 
 Integrate directly into programmatic Playwright test suites:
 
@@ -220,7 +223,7 @@ import { launchFocalSession } from '@focaldom/capture-playwright';
 const session = await launchFocalSession({
   fps: 60,
   viewport: { width: 1920, height: 1080 },
-  headless: true
+  headless: true,
 });
 
 const page = session.getPage();
@@ -234,49 +237,63 @@ await session.finalize('./recordings/signup');
 
 ### Mode A: Live Chrome Extension Recording
 
-1. Navigate to `chrome://extensions/` in Chromium/Chrome.
-2. Enable **Developer mode** (top right).
+1. Navigate to `chrome://extensions/` in Chrome or Chromium.
+2. Enable **Developer mode** (top-right toggle).
 3. Click **Load unpacked** and select `packages/extension/dist`.
-4. Open the FocalDOM Desktop App (`pnpm --filter @focaldom/desktop dev`).
-5. Click **Start Recording** in the extension popup to stream live DOM coordinates and click telemetry over WebSocket (`ws://127.0.0.1:48480`).
+4. Launch the FocalDOM Desktop App (`pnpm --filter @focaldom/desktop dev`).
+5. Click **Start Recording** in the extension popup to stream live DOM coordinates and telemetry over WebSocket (`ws://127.0.0.1:48480`).
 
-### Studio & Exporting
+### Studio NLE & High-Throughput Exporting
 
 Launch the Studio timeline editor:
 ```bash
 pnpm --filter @focaldom/studio dev
 ```
-Adjust keyframe scales, tune spring stiffness/damping in real-time, customize window border radiuses and background gradients, and export to **4K 60 FPS MP4 / ProRes / GIF**.
+Adjust keyframe scales, tune spring stiffness/damping in real time, customize window border radii and background styles, and export directly to **4K 60 FPS MP4 / ProRes / GIF**.
 
 ---
 
-## 🧪 Testing & Quality Assurance
+## Testing & Quality Assurance
 
-FocalDOM maintains strict test coverage using [Vitest](https://vitest.dev/) for math models, spring differential equations, and parser validation:
+FocalDOM maintains strict test coverage across all subsystems using [Vitest](https://vitest.dev/):
 
 ```bash
-# Run all workspace unit tests
+# Run all workspace unit and integration tests
 pnpm test
 
 # Run tests in interactive watch mode
 pnpm test:watch
 
-# Run TypeScript project reference typecheck
+# Run TypeScript composite project reference typecheck
 pnpm typecheck
 ```
 
 ---
 
-## 🤝 Contributing
+## Automated Versioning & Releases
 
-Contributions, feature requests, and feedback are welcome! To contribute:
+FocalDOM utilizes **Google Release Please** for autonomous Semantic Versioning (SemVer) and changelog maintenance. 
+
+Releases follow [Conventional Commits](https://www.conventionalcommits.org/):
+- `feat:` ➔ Bumps `MINOR` (`0.X.0`) and adds to ✨ **Features** in `CHANGELOG.md`
+- `fix:` ➔ Bumps `PATCH` (`0.0.X`) and adds to 🐛 **Bug Fixes** in `CHANGELOG.md`
+- `perf:` ➔ Bumps `PATCH` (`0.0.X`) and adds to ⚡ **Performance Improvements** in `CHANGELOG.md`
+- `BREAKING CHANGE:` ➔ Bumps `MAJOR` (`X.0.0`) and adds to 🚨 **Breaking Changes** in `CHANGELOG.md`
+
+See [TODO/Improve_CICD.md](TODO/Improve_CICD.md) for full release architecture details.
+
+---
+
+## Contributing
+
+Contributions, feature requests, and feedback are welcome:
 
 1. **Fork the repository** on GitHub.
 2. **Create a feature branch**:
    ```bash
    git checkout -b feat/your-feature-name
    ```
-3. **Commit your changes** with descriptive commit messages:
+3. **Commit your changes** following Conventional Commits:
    ```bash
    git commit -m "feat(camera): add exponential decay damping mode"
    ```
@@ -290,7 +307,7 @@ Please ensure all tests (`pnpm test`) and typechecks (`pnpm typecheck`) pass bef
 
 ---
 
-## 📜 License & Author
+## License & Author
 
 Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for complete details.
 
@@ -299,15 +316,15 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for complete det
 
 ---
 
-## 🌐 Connect & Community
+## Connect & Community
 
 Let's connect, collaborate, and build something extraordinary:
 
 <div align="left">
 
-- 💼 **LinkedIn:** [linkedin.com/in/dhaatrik](https://www.linkedin.com/in/dhaatrik)
-- 🐦 **X / Twitter:** [@dhaatrik](https://x.com/dhaatrik)
-- 🐙 **GitHub:** [@dhaatrik](https://github.com/dhaatrik)
-- 🌍 **Personal Website:** [dhaatrik.github.io](https://dhaatrik.github.io/)
+- **LinkedIn:** [linkedin.com/in/dhaatrik](https://www.linkedin.com/in/dhaatrik)
+- **X / Twitter:** [@dhaatrik](https://x.com/dhaatrik)
+- **GitHub:** [@dhaatrik](https://github.com/dhaatrik)
+- **Personal Website:** [dhaatrik.github.io](https://dhaatrik.github.io/)
 
 </div>
