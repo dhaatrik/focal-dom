@@ -1,6 +1,6 @@
 {
   "name": "@focaldom/desktop",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Electron Windows desktop shell for FocalDOM",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
