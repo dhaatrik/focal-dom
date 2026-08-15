@@ -56,7 +56,7 @@ export async function executeScenario(
       case 'type': {
         await page.waitForSelector(step.selector, { state: 'visible', timeout: 10000 });
         await page.click(step.selector);
-        await page.type(step.selector, step.text, { delay: step.delayMs ?? 40 });
+        await page.locator(step.selector).pressSequentially(step.text, { delay: step.delayMs ?? 40 });
         await session.advanceTime(300);
         break;
       }

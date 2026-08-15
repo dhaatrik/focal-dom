@@ -67,8 +67,8 @@ export class FocalCaptureSession {
     // Expose binding to receive high-frequency interaction events from page
     await this.page.exposeFunction(
       '__focal_on_event',
-      async (type: DOMEventType, elementHandle: unknown, cursorX: number, cursorY: number) => {
-        await this.recordInteractionEvent(type, cursorX, cursorY);
+      async (type: DOMEventType, targetElement: any, cursorX: number, cursorY: number) => {
+        await this.recordInteractionEvent(type, targetElement, cursorX, cursorY);
       }
     );
 
@@ -88,7 +88,12 @@ export class FocalCaptureSession {
   /**
    * Records an interaction event frame synchronized with current virtual time
    */
-  private async recordInteractionEvent(eventType: DOMEventType, cursorX: number, cursorY: number): Promise<void> {
+  private async recordInteractionEvent(
+    eventType: DOMEventType,
+    targetElement: any,
+    cursorX: number,
+    cursorY: number
+  ): Promise<void> {
     if (!this.page) return;
 
     try {
@@ -106,6 +111,7 @@ export class FocalCaptureSession {
           devicePixelRatio: viewport.devicePixelRatio ?? 1,
         },
         scrollOffset: { x: 0, y: 0 },
+        targetElement: targetElement || undefined,
         activeStickyRegions,
       };
 

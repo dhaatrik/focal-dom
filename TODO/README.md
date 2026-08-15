@@ -1,54 +1,64 @@
-# FocalDOM Implementation Roadmap & Dependency Graph
+# FocalDOM Implementation Roadmap & Engineering Hub 🎯🧭
 
-Welcome to the FocalDOM modular implementation roadmap. This directory breaks down the engineering specification from [docs/Technical Architecture & Engineering Plan.md](../docs/Technical%20Architecture%20&%20Engineering%20Plan.md) into concrete, actionable implementation plans for each subsystem.
+Welcome to the **FocalDOM** architecture, audit, and improvement repository. This directory connects the living architectural specification in [docs/README.md](../docs/README.md) with deep-dive flaw analyses, audit scorecards, and actionable 10/10 implementation plans.
 
 ---
 
-## 🗺️ Subsystem Dependency Map
+## 🗺️ Subsystem Architecture & Dependency Map
 
 ```mermaid
 graph TD
-    M[00. Monorepo & Tooling Setup] --> C[01. Core Engine (@focaldom/core)]
-    C --> P[02. Playwright Capture Engine (@focaldom/capture-playwright)]
-    C --> R[03. Pixi.js Canvas & Motion Blur Renderer (@focaldom/renderer)]
-    R --> S[04. Studio NLE Timeline UI (@focaldom/studio)]
+    M[00. Monorepo & Tooling Setup] --> C[01. Core Engine: @focaldom/core]
+    C --> P[02. Playwright Capture Engine: @focaldom/capture-playwright]
+    C --> R[03. Pixi.js Canvas & Motion Blur: @focaldom/renderer]
+    R --> S[04. Studio NLE Timeline UI: @focaldom/studio]
     P --> S
-    S --> D[05. Electron Desktop App (apps/desktop)]
+    S --> D[05. Electron Desktop Shell: apps/desktop]
     R --> D
-    C --> E[06. Chrome Extension Mode A (@focaldom/extension)]
+    C --> E[06. Chrome Extension Mode A: @focaldom/extension]
     E --> D
 ```
 
 ---
 
-## 📋 Implementation Parts Directory
+## 📋 Master Architecture & Improvement Directory
 
-| Part | Document | Primary Scope | Status |
-| :--- | :--- | :--- | :--- |
-| **00** | [Implement_00_Foundation_Monorepo.md](Implement_00_Foundation_Monorepo.md) | PNPM workspaces, TypeScript configs, build pipelines, shared tooling | ✅ Done |
-| **01** | [Implement_01_Core_Engine.md](Implement_01_Core_Engine.md) | `@focaldom/core`: Spring physics, Bezier cursor math, sticky avoidance, data schemas | ✅ Done |
-| **02** | [Implement_02_Capture_Playwright.md](Implement_02_Capture_Playwright.md) | `@focaldom/capture-playwright`: Mode B deterministic CDP frame clock, in-page logger, scenario runner | ✅ Done |
-| **03** | [Implement_03_Renderer_Engine.md](Implement_03_Renderer_Engine.md) | `@focaldom/renderer`: Pixi.js composition, motion blur shaders, raw RGBA FFmpeg pipe | ✅ Done |
-| **04** | [Implement_04_Studio_Timeline.md](Implement_04_Studio_Timeline.md) | `@focaldom/studio`: React 19 + Zustand multi-track timeline, physics tuner, styling panel | ✅ Done |
-| **05** | [Implement_05_Desktop_App.md](Implement_05_Desktop_App.md) | `apps/desktop`: Electron Windows shell, native FFmpeg bundling, SharedArrayBuffer IPC | ✅ Done |
-| **06** | [Implement_06_Chrome_Extension.md](Implement_06_Chrome_Extension.md) | `@focaldom/extension`: Mode A Manifest V3 live recording & WebSocket telemetry | ✅ Done |
+| Document | Primary Focus | Suggested Branch | Status | Target Rating |
+| :--- | :--- | :--- | :---: | :---: |
+| [**AUDIT_REPORT.md**](AUDIT_REPORT.md) | Comprehensive line-by-line codebase audit across all subsystems | — | ✅ Complete | **9.81 / 10** |
+| [**Improve_Now.md**](Improve_Now.md) | Consolidated 6-part master roadmap for elevating the monorepo to perfection | `feat/flawless-10-improvements` | 🚀 Active Umbrella | **10.0 / 10** |
+| [**Improve_Core.md**](Improve_Core.md) | Multi-curve analytical easing, 2s smart event clustering, $32:9 \dots 9:16$ clamping | `feat/core-engine-perfection` | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_Capture_Playwright.md**](Improve_Capture_Playwright.md) | Streaming frame disk cache (0 RAM bloat), Shadow DOM & Web Audio clock sync | `feat/capture-playwright-perfection` | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_Renderer.md**](Improve_Renderer.md) | Dual WGSL WebGPU compute shaders, FFmpeg audio muxing, zero-flicker resize | `feat/renderer-perfection` | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_Studio.md**](Improve_Studio.md) | Magnetic snap-to-event collision (10px), `Ctrl+Wheel` ruler zoom, split shortcut `S` | `feat/studio-perfection` | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_Desktop_App.md**](Improve_Desktop_App.md) | Single-instance lock, window bounds persistence, real-time export progress IPC | `feat/desktop-app-perfection` | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_Extension.md**](Improve_Extension.md) | Manifest V3 15s keepalive, session storage persistence, exponential backoff | `feat/extension-perfection` | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_CICD.md**](Improve_CICD.md) | Autonomous Semantic Versioning (SemVer) with Google Release Please & CI matrix | `feat/release-please-cicd` | 🚀 Active Plan | Automated |
 
 ---
 
-## 🎯 Recommended Execution Sequence
+## 📊 Subsystem Health & Deep-Dive Links
 
-1. **Sprint 1 (Foundations & Deterministic Capture):**  
-   Complete [Part 00](Implement_00_Foundation_Monorepo.md) ➔ [Part 01](Implement_01_Core_Engine.md) ➔ [Part 02](Implement_02_Capture_Playwright.md).  
-   *Milestone:* CLI can execute a web scenario and output frame sequences with zero-drift DOM JSON.
+| Part | Subsystem / Package | Key Responsibilities | Current Rating | Target | Dedicated Deep-Dive Plan |
+| :--- | :--- | :--- | :---: | :---: | :--- |
+| **00** | **Monorepo Foundation** | Workspaces, TypeScript composite project references, tooling | **10.0 / 10** | **10.0 / 10** | [Improve_Now.md](Improve_Now.md) |
+| **01** | [**`@focaldom/core`**](../packages/core) | Spring physics ODE, multi-curve easing, sticky avoidance | **9.9 / 10** | **10.0 / 10** | [**Improve_Core.md**](Improve_Core.md) |
+| **02** | [**`@focaldom/capture-playwright`**](../packages/capture-playwright) | Deterministic CDP clock, shadow DOM traversal, SDK | **9.8 / 10** | **10.0 / 10** | [**Improve_Capture_Playwright.md**](Improve_Capture_Playwright.md) |
+| **03** | [**`@focaldom/renderer`**](../packages/renderer) | Pixi.js scene graph, dual WGSL/GLSL shaders, FFmpeg audio pipe | **9.7 / 10** | **10.0 / 10** | [**Improve_Renderer.md**](Improve_Renderer.md) |
+| **04** | [**`@focaldom/studio`**](../packages/studio) | React 19 + Zustand timeline, magnetic snapping, ruler zoom | **9.8 / 10** | **10.0 / 10** | [**Improve_Studio.md**](Improve_Studio.md) |
+| **05** | [**`apps/desktop`**](../apps/desktop) | Electron shell, real-time IPC progress streaming, window save | **9.7 / 10** | **10.0 / 10** | [**Improve_Desktop_App.md**](Improve_Desktop_App.md) |
+| **06** | [**`@focaldom/extension`**](../packages/extension) | Manifest V3 live recording, backoff reconnect, custom ports | **9.8 / 10** | **10.0 / 10** | [**Improve_Extension.md**](Improve_Extension.md) |
 
-2. **Sprint 2 (Rendering & High-FPS Video Export):**  
-   Complete [Part 03](Implement_03_Renderer_Engine.md).  
-   *Milestone:* Headless CLI can render spring zooms, motion blur, and vector cursors into a 4K 60fps MP4.
+---
 
-3. **Sprint 3 (Studio UI & Desktop Shell):**  
-   Complete [Part 04](Implement_04_Studio_Timeline.md) ➔ [Part 05](Implement_05_Desktop_App.md).  
-   *Milestone:* Full desktop app for interactive editing, timeline scrubbing, physics tuning, and one-click export.
+## 🎯 Recommended Next Execution Plan
 
-4. **Sprint 4 (Live Mode A Extension):**  
-   Complete [Part 06](Implement_06_Chrome_Extension.md).  
-   *Milestone:* Live browser recording streaming real-time metadata directly into Desktop Studio.
+Follow the detailed phased roadmap in [**Improve_Now.md**](Improve_Now.md) (or checkout the individual feature branches) to implement all subsystem refinements:
+
+1. **Step 1:** Complete `@focaldom/core` multi-curve easing interpolation (`easeInOutCubic`, `linear`) ➔ [Improve_Core.md](Improve_Core.md).
+2. **Step 2:** Complete `@focaldom/capture-playwright` deep shadow DOM & streaming frame disk cache ➔ [Improve_Capture_Playwright.md](Improve_Capture_Playwright.md).
+3. **Step 3:** Complete `@focaldom/renderer` dual WGSL WebGPU shader parity & audio muxing ➔ [Improve_Renderer.md](Improve_Renderer.md).
+4. **Step 4:** Complete `@focaldom/studio` magnetic timeline snapping & `Ctrl+Wheel` zoom ➔ [Improve_Studio.md](Improve_Studio.md).
+5. **Step 5:** Complete `apps/desktop` live IPC export streaming (`focal:export-progress`) & window state preservation ➔ [Improve_Desktop_App.md](Improve_Desktop_App.md).
+6. **Step 6:** Complete `@focaldom/extension` jittered exponential backoff & configurable custom port settings ➔ [Improve_Extension.md](Improve_Extension.md).
+7. **Step 7:** Implement Google Release Please automated Semantic Versioning and CI/CD matrix hardening ➔ [Improve_CICD.md](Improve_CICD.md).

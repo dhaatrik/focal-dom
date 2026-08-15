@@ -5,6 +5,27 @@
   "description": "DOM-Aware Intelligent Video Recording & Dynamic Virtual Camera Studio",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
+  "homepage": "https://github.com/dhaatrik/focal-dom#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhaatrik/focal-dom.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dhaatrik/focal-dom/issues"
+  },
+  "keywords": [
+    "screen-recorder",
+    "virtual-camera",
+    "playwright",
+    "pixijs",
+    "video-editor",
+    "motion-blur",
+    "dom-aware",
+    "ffmpeg",
+    "electron",
+    "react19",
+    "timeline-nle"
+  ],
   "scripts": {
     "build": "pnpm -r run build",
     "dev": "pnpm -r --parallel run dev",

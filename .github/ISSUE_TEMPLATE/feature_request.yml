@@ -1,0 +1,44 @@
+name: ✨ Feature Proposal
+description: Propose a new feature, shader, camera curve, or workflow improvement
+labels: ["enhancement", "proposal"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for proposing an enhancement to FocalDOM!
+  - type: dropdown
+    id: package
+    attributes:
+      label: Target Subsystem / Package
+      description: Which area does this proposal target?
+      options:
+        - "@focaldom/core (Physics, Math, Schemas)"
+        - "@focaldom/capture-playwright (CDP Ingestion, Runner)"
+        - "@focaldom/renderer (Pixi.js, Shaders, FFmpeg)"
+        - "@focaldom/studio (React 19 Timeline NLE)"
+        - "@focaldom/extension (Chrome Manifest V3)"
+        - "apps/desktop (Electron Windows App)"
+        - "General / Cross-Cutting"
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / Motivation
+      description: Is your feature request related to a problem or limitation?
+      placeholder: I'm always frustrated when...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution / Architecture
+      description: Describe the solution or new feature you would like to see implemented.
+      placeholder: Add a WebGPU compute shader pass that...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: A clear and concise description of any alternative solutions or features you've considered.

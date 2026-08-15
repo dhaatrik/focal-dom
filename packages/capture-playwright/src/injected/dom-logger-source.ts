@@ -100,21 +100,21 @@ export const INJECTED_DOM_LOGGER_SOURCE = `
     window.__FOCAL_LAST_CURSOR__ = { x: e.clientX, y: e.clientY };
     scanStickyRegions();
     if (window.__focal_on_event) {
-      window.__focal_on_event('click', e.target, e.clientX, e.clientY);
+      window.__focal_on_event('click', getElementMetadata(e.target), e.clientX, e.clientY);
     }
   }, { capture: true });
 
   window.addEventListener('input', function(e) {
     scanStickyRegions();
     if (window.__focal_on_event) {
-      window.__focal_on_event('input', e.target, window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
+      window.__focal_on_event('input', getElementMetadata(e.target), window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
     }
   }, { capture: true });
 
   window.addEventListener('focusin', function(e) {
     scanStickyRegions();
     if (window.__focal_on_event) {
-      window.__focal_on_event('focus', e.target, window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
+      window.__focal_on_event('focus', getElementMetadata(e.target), window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
     }
   }, { capture: true });
 

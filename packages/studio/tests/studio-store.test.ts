@@ -49,6 +49,7 @@ describe('FocalDOM Studio State Stores', () => {
         zoomScale: 2.5,
         panOffset: { x: 50, y: 50 },
         easingCurve: 'easeInOutCubic',
+        autoZoomGenerated: false,
       };
 
       useProjectStore.getState().addKeyframe(newKf);

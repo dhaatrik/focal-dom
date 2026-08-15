@@ -39,7 +39,7 @@ export class FocalPage {
   public async focalType(selector: string, text: string, delayMs: number = 40): Promise<void> {
     await this.rawPage.waitForSelector(selector, { state: 'visible', timeout: 10000 });
     await this.rawPage.click(selector);
-    await this.rawPage.type(selector, text, { delay: delayMs });
+    await this.rawPage.locator(selector).pressSequentially(text, { delay: delayMs });
     await this.session.advanceTime(300);
   }
 
