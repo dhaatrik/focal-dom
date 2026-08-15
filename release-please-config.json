@@ -40,6 +40,21 @@
       "changelog-path": "CHANGELOG.md"
     }
   },
+  "plugins": [
+    {
+      "type": "linked-versions",
+      "groupName": "FocalDOM",
+      "components": [
+        "FocalDOM",
+        "desktop",
+        "core",
+        "capture-playwright",
+        "renderer",
+        "studio",
+        "extension"
+      ]
+    }
+  ],
   "changelog-sections": [
     { "type": "feat",     "section": "Features",                "hidden": false },
     { "type": "fix",      "section": "Bug Fixes",               "hidden": false },

@@ -1,7 +1,7 @@
 {
   "name": "@focaldom/studio",
-  "version": "0.1.0",
-  "description": "React 19 + Zustand Non-Linear Timeline Studio for FocalDOM",
+  "version": "0.1.3",
+  "description": "Vite React 19 Timeline NLE Editor for FocalDOM",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
   "main": "./dist/index.js",

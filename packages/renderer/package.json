@@ -1,7 +1,7 @@
 {
   "name": "@focaldom/renderer",
-  "version": "0.1.0",
-  "description": "Pixi.js WebGL2/WebGPU canvas composition, motion blur, and FFmpeg streaming engine",
+  "version": "0.1.3",
+  "description": "Headless PixiJS WebGL canvas frame synthesis and FFmpeg encoding pipeline",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
   "main": "./dist/index.js",

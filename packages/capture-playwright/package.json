@@ -1,7 +1,7 @@
 {
   "name": "@focaldom/capture-playwright",
-  "version": "0.1.0",
-  "description": "Mode B deterministic Playwright and CDP capture engine for FocalDOM",
+  "version": "0.1.3",
+  "description": "Headless browser DOM capture engine and CDP screencast driver",
   "author": "Dhaatrik Chowdhury",
   "license": "MIT",
   "main": "./dist/index.js",
