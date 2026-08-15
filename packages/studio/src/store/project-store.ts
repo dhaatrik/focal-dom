@@ -2,6 +2,8 @@ import { create } from 'zustand';
 import { FocalDOMProject, CameraKeyframe, SpringConfig, AspectRatio } from '@focaldom/core';
 import { createDefaultProject } from './default-project';
 
+const MAX_HISTORY_STEPS = 50;
+
 interface ProjectState {
   project: FocalDOMProject;
   history: FocalDOMProject[];
@@ -15,11 +17,12 @@ interface ProjectState {
   updateWindowFrame: (frame: Partial<FocalDOMProject['windowFrame']>) => void;
   updateBackgroundStyle: (bg: Partial<FocalDOMProject['backgroundStyle']>) => void;
 
-  // Keyframe CRUD
+  // Keyframe CRUD & Split
   addKeyframe: (keyframe: CameraKeyframe) => void;
   updateKeyframe: (id: string, updates: Partial<CameraKeyframe>) => void;
   removeKeyframe: (id: string) => void;
   duplicateKeyframe: (id: string) => void;
+  splitKeyframe: (id: string, splitTimestampMs: number) => void;
 
   // Undo / Redo
   undo: () => void;
@@ -38,7 +41,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   setTitle: (title) => {
     const { project, history } = get();
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: { ...project, title, updatedAt: Date.now() },
     });
@@ -47,7 +50,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   setAspectRatio: (aspectRatio) => {
     const { project, history } = get();
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: { ...project, aspectRatio, updatedAt: Date.now() },
     });
@@ -56,7 +59,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   updateSpringConfig: (config) => {
     const { project, history } = get();
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: {
         ...project,
@@ -69,7 +72,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   updateWindowFrame: (frame) => {
     const { project, history } = get();
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: {
         ...project,
@@ -82,7 +85,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   updateBackgroundStyle: (bg) => {
     const { project, history } = get();
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: {
         ...project,
@@ -96,7 +99,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const { project, history } = get();
     const sorted = [...project.keyframes, keyframe].sort((a, b) => a.timestampMs - b.timestampMs);
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: { ...project, keyframes: sorted, updatedAt: Date.now() },
     });
@@ -108,7 +111,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       .map((kf) => (kf.id === id ? { ...kf, ...updates } : kf))
       .sort((a, b) => a.timestampMs - b.timestampMs);
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: { ...project, keyframes: updatedKeyframes, updatedAt: Date.now() },
     });
@@ -117,7 +120,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   removeKeyframe: (id) => {
     const { project, history } = get();
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: {
         ...project,
@@ -140,9 +143,49 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
     const sorted = [...project.keyframes, newKeyframe].sort((a, b) => a.timestampMs - b.timestampMs);
     set({
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: [],
       project: { ...project, keyframes: sorted, updatedAt: Date.now() },
+    });
+  },
+
+  splitKeyframe: (id, splitTimestampMs) => {
+    const { project, history } = get();
+    const target = project.keyframes.find((kf) => kf.id === id);
+    if (!target) return;
+
+    // Check if split point is inside the keyframe with minimum margin
+    const minMargin = 50;
+    if (
+      splitTimestampMs <= target.timestampMs + minMargin ||
+      splitTimestampMs >= target.timestampMs + target.durationMs - minMargin
+    ) {
+      return;
+    }
+
+    const firstDuration = splitTimestampMs - target.timestampMs;
+    const secondDuration = target.durationMs - firstDuration;
+
+    const kf1: CameraKeyframe = {
+      ...target,
+      durationMs: firstDuration,
+    };
+
+    const kf2: CameraKeyframe = {
+      ...target,
+      id: `kf-${Date.now()}`,
+      timestampMs: splitTimestampMs,
+      durationMs: secondDuration,
+    };
+
+    const updatedKeyframes = project.keyframes
+      .flatMap((kf) => (kf.id === id ? [kf1, kf2] : [kf]))
+      .sort((a, b) => a.timestampMs - b.timestampMs);
+
+    set({
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
+      future: [],
+      project: { ...project, keyframes: updatedKeyframes, updatedAt: Date.now() },
     });
   },
 
@@ -153,7 +196,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     set({
       project: previous,
       history: history.slice(0, -1),
-      future: [project, ...future],
+      future: [project, ...future].slice(0, MAX_HISTORY_STEPS),
     });
   },
 
@@ -163,7 +206,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     const next = future[0];
     set({
       project: next,
-      history: [...history, project],
+      history: [...history, project].slice(-MAX_HISTORY_STEPS),
       future: future.slice(1),
     });
   },
