@@ -6,7 +6,7 @@
   "packages": {
     ".": {
       "package-name": "focal-dom-monorepo",
-      "component": "focal-dom",
+      "component": "FocalDOM",
       "changelog-path": "CHANGELOG.md"
     },
     "packages/core": {

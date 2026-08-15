@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "electron .",
     "build": "tsup",
+    "pack:win": "electron-builder --win",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -23,6 +24,7 @@
     "@types/node": "^22.13.4",
     "@types/ws": "^8.5.14",
     "electron": "^34.0.0",
+    "electron-builder": "^25.1.8",
     "tsup": "^8.4.0",
     "typescript": "^5.7.3",
     "vitest": "^3.0.5"
