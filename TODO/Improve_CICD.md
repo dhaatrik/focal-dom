@@ -70,6 +70,47 @@ flowchart TD
 
 ---
 
+## 📝 Automated Multi-Package Changelog Architecture
+
+FocalDOM uses **Google Release Please** to maintain professional, human-readable, and categorised changelogs across both the root monorepo and each individual sub-package:
+
+### 1. Dual-Tier Changelog Generation Hierarchy
+- **Global Root Changelog ([`CHANGELOG.md`](../CHANGELOG.md)):** Aggregates all user-facing changes across all packages, providing high-level release overviews for full-stack consumers.
+- **Sub-Package Changelogs (`packages/*/CHANGELOG.md` & `apps/desktop/CHANGELOG.md`):** Component-specific changelogs tracking granular library and application changes independently.
+
+### 2. Conventional Commit Classification & Changelog Sections
+
+Every commit merged to `main` is automatically categorized by Release Please into dedicated sections:
+
+| Commit Prefix | Changelog Section | SemVer Bump | Example Commit |
+| :--- | :--- | :---: | :--- |
+| `feat:` / `feat(scope):` | ✨ **Features & Capabilities** | `MINOR` (`0.X.0`) | `feat(studio): add magnetic snap-to-event collision detection` |
+| `fix:` / `fix(scope):` | 🐛 **Bug Fixes** | `PATCH` (`0.0.X`) | `fix(renderer): guard against FFmpeg EPIPE process crashes` |
+| `perf:` / `perf(scope):` | ⚡ **Performance Optimizations** | `PATCH` (`0.0.X`) | `perf(capture): stream PNG frames direct to disk to prevent RAM bloat` |
+| `refactor:` | ♻️ **Code Refactoring** | `PATCH` (`0.0.X`) | `refactor(core): encapsulate cubic Bezier Catmull-Rom tangent solver` |
+| `docs:` | 📝 **Documentation** | None (or `PATCH`) | `docs(readme): update quickstart and architecture diagrams` |
+| `BREAKING CHANGE:` | 🚨 **Breaking Changes** | `MAJOR` (`X.0.0`) | `feat(core)!: redesign CameraState transform matrix structure` |
+
+### 3. Example of Auto-Generated `CHANGELOG.md` Entry
+
+```markdown
+# [0.2.0](https://github.com/dhaatrik/focal-dom/compare/v0.1.0...v0.2.0) (2026-08-16)
+
+### ✨ Features
+* **studio:** add magnetic snap-to-event collision detection with 10px proximity ([`7f2e1a`](https://github.com/dhaatrik/focal-dom/commit/7f2e1a))
+* **renderer:** add native WebGPU WGSL compute shader pipeline ([`3b8c9d`](https://github.com/dhaatrik/focal-dom/commit/3b8c9d))
+* **capture:** support Shadow DOM and nested same-origin iframe traversal ([`9a4f2e`](https://github.com/dhaatrik/focal-dom/commit/9a4f2e))
+
+### 🐛 Bug Fixes
+* **extension:** implement 15s keepalive heartbeat preventing MV3 service worker sleep ([`57e3a7`](https://github.com/dhaatrik/focal-dom/commit/57e3a7))
+* **desktop:** add single-instance lock preventing multiple duplicate windows ([`00204d`](https://github.com/dhaatrik/focal-dom/commit/00204d))
+
+### ⚡ Performance Improvements
+* **capture:** stream CDP screencast frames direct to disk reducing heap RAM usage by 95% ([`6049b0`](https://github.com/dhaatrik/focal-dom/commit/6049b0))
+```
+
+---
+
 ## 🛠️ Phase-Wise Solution & Implementation Checklist
 
 ### Phase 01: CI Workflow Hardening & Cross-Platform Reliability (`.github/workflows/ci.yml`)
