@@ -1,0 +1,50 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "node",
+  "include-component-in-tag": true,
+  "packages": {
+    ".": {
+      "package-name": "focal-dom-monorepo",
+      "component": "focal-dom",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/core": {
+      "package-name": "@focaldom/core",
+      "component": "core",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/capture-playwright": {
+      "package-name": "@focaldom/capture-playwright",
+      "component": "capture-playwright",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/renderer": {
+      "package-name": "@focaldom/renderer",
+      "component": "renderer",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/studio": {
+      "package-name": "@focaldom/studio",
+      "component": "studio",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "packages/extension": {
+      "package-name": "@focaldom/extension",
+      "component": "extension",
+      "changelog-path": "CHANGELOG.md"
+    },
+    "apps/desktop": {
+      "package-name": "@focaldom/desktop",
+      "component": "desktop",
+      "changelog-path": "CHANGELOG.md"
+    }
+  },
+  "changelog-sections": [
+    { "type": "feat",     "section": "Features",                "hidden": false },
+    { "type": "fix",      "section": "Bug Fixes",               "hidden": false },
+    { "type": "perf",     "section": "Performance Improvements", "hidden": false },
+    { "type": "refactor", "section": "Code Refactoring",        "hidden": false },
+    { "type": "docs",     "section": "Documentation",           "hidden": false },
+    { "type": "chore",    "section": "Miscellaneous Chores",    "hidden": true  }
+  ]
+}
