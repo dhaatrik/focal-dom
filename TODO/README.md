@@ -33,7 +33,7 @@ graph TD
 | [**Improve_Studio.md**](Improve_Studio.md) | Magnetic snap-to-event collision (10px), `Ctrl+Wheel` ruler zoom, split shortcut `S` | `feat/studio-perfection` | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Desktop_App.md**](Improve_Desktop_App.md) | Single-instance lock, window bounds persistence, real-time export progress IPC | `feat/desktop-app-perfection` | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Extension.md**](Improve_Extension.md) | Manifest V3 15s keepalive, session storage persistence, exponential backoff | `feat/extension-perfection` | 🚀 Active Plan | **10.0 / 10** |
-| [**Improve_CICD.md**](Improve_CICD.md) | Autonomous Semantic Versioning (SemVer) with Google Release Please & CI matrix | `feat/release-please-cicd` | 🚀 Active Plan | Automated |
+| [**Improve_CICD.md**](Improve_CICD.md) | Autonomous Semantic Versioning (SemVer) with Google Release Please & CI matrix | `feat/release-please-cicd` | ✅ Complete | Automated |
 
 ---
 
