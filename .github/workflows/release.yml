@@ -8,34 +8,51 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   # ─────────────────────────────────────────────────────────────────────────
   # Job 1: Release Please — autonomous SemVer, changelogs & release PR
+  #
+  # IMPORTANT: This job uses MY_RELEASE_PLEASE_TOKEN (a PAT) instead of
+  # the default GITHUB_TOKEN. This is required because:
+  #   1. The default GITHUB_TOKEN cannot open PRs on protected branches.
+  #   2. Workflows triggered by GITHUB_TOKEN do not spawn new workflow runs
+  #      (so CI checks would not run on the Release PR).
+  #
+  # To set up: Go to GitHub → Settings → Developer Settings → Personal
+  # Access Tokens → Generate a classic token with `repo` scope.
+  # Then add it as a repository secret named MY_RELEASE_PLEASE_TOKEN.
   # ─────────────────────────────────────────────────────────────────────────
   release-please:
     name: Release Please (SemVer & Changelogs)
     runs-on: ubuntu-latest
     outputs:
-      releases_created: ${{ steps.release.outputs.releases_created }}
+      release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
       paths_released: ${{ steps.release.outputs.paths_released }}
+      # Root monorepo release output (component-prefixed key)
+      focal_dom_release_created: ${{ steps.release.outputs['focal-dom--release_created'] }}
     steps:
       - name: Run Release Please
         uses: google-github-actions/release-please-action@v4
         id: release
         with:
+          token: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
   # ─────────────────────────────────────────────────────────────────────────
   # Job 2: Build Windows installer & upload assets to GitHub Release
-  # Only runs when Release Please has actually created a new release
+  # Only runs when Release Please has actually created a new release.
+  #
+  # Uses the correct v4 output key: release_created (not releases_created).
   # ─────────────────────────────────────────────────────────────────────────
   build-and-publish-windows:
     name: Build Windows Installer & Upload Release Assets
     needs: release-please
-    if: ${{ needs.release-please.outputs.releases_created == 'true' }}
+    # v4 fix: use release_created (singular), not releases_created (plural)
+    if: ${{ needs.release-please.outputs.release_created == 'true' || needs.release-please.outputs.focal_dom_release_created == 'true' }}
     runs-on: windows-latest
 
     env:
@@ -96,4 +113,4 @@ jobs:
             apps/desktop/dist-package/FocalDOM-*.zip
             packages/extension/dist/focaldom-chrome-extension.zip
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.MY_RELEASE_PLEASE_TOKEN }}
