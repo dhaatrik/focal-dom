@@ -8,13 +8,20 @@ export interface ViewportDeadZones {
   right: number;
 }
 
+export interface DeadZoneOptions {
+  maxObstructionRatio?: number; // Default 0.65 (65% of viewport dimension max)
+}
+
 /**
  * Evaluates all visible sticky and fixed headers to aggregate directional safe-zone boundaries.
+ * Includes dead-zone ceiling caps to prevent usable viewport collapse.
  */
 export function computeViewportDeadZones(
   stickyRegions: DOMElementRect[],
-  viewport: ViewportDimensions
+  viewport: ViewportDimensions,
+  options: DeadZoneOptions = {}
 ): ViewportDeadZones {
+  const maxRatio = options.maxObstructionRatio ?? 0.65;
   let topDeadZone = 0;
   let bottomDeadZone = 0;
   let leftDeadZone = 0;
@@ -42,6 +49,23 @@ export function computeViewportDeadZones(
     if (rect.left + rect.width >= viewport.width - 10 && rect.height >= viewport.height * 0.4) {
       rightDeadZone = Math.max(rightDeadZone, viewport.width - rect.left);
     }
+  }
+
+  // Apply dead zone ceiling protection to prevent screen space inversion / collapse
+  const maxVerticalDeadZone = viewport.height * maxRatio;
+  const totalVertical = topDeadZone + bottomDeadZone;
+  if (totalVertical > maxVerticalDeadZone && totalVertical > 0) {
+    const scale = maxVerticalDeadZone / totalVertical;
+    topDeadZone *= scale;
+    bottomDeadZone *= scale;
+  }
+
+  const maxHorizontalDeadZone = viewport.width * maxRatio;
+  const totalHorizontal = leftDeadZone + rightDeadZone;
+  if (totalHorizontal > maxHorizontalDeadZone && totalHorizontal > 0) {
+    const scale = maxHorizontalDeadZone / totalHorizontal;
+    leftDeadZone *= scale;
+    rightDeadZone *= scale;
   }
 
   return {

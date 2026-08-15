@@ -126,18 +126,18 @@ flowchart TD
 ---
 
 ### Phase 03: Safe Viewport, Extreme Aspect Ratio Clamping & Dead Zone Bounds (`src/avoidance/`)
-- [ ] **Sub-phase 03.1: Aspect Ratio Clamping Guardrails (`src/avoidance/viewport-avoidance.ts`)**
-  - [ ] Implement `clampTargetToBounds(target: CameraState, viewport: ViewportDimensions, marginPx?: number): CameraState`.
-  - [ ] Prevent camera panning from exposing canvas margins beyond safe boundaries across extreme aspect ratios ($32:9$, $21:9$, $16:9$, $1:1$, $9:16$).
-  - [ ] Integrate `clampTargetToBounds` into `calculateTargetFromElement`.
-- [ ] **Sub-phase 03.2: Dead Zone Ceiling Cap & Collapse Protection (`src/avoidance/sticky-detector.ts`)**
-  - [ ] Limit total sticky dead zone obstruction to maximum $65\%$ of viewport width and height (`maxObstructionRatio = 0.65`).
-  - [ ] Prevent `usableWidth` and `usableHeight` from collapsing to near-zero when huge fixed headers/banners exist.
-  - [ ] Ensure zoom calculation remains stable even with $90\%$ screen coverage of sticky elements.
-- [ ] **Sub-phase 03.3: Unit Tests for Viewport Clamping & Extreme Ratios (`tests/sticky-avoidance.test.ts`)**
-  - [ ] Test target calculation with $32:9$ ultrawide and $9:16$ vertical viewport configurations.
-  - [ ] Test oversized sticky elements ($>80\%$ viewport) and verify zoom scale remains capped within safe limits.
-  - [ ] Verify `clampTargetToBounds` edge clamping with varied zoom levels.
+- [x] **Sub-phase 03.1: Aspect Ratio Clamping Guardrails (`src/avoidance/viewport-avoidance.ts`)**
+  - [x] Implement `clampTargetToBounds(target: CameraState, viewport: ViewportDimensions, marginPx?: number): CameraState`.
+  - [x] Prevent camera panning from exposing canvas margins beyond safe boundaries across extreme aspect ratios ($32:9$, $21:9$, $16:9$, $1:1$, $9:16$).
+  - [x] Integrate `clampTargetToBounds` into `calculateTargetFromElement`.
+- [x] **Sub-phase 03.2: Dead Zone Ceiling Cap & Collapse Protection (`src/avoidance/sticky-detector.ts`)**
+  - [x] Limit total sticky dead zone obstruction to maximum $65\%$ of viewport width and height (`maxObstructionRatio = 0.65`).
+  - [x] Prevent `usableWidth` and `usableHeight` from collapsing to near-zero when huge fixed headers/banners exist.
+  - [x] Ensure zoom calculation remains stable even with $90\%$ screen coverage of sticky elements.
+- [x] **Sub-phase 03.3: Unit Tests for Viewport Clamping & Extreme Ratios (`tests/sticky-avoidance.test.ts`)**
+  - [x] Test target calculation with $32:9$ ultrawide and $9:16$ vertical viewport configurations.
+  - [x] Test oversized sticky elements ($>80\%$ viewport) and verify zoom scale remains capped within safe limits.
+  - [x] Verify `clampTargetToBounds` edge clamping with varied zoom levels.
 
 ---
 
