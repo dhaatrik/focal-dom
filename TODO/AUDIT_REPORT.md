@@ -163,8 +163,106 @@ This deep audit constitutes a comprehensive, line-by-line inspection of the **Fo
 
 ---
 
+---
+
+## 🚀 The Pathway to a Flawless 10/10 Architecture
+
+While the current codebase achieves an exceptional **9.81 / 10** architecture health score with 100% test pass rates and zero type errors, elevating the system to an absolute **10.0 / 10 (Flawless Studio & Production Grade)** requires closing subtle edge cases, adding multi-curve easing analytical models, dual WebGPU WGSL shaders, magnetic timeline snapping, real-time IPC progress streaming, and nested iframe traversal.
+
+### 📐 Subsystem Refinement Blueprints for 10.0
+
+```mermaid
+graph LR
+    subgraph Part1 [01. Core Math: 9.9 ➔ 10.0]
+        C1[Multi-Curve Easing Models<br/>easeInOutCubic & Linear]
+        C2[Extreme Viewport Guardrails<br/>32:9 Ultra-Wide Safe-Zones]
+    end
+
+    subgraph Part2 [02. Capture: 9.8 ➔ 10.0]
+        P1[Nested iframe & Shadow DOM Piercing]
+        P2[Deterministic Audio Clock Sync]
+    end
+
+    subgraph Part3 [03. Renderer: 9.7 ➔ 10.0]
+        R1[Dual WGSL WebGPU Shader Parity]
+        R2[Direct FFmpeg Audio Muxing Pipe]
+    end
+
+    subgraph Part4 [04. Studio: 9.8 ➔ 10.0]
+        S1[Magnetic Snap-to-Event Markers]
+        S2[Ctrl+Wheel Horizontal Ruler Zoom]
+    end
+
+    subgraph Part5 [05. Desktop: 9.7 ➔ 10.0]
+        D1[Real-Time IPC Export Progress Streaming]
+        D2[Window Dimensions & State Persistence]
+    end
+
+    subgraph Part6 [06. Extension: 9.8 ➔ 10.0]
+        E1[Jittered Exponential Backoff Reconnect]
+        E2[Custom Desktop WebSocket Port Storage]
+    end
+```
+
+---
+
+### 1. `@focaldom/core` (Current: `9.9` ➔ Target: `10.0`)
+- **Multi-Curve Easing Interpolation:**
+  - In addition to numerical 2nd-order ODE spring physics, implement analytical closed-form evaluators for `easeInOutCubic` ($f(t) = t < 0.5 ? 4t^3 : 1 - (-2t + 2)^3 / 2$) and `linear` camera transitions when keyframes explicitly specify non-spring curves.
+- **Extreme Aspect Ratio Guardrails:**
+  - Add bounding constraints for ultra-wide displays ($32:9$, $21:9$) and vertical smartphone formats ($9:16$) to eliminate negative padding and pan overflow clipping.
+
+### 2. `@focaldom/capture-playwright` (Current: `9.8` ➔ Target: `10.0`)
+- **Nested `<iframe>` & Shadow DOM Traversal:**
+  - Enhance `INJECTED_DOM_LOGGER_SOURCE` to traverse accessible same-origin `iframe` frames and open `shadowRoot` trees, capturing user interactions within complex embedded components.
+- **Audio Clock Synchronization:**
+  - Inject deterministic audio capture hooks aligning browser Web Audio API ticks with virtual frame increments.
+
+### 3. `@focaldom/renderer` (Current: `9.7` ➔ Target: `10.0`)
+- **Dual GLSL + WGSL WebGPU Shader Pipeline:**
+  - Implement native WGSL shader source in `MotionBlurFilter` alongside GLSL `GlProgram`, ensuring 100% native WebGPU compute pipeline execution without fallback translation overhead.
+- **Audio-Video Muxing Engine:**
+  - Extend `FFmpegStreamer` to accept optional audio stream inputs, automatically appending `-i audio.wav -c:a aac -b:a 192k` to output production-ready video bundles with synchronized sound.
+
+### 4. `@focaldom/studio` (Current: `9.8` ➔ Target: `10.0`)
+- **Magnetic Snap-to-Event Markers:**
+  - Enable automatic magnetic attraction ($10\text{px}$ proximity threshold) when dragging keyframe boundaries near DOM click (🎯), input (⌨️), and scroll (📜) event timestamps.
+- **Interactive Ruler Zoom (`Ctrl + Wheel`):**
+  - Support high-precision horizontal timeline scale adjustment via mouse wheel zoom gestures.
+
+### 5. `apps/desktop` (Current: `9.7` ➔ Target: `10.0`)
+- **Live IPC Export Progress Streaming:**
+  - Pipe real-time FFmpeg `stderr` frame encoding speed and ETA progress updates over the IPC channel (`focal:export-progress`) into the Studio `ExportModal` progress bar.
+- **Window State Persistence:**
+  - Automatically persist window geometry (width, height, position, maximized state) across desktop app launches.
+
+### 6. `@focaldom/extension` (Current: `9.8` ➔ Target: `10.0`)
+- **Jittered Exponential Backoff Reconnection:**
+  - Enhance `ExtensionWebSocketClient` with randomized exponential backoff ($1\text{s} \dots 30\text{s}$) to gracefully handle desktop application restarts without network flooding.
+- **Configurable Port Settings:**
+  - Provide a settings popup / storage configuration allowing users to customize the WebSocket port if the default `48480` is occupied.
+
+---
+
+### 📊 10.0 Target Scorecard Matrix
+
+| Part | Subsystem | Current Rating | 10.0 Gap Remediation Item | Target Rating |
+| :--- | :--- | :---: | :--- | :---: |
+| **00** | Monorepo Setup | 10.0 | *Complete* | **10.0 / 10** |
+| **01** | `@focaldom/core` | 9.9 | Multi-curve easing equations & ultra-wide ratio limits | **10.0 / 10** |
+| **02** | `@focaldom/capture-playwright` | 9.8 | Shadow DOM / iframe traversal & audio sync | **10.0 / 10** |
+| **03** | `@focaldom/renderer` | 9.7 | Native WGSL WebGPU shaders & audio muxing | **10.0 / 10** |
+| **04** | `@focaldom/studio` | 9.8 | Magnetic event snapping & Ctrl+Wheel timeline zoom | **10.0 / 10** |
+| **05** | `apps/desktop` | 9.7 | Live IPC export streaming & window state save | **10.0 / 10** |
+| **06** | `@focaldom/extension` | 9.8 | Jittered exponential backoff & configurable ports | **10.0 / 10** |
+| **Total** | **Composite Monorepo** | **9.81** | **Target Perfect System Health** | **10.0 / 10** |
+
+---
+
 ## 🏆 Summary & Verification
 
 1. **Monorepo Integrity:** All 7 workspace packages/apps build cleanly and pass 100% of automated unit and integration tests.
 2. **Quality & Health:** Critical serialization and IPC bridge paths have been hardened and verified.
 3. **Roadmap Alignment:** All subphases across `Implement_00` through `Implement_06` are verified and complete.
+4. **Pathway to 10/10:** Complete engineering roadmap documented for elevating every subsystem to a perfect 10/10.
+
