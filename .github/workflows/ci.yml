@@ -5,19 +5,34 @@ on:
     branches:
       - main
       - 'feat/**'
+      - 'fix/**'
+      - 'audit/**'
+      - 'chore/**'
+      - 'refactor/**'
+      - 'docs/**'
   pull_request:
     branches:
       - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
 
 jobs:
+  lint-pr-title:
+    name: Validate Conventional PR Title
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   validate:
     name: Typecheck, Build & Test
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
         node-version: [22.x]
@@ -29,16 +44,20 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.21.0
+          run_install: false
+
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Install pnpm
-        run: npm install -g pnpm@11.21.0
+          cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
       - name: Run TypeScript Typecheck
         run: pnpm typecheck
@@ -46,8 +65,13 @@ jobs:
       - name: Build Monorepo Packages
         run: pnpm build
 
-      - name: Install Playwright Browsers
+      - name: Install Playwright Browsers (Linux)
+        if: runner.os == 'Linux'
         run: pnpm --filter @focaldom/capture-playwright exec playwright install --with-deps chromium chromium-headless-shell
+
+      - name: Install Playwright Browsers (Windows)
+        if: runner.os == 'Windows'
+        run: pnpm --filter @focaldom/capture-playwright exec playwright install chromium chromium-headless-shell
 
       - name: Run Vitest Unit Tests
         run: pnpm test
