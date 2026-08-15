@@ -161,19 +161,54 @@ flowchart TD
 
 ---
 
-### Phase 04: Native OS Association & Packaging (`electron-builder.yml`)
-- [ ] **Sub-phase 04.1: Register Windows File Associations**
-  - Configure `fileAssociations` in `electron-builder.yml`:
-    ```yaml
-    fileAssociations:
-      - ext: focal
-        name: FocalDOM Project
-        description: FocalDOM Video Studio Project Bundle
-        role: Editor
-        icon: resources/icons/focal.ico
+### Phase 04: Windows Installer Packaging & Asset Generation (`electron-builder`)
+- [ ] **Sub-phase 04.1: Configure `electron-builder` in `apps/desktop/package.json`**
+  - Configure NSIS installer, portable executable, and file associations:
+    ```json
+    {
+      "scripts": {
+        "dev": "electron .",
+        "build": "tsup",
+        "dist": "electron-builder --win",
+        "dist:portable": "electron-builder --win portable"
+      },
+      "build": {
+        "appId": "com.focaldom.app",
+        "productName": "FocalDOM",
+        "directories": {
+          "output": "dist-package"
+        },
+        "win": {
+          "target": [
+            { "target": "nsis", "arch": ["x64"] },
+            { "target": "portable", "arch": ["x64"] }
+          ],
+          "icon": "assets/icon.ico"
+        },
+        "nsis": {
+          "oneClick": false,
+          "allowToChangeInstallationDirectory": true,
+          "createDesktopShortcut": true,
+          "createStartMenuShortcut": true,
+          "artifactName": "FocalDOM-Setup-${version}.${ext}"
+        },
+        "fileAssociations": [
+          {
+            "ext": "focal",
+            "name": "FocalDOM Project",
+            "description": "FocalDOM Video Studio Project Bundle",
+            "role": "Editor"
+          }
+        ]
+      }
+    }
     ```
-- [ ] **Sub-phase 04.2: Add Process Timeout in FFmpeg Binary Detection**
-  - Add 3000ms timeout to `testSystemExecutable` to prevent hung startup checks.
+- [ ] **Sub-phase 04.2: Build Standalone Windows Executables**
+  - Verify local compilation output:
+    - `dist-package/FocalDOM-Setup-0.1.0.exe` (NSIS Wizard Installer)
+    - `dist-package/FocalDOM-0.1.0.exe` (Standalone Portable App)
+- [ ] **Sub-phase 04.3: Add Process Timeout in FFmpeg Binary Detection**
+  - Add 3000ms timeout to `testSystemExecutable` in `ffmpeg-manager.ts` to prevent hung startup checks.
 
 ---
 

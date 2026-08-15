@@ -267,11 +267,11 @@ Every commit merged to `main` is automatically categorized by Release Please int
               config-file: release-please-config.json
               manifest-file: .release-please-manifest.json
 
-      build-and-publish:
-        name: Build & Package Released Artifacts
+      build-and-publish-windows:
+        name: Build Windows Installer & Release Assets
         needs: release-please
         if: ${{ needs.release-please.outputs.releases_created == 'true' }}
-        runs-on: ubuntu-latest
+        runs-on: windows-latest
         steps:
           - name: Checkout Repository
             uses: actions/checkout@v4
@@ -290,13 +290,31 @@ Every commit merged to `main` is automatically categorized by Release Please int
           - name: Install Dependencies
             run: pnpm install --frozen-lockfile --ignore-scripts
 
-          - name: Typecheck & Build Monorepo
+          - name: Build Monorepo Packages
             run: |
-              pnpm typecheck
-              pnpm build
+              pnpm --filter @focaldom/core build
+              pnpm --filter @focaldom/renderer build
+              pnpm --filter @focaldom/studio build
+              pnpm --filter @focaldom/extension build
+              pnpm --filter @focaldom/desktop build
 
-          - name: Run Tests
-            run: pnpm test
+          - name: Package Chrome Extension (.zip)
+            shell: pwsh
+            run: |
+              Compress-Archive -Path packages/extension/dist/* -DestinationPath packages/extension/dist/focaldom-chrome-extension.zip -Force
+
+          - name: Build Windows Installer (.exe) via electron-builder
+            run: pnpm --filter @focaldom/desktop exec electron-builder --win
+
+          - name: Upload Release Assets to GitHub Release
+            uses: softprops/action-gh-release@v2
+            with:
+              tag_name: ${{ needs.release-please.outputs.tag_name }}
+              files: |
+                apps/desktop/dist-package/FocalDOM-Setup-*.exe
+                apps/desktop/dist-package/FocalDOM-*.exe
+                apps/desktop/dist-package/FocalDOM-*.zip
+                packages/extension/dist/focaldom-chrome-extension.zip
     ```
 
 ---
