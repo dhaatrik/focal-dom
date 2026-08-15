@@ -21,36 +21,36 @@ graph TD
 
 ---
 
-## 📋 Implementation Parts Directory
+## 📋 Architecture & Improvement Directory
 
-| Part | Document | Primary Scope | Status | Audit Score |
-| :--- | :--- | :--- | :--- | :---: |
-| **00** | [Implement_00_Foundation_Monorepo.md](Implement_00_Foundation_Monorepo.md) | PNPM workspaces, TypeScript configs, build pipelines, shared tooling | ✅ Done | **10.0 / 10** |
-| **01** | [Implement_01_Core_Engine.md](Implement_01_Core_Engine.md) | `@focaldom/core`: Spring physics, Bezier cursor math, sticky avoidance, data schemas | ✅ Done | **9.9 / 10** |
-| **02** | [Implement_02_Capture_Playwright.md](Implement_02_Capture_Playwright.md) | `@focaldom/capture-playwright`: Mode B deterministic CDP frame clock, in-page logger, scenario runner | ✅ Done | **9.8 / 10** |
-| **03** | [Implement_03_Renderer_Engine.md](Implement_03_Renderer_Engine.md) | `@focaldom/renderer`: Pixi.js composition, motion blur shaders, raw RGBA FFmpeg pipe | ✅ Done | **9.7 / 10** |
-| **04** | [Implement_04_Studio_Timeline.md](Implement_04_Studio_Timeline.md) | `@focaldom/studio`: React 19 + Zustand multi-track timeline, physics tuner, styling panel | ✅ Done | **9.8 / 10** |
-| **05** | [Implement_05_Desktop_App.md](Implement_05_Desktop_App.md) | `apps/desktop`: Electron Windows shell, native FFmpeg bundling, SharedArrayBuffer IPC | ✅ Done | **9.7 / 10** |
-| **06** | [Implement_06_Chrome_Extension.md](Implement_06_Chrome_Extension.md) | `@focaldom/extension`: Mode A Manifest V3 live recording & WebSocket telemetry | ✅ Done | **9.8 / 10** |
-
-> 📊 **Comprehensive Deep Audit Report:** For detailed code quality assessments, mathematical precision checks, and architectural ratings out of 10 for each part, see [AUDIT_REPORT.md](AUDIT_REPORT.md).
+| Document | Primary Scope | Status | Score / Target |
+| :--- | :--- | :---: | :---: |
+| [**AUDIT_REPORT.md**](AUDIT_REPORT.md) | Comprehensive line-by-line codebase audit, metrics, and ratings out of 10 | ✅ Complete | **9.81 / 10** |
+| [**Improve_Now.md**](Improve_Now.md) | Actionable implementation blueprints & subphases to elevate codebase to perfection | 🚀 Active Plan | **10.0 / 10** |
 
 ---
 
-## 🎯 Recommended Execution Sequence
+## 📊 Subsystem Health & Target Ratings
 
-1. **Sprint 1 (Foundations & Deterministic Capture):**  
-   Complete [Part 00](Implement_00_Foundation_Monorepo.md) ➔ [Part 01](Implement_01_Core_Engine.md) ➔ [Part 02](Implement_02_Capture_Playwright.md).  
-   *Milestone:* CLI can execute a web scenario and output frame sequences with zero-drift DOM JSON.
+| Part | Subsystem / Package | Key Responsibilities | Current Rating | Target (Improve_Now) |
+| :--- | :--- | :--- | :---: | :---: |
+| **00** | **Monorepo Foundation** | Workspaces, TypeScript project references, tooling | **10.0 / 10** | **10.0 / 10** |
+| **01** | **`@focaldom/core`** | Spring physics ODE, multi-curve easing, sticky avoidance | **9.9 / 10** | **10.0 / 10** |
+| **02** | **`@focaldom/capture-playwright`** | Deterministic CDP clock, shadow DOM traversal, SDK | **9.8 / 10** | **10.0 / 10** |
+| **03** | **`@focaldom/renderer`** | Pixi.js scene graph, dual WGSL/GLSL shaders, FFmpeg audio pipe | **9.7 / 10** | **10.0 / 10** |
+| **04** | **`@focaldom/studio`** | React 19 + Zustand timeline, magnetic snapping, ruler zoom | **9.8 / 10** | **10.0 / 10** |
+| **05** | **`apps/desktop`** | Electron shell, real-time IPC progress streaming, window save | **9.7 / 10** | **10.0 / 10** |
+| **06** | **`@focaldom/extension`** | Manifest V3 live recording, backoff reconnect, custom ports | **9.8 / 10** | **10.0 / 10** |
 
-2. **Sprint 2 (Rendering & High-FPS Video Export):**  
-   Complete [Part 03](Implement_03_Renderer_Engine.md).  
-   *Milestone:* Headless CLI can render spring zooms, motion blur, and vector cursors into a 4K 60fps MP4.
+---
 
-3. **Sprint 3 (Studio UI & Desktop Shell):**  
-   Complete [Part 04](Implement_04_Studio_Timeline.md) ➔ [Part 05](Implement_05_Desktop_App.md).  
-   *Milestone:* Full desktop app for interactive editing, timeline scrubbing, physics tuning, and one-click export.
+## 🎯 Recommended Next Execution Plan
 
-4. **Sprint 4 (Live Mode A Extension):**  
-   Complete [Part 06](Implement_06_Chrome_Extension.md).  
-   *Milestone:* Live browser recording streaming real-time metadata directly into Desktop Studio.
+Follow the detailed phased roadmap in [**Improve_Now.md**](Improve_Now.md) to implement all 6 subsystem refinements:
+
+1. **Step 1:** Complete `@focaldom/core` multi-curve easing interpolation (`easeInOutCubic`, `linear`).
+2. **Step 2:** Complete `@focaldom/capture-playwright` deep shadow DOM & nested iframe traversal.
+3. **Step 3:** Complete `@focaldom/renderer` dual WGSL WebGPU shader parity & audio muxing.
+4. **Step 4:** Complete `@focaldom/studio` magnetic timeline snapping & `Ctrl+Wheel` zoom.
+5. **Step 5:** Complete `apps/desktop` live IPC export streaming (`focal:export-progress`) & window state preservation.
+6. **Step 6:** Complete `@focaldom/extension` jittered exponential backoff & configurable custom port settings.
