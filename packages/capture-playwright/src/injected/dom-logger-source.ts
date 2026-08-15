@@ -17,31 +17,35 @@ export const INJECTED_DOM_LOGGER_SOURCE = `
     let current = element;
     while (current && current !== document.body && current !== document.documentElement) {
       try {
-        const style = window.getComputedStyle(current);
-        if (style.position === 'fixed' || style.position === 'sticky') {
-          return true;
+        if (current instanceof HTMLElement) {
+          const style = window.getComputedStyle(current);
+          if (style.position === 'fixed' || style.position === 'sticky') {
+            return true;
+          }
         }
       } catch (e) {
         break;
       }
-      current = current.parentElement;
+      current = current.parentElement || (current.getRootNode && current.getRootNode().host);
     }
     return false;
   }
 
   function getComputedZIndex(element) {
     let current = element;
-    while (current && current !== document.body) {
+    while (current && current !== document.body && current !== document.documentElement) {
       try {
-        const z = window.getComputedStyle(current).zIndex;
-        if (z && z !== 'auto') {
-          const parsed = parseInt(z, 10);
-          if (!isNaN(parsed)) return parsed;
+        if (current instanceof HTMLElement) {
+          const z = window.getComputedStyle(current).zIndex;
+          if (z && z !== 'auto') {
+            const parsed = parseInt(z, 10);
+            if (!isNaN(parsed)) return parsed;
+          }
         }
       } catch (e) {
         break;
       }
-      current = current.parentElement;
+      current = current.parentElement || (current.getRootNode && current.getRootNode().host);
     }
     return 0;
   }
@@ -71,6 +75,22 @@ export const INJECTED_DOM_LOGGER_SOURCE = `
     window.__FOCAL_ACTIVE_STICKY_REGIONS__ = stickyElements;
     return stickyElements;
   }
+  window.__focal_scan_sticky__ = scanStickyRegions;
+
+  function getDeepestTarget(event) {
+    if (event && typeof event.composedPath === 'function') {
+      const path = event.composedPath();
+      if (path && path.length > 0) {
+        for (let i = 0; i < path.length; i++) {
+          const node = path[i];
+          if (node instanceof HTMLElement || node instanceof SVGElement) {
+            return node;
+          }
+        }
+      }
+    }
+    return event.target;
+  }
 
   function getElementMetadata(element) {
     if (!element || !(element instanceof HTMLElement || element instanceof SVGElement)) return undefined;
@@ -98,23 +118,26 @@ export const INJECTED_DOM_LOGGER_SOURCE = `
 
   window.addEventListener('click', function(e) {
     window.__FOCAL_LAST_CURSOR__ = { x: e.clientX, y: e.clientY };
+    const target = getDeepestTarget(e);
     scanStickyRegions();
     if (window.__focal_on_event) {
-      window.__focal_on_event('click', getElementMetadata(e.target), e.clientX, e.clientY);
+      window.__focal_on_event('click', getElementMetadata(target), e.clientX, e.clientY);
     }
   }, { capture: true });
 
   window.addEventListener('input', function(e) {
+    const target = getDeepestTarget(e);
     scanStickyRegions();
     if (window.__focal_on_event) {
-      window.__focal_on_event('input', getElementMetadata(e.target), window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
+      window.__focal_on_event('input', getElementMetadata(target), window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
     }
   }, { capture: true });
 
   window.addEventListener('focusin', function(e) {
+    const target = getDeepestTarget(e);
     scanStickyRegions();
     if (window.__focal_on_event) {
-      window.__focal_on_event('focus', getElementMetadata(e.target), window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
+      window.__focal_on_event('focus', getElementMetadata(target), window.__FOCAL_LAST_CURSOR__.x, window.__FOCAL_LAST_CURSOR__.y);
     }
   }, { capture: true });
 
@@ -122,7 +145,14 @@ export const INJECTED_DOM_LOGGER_SOURCE = `
     scanStickyRegions();
   }, { passive: true, capture: true });
 
-  // Periodic scan for dynamic headers
-  setInterval(scanStickyRegions, 1000);
+  // Rescan on DOM structure mutations
+  if (typeof MutationObserver !== 'undefined') {
+    var observer = new MutationObserver(function() {
+      scanStickyRegions();
+    });
+    if (document.documentElement) {
+      observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+    }
+  }
 })();
 `;

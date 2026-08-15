@@ -15,6 +15,7 @@ export interface FocalSessionOptions {
   };
   headless?: boolean;
   browser?: Browser;
+  outputDir?: string;
 }
 
 export class FocalCaptureSession {
@@ -72,7 +73,8 @@ export class FocalCaptureSession {
       }
     );
 
-    this.collector = new CDPScreencastCollector(this.page);
+    const framesDir = this.options.outputDir ? join(this.options.outputDir, 'frames') : undefined;
+    this.collector = new CDPScreencastCollector(this.page, framesDir);
     await this.collector.start();
 
     return this.page;
@@ -136,7 +138,7 @@ export class FocalCaptureSession {
       { frameIndex: this.currentFrameIndex, deltaMs: this.frameDurationMs }
     );
 
-    // Capture exact frame
+    // Capture exact frame (streamed directly to disk if outputDir was configured)
     const buffer = await this.collector.captureFrame(this.currentFrameIndex, this.currentTimestampMs);
 
     this.currentFrameIndex++;

@@ -5,15 +5,27 @@ import { join } from 'node:path';
 export interface FrameMetadata {
   frameIndex: number;
   timestampMs: number;
-  buffer: Buffer;
+  filePath?: string;
+  buffer?: Buffer;
 }
 
 export class CDPScreencastCollector {
   private cdpSession: CDPSession | null = null;
   private frames: FrameMetadata[] = [];
   private isCapturing: boolean = false;
+  private framesDir: string | null = null;
 
-  constructor(private page: Page) {}
+  constructor(private page: Page, framesDir?: string) {
+    if (framesDir) {
+      this.framesDir = framesDir;
+      mkdirSync(framesDir, { recursive: true });
+    }
+  }
+
+  public setFramesDir(dir: string): void {
+    this.framesDir = dir;
+    mkdirSync(dir, { recursive: true });
+  }
 
   public async start(): Promise<void> {
     this.frames = [];
@@ -29,7 +41,8 @@ export class CDPScreencastCollector {
   }
 
   /**
-   * Captures the current frame buffer deterministically for the given frame index
+   * Captures the current frame buffer deterministically for the given frame index.
+   * If framesDir is configured, streams directly to disk to maintain a constant O(1) RAM footprint.
    */
   public async captureFrame(frameIndex: number, timestampMs: number): Promise<Buffer> {
     let buffer: Buffer;
@@ -48,13 +61,26 @@ export class CDPScreencastCollector {
       buffer = await this.page.screenshot({ type: 'png' });
     }
 
-    const frame: FrameMetadata = {
-      frameIndex,
-      timestampMs,
-      buffer,
-    };
+    if (this.framesDir) {
+      const fileName = `frame_${String(frameIndex).padStart(6, '0')}.png`;
+      const filePath = join(this.framesDir, fileName);
+      writeFileSync(filePath, buffer);
 
-    this.frames.push(frame);
+      const frameMeta: FrameMetadata = {
+        frameIndex,
+        timestampMs,
+        filePath,
+      };
+      this.frames.push(frameMeta);
+    } else {
+      const frameMeta: FrameMetadata = {
+        frameIndex,
+        timestampMs,
+        buffer,
+      };
+      this.frames.push(frameMeta);
+    }
+
     return buffer;
   }
 
@@ -66,16 +92,24 @@ export class CDPScreencastCollector {
     return this.frames.length;
   }
 
+  /**
+   * Finalizes frame exports, writing any remaining in-memory frames to disk
+   */
   public async exportFramesToDisk(outputDir: string): Promise<string[]> {
-    const framesDir = join(outputDir, 'frames');
-    mkdirSync(framesDir, { recursive: true });
+    const framesTargetDir = join(outputDir, 'frames');
+    mkdirSync(framesTargetDir, { recursive: true });
 
     const paths: string[] = [];
     for (const frame of this.frames) {
       const fileName = `frame_${String(frame.frameIndex).padStart(6, '0')}.png`;
-      const filePath = join(framesDir, fileName);
-      writeFileSync(filePath, frame.buffer);
-      paths.push(filePath);
+      const filePath = join(framesTargetDir, fileName);
+
+      if (frame.buffer) {
+        writeFileSync(filePath, frame.buffer);
+        paths.push(filePath);
+      } else if (frame.filePath) {
+        paths.push(frame.filePath);
+      }
     }
 
     return paths;

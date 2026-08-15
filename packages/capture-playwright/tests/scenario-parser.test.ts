@@ -35,18 +35,21 @@ steps:
     expect(scenario.steps[2]).toEqual({ action: 'click', selector: '#get-started-btn' });
   });
 
-  it('parses valid JSON scenario', () => {
+  it('parses valid JSON scenario with dragAndDrop and uploadFile', () => {
     const jsonContent = JSON.stringify({
-      name: 'JSON Test Flow',
+      name: 'JSON Advanced Flow',
       steps: [
         { action: 'goto', url: 'https://example.com' },
-        { action: 'wait', durationMs: 1000 },
+        { action: 'dragAndDrop', sourceSelector: '#card-1', targetSelector: '#column-done' },
+        { action: 'uploadFile', selector: '#file-input', filePaths: ['/tmp/doc.pdf'] },
       ],
     });
 
     const scenario = parseScenarioContent(jsonContent, 'json');
-    expect(scenario.name).toBe('JSON Test Flow');
-    expect(scenario.steps.length).toBe(2);
+    expect(scenario.name).toBe('JSON Advanced Flow');
+    expect(scenario.steps.length).toBe(3);
+    expect(scenario.steps[1].action).toBe('dragAndDrop');
+    expect(scenario.steps[2].action).toBe('uploadFile');
   });
 
   it('throws descriptive error on missing required fields', () => {

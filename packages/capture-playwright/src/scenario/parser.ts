@@ -9,7 +9,18 @@ import { ScenarioDefinition, ScenarioStep } from './scenario-types';
 function isValidStep(step: unknown): step is ScenarioStep {
   if (!step || typeof step !== 'object') return false;
   const s = step as Record<string, unknown>;
-  const validActions = ['goto', 'wait', 'click', 'hover', 'type', 'press', 'scroll', 'assertVisible'];
+  const validActions = [
+    'goto',
+    'wait',
+    'click',
+    'hover',
+    'type',
+    'press',
+    'scroll',
+    'dragAndDrop',
+    'uploadFile',
+    'assertVisible',
+  ];
 
   if (typeof s.action !== 'string' || !validActions.includes(s.action)) {
     return false;
@@ -29,6 +40,13 @@ function isValidStep(step: unknown): step is ScenarioStep {
       return typeof s.key === 'string';
     case 'scroll':
       return typeof s.x === 'number' && typeof s.y === 'number';
+    case 'dragAndDrop':
+      return typeof s.sourceSelector === 'string' && typeof s.targetSelector === 'string';
+    case 'uploadFile':
+      return (
+        typeof s.selector === 'string' &&
+        (typeof s.filePaths === 'string' || (Array.isArray(s.filePaths) && s.filePaths.every((f) => typeof f === 'string')))
+      );
     case 'assertVisible':
       return typeof s.selector === 'string';
     default:
