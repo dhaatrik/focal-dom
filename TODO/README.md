@@ -27,6 +27,7 @@ graph TD
 | :--- | :--- | :---: | :---: |
 | [**AUDIT_REPORT.md**](AUDIT_REPORT.md) | Comprehensive line-by-line codebase audit, metrics, and ratings out of 10 | ✅ Complete | **9.81 / 10** |
 | [**Improve_Now.md**](Improve_Now.md) | Actionable implementation blueprints & subphases to elevate codebase to perfection | 🚀 Active Plan | **10.0 / 10** |
+| [**Improve_Renderer.md**](Improve_Renderer.md) | Exhaustive flaw investigation and 5-phase hardening plan for Pixi.js & FFmpeg Renderer | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Studio.md**](Improve_Studio.md) | Exhaustive flaw investigation and 5-phase hardening plan for Studio Timeline NLE UI | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_Desktop_App.md**](Improve_Desktop_App.md) | Exhaustive flaw investigation and 5-phase hardening plan for Electron Desktop App | 🚀 Active Plan | **10.0 / 10** |
 | [**Improve_CICD.md**](Improve_CICD.md) | Automated Semantic Versioning (SemVer) & Release CI with Google Release Please | 🚀 Active Plan | Automated Release |
