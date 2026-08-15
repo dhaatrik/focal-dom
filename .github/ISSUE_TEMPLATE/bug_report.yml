@@ -1,0 +1,57 @@
+name: 🐛 Bug Report
+description: Report a reproducible bug or defect in FocalDOM
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue! Please provide as much detail as possible to help us diagnose and fix it quickly.
+  - type: dropdown
+    id: package
+    attributes:
+      label: Affected Subsystem / Package
+      description: Which package does this bug affect?
+      options:
+        - "@focaldom/core (Physics, Math, Schemas)"
+        - "@focaldom/capture-playwright (CDP Ingestion, Runner)"
+        - "@focaldom/renderer (Pixi.js, Shaders, FFmpeg)"
+        - "@focaldom/studio (React 19 Timeline NLE)"
+        - "@focaldom/extension (Chrome Manifest V3)"
+        - "apps/desktop (Electron Windows App)"
+        - "CLI / Workflows / Build"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the Bug
+      description: A clear and concise description of what the bug is.
+      placeholder: When dragging keyframes near event markers, the playhead does not...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this behavior?
+      placeholder: |
+        1. Open Studio with `pnpm --filter @focaldom/studio dev`
+        2. Load project with 10 click events
+        3. Observe console error...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment Info
+      description: OS version, Node version, Browser version, GPU
+      placeholder: "Windows 11, Node v22.13.0, Chrome 132, RTX 3080"
+    validations:
+      required: true
