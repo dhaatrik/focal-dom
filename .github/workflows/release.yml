@@ -1,86 +1,99 @@
-name: Automated Release
+name: Automated Release (Release Please)
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      bump_type:
-        description: 'Version Bump Type'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
 
 permissions:
   contents: write
-  packages: write
   pull-requests: write
 
 jobs:
-  release:
-    name: Build & Publish Release
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 1: Release Please — autonomous SemVer, changelogs & release PR
+  # ─────────────────────────────────────────────────────────────────────────
+  release-please:
+    name: Release Please (SemVer & Changelogs)
     runs-on: ubuntu-latest
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      paths_released: ${{ steps.release.outputs.paths_released }}
+    steps:
+      - name: Run Release Please
+        uses: google-github-actions/release-please-action@v4
+        id: release
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Job 2: Build Windows installer & upload assets to GitHub Release
+  # Only runs when Release Please has actually created a new release
+  # ─────────────────────────────────────────────────────────────────────────
+  build-and-publish-windows:
+    name: Build Windows Installer & Upload Release Assets
+    needs: release-please
+    if: ${{ needs.release-please.outputs.releases_created == 'true' }}
+    runs-on: windows-latest
+
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: "0"
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
-          fetch-depth: 0
-          fetch-tags: true
+          version: 11.21.0
+          run_install: false
 
       - name: Setup Node.js 22.x
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
-
-      - name: Install pnpm
-        run: npm install -g pnpm@11.21.0
+          cache: 'pnpm'
 
       - name: Install Dependencies
-        run: pnpm install --ignore-scripts --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile --ignore-scripts
 
-      - name: Run TypeScript Typecheck
-        run: pnpm typecheck
+      - name: Build Core Package
+        run: pnpm --filter @focaldom/core build
 
-      - name: Install Playwright Browsers
-        run: pnpm --filter @focaldom/capture-playwright exec playwright install --with-deps chromium chromium-headless-shell
+      - name: Build Renderer Package
+        run: pnpm --filter @focaldom/renderer build
 
-      - name: Run Vitest Unit Tests
-        run: pnpm test
+      - name: Build Studio Package
+        run: pnpm --filter @focaldom/studio build
 
-      - name: Build Packages
-        run: pnpm build
+      - name: Build Extension Package
+        run: pnpm --filter @focaldom/extension build
 
-      - name: Determine Version & Tag
-        id: versioning
+      - name: Build Desktop Package
+        run: pnpm --filter @focaldom/desktop build
+
+      - name: Package Chrome Extension (.zip)
+        shell: pwsh
         run: |
-          VERSION=$(node -p "require('./package.json').version")
-          TAG_NAME="v$VERSION"
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=$TAG_NAME" >> $GITHUB_OUTPUT
-          
-          # Check if tag already exists in the repository
-          if git tag -l "$TAG_NAME" | grep -q "$TAG_NAME"; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Tag $TAG_NAME already exists. Skipping release generation."
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-            echo "New release version detected: $TAG_NAME"
-          fi
+          Compress-Archive `
+            -Path packages/extension/dist/* `
+            -DestinationPath packages/extension/dist/focaldom-chrome-extension.zip `
+            -Force
 
-      - name: Create GitHub Release
-        if: steps.versioning.outputs.exists == 'false'
+      - name: Build Windows Installer (.exe) via electron-builder
+        run: pnpm --filter @focaldom/desktop exec electron-builder --win
+
+      - name: Upload Release Assets to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.versioning.outputs.tag }}
-          name: "Release ${{ steps.versioning.outputs.tag }}"
-          generate_release_notes: true
-          draft: false
-          prerelease: false
+          tag_name: ${{ needs.release-please.outputs.tag_name }}
+          files: |
+            apps/desktop/dist-package/FocalDOM-Setup-*.exe
+            apps/desktop/dist-package/FocalDOM-*.exe
+            apps/desktop/dist-package/FocalDOM-*.zip
+            packages/extension/dist/focaldom-chrome-extension.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
