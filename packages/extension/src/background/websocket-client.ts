@@ -2,20 +2,45 @@ import { DOMEventFrame } from '@focaldom/core';
 
 export interface WebSocketClientOptions {
   url?: string;
-  reconnectIntervalMs?: number;
+  port?: number;
 }
 
 export class ExtensionWebSocketClient {
   private ws: any = null;
   private url: string;
-  private reconnectIntervalMs: number;
   private reconnectTimer: any = null;
   private isConnected = false;
   private pendingQueue: DOMEventFrame[] = [];
+  public reconnectAttempts = 0;
 
   constructor(options: WebSocketClientOptions = {}) {
-    this.url = options.url ?? 'ws://127.0.0.1:48480';
-    this.reconnectIntervalMs = options.reconnectIntervalMs ?? 2000;
+    const port = options.port ?? 48480;
+    this.url = options.url ?? `ws://127.0.0.1:${port}`;
+
+    // Load custom port from extension storage if available
+    if (typeof chrome !== 'undefined' && chrome.storage?.sync) {
+      chrome.storage.sync.get(['wsPort']).then((data) => {
+        if (data && typeof data.wsPort === 'number') {
+          this.setPort(data.wsPort);
+        }
+      }).catch(() => {});
+    }
+  }
+
+  public setPort(port: number): void {
+    this.url = `ws://127.0.0.1:${port}`;
+    if (this.isConnected) {
+      this.disconnect();
+      this.connect();
+    }
+  }
+
+  public calculateReconnectDelay(): number {
+    const baseDelay = 1000;
+    const maxDelay = 30000;
+    const exponential = Math.min(maxDelay, baseDelay * Math.pow(1.5, this.reconnectAttempts));
+    const jitter = Math.random() * 500;
+    return exponential + jitter;
   }
 
   /**
@@ -32,8 +57,9 @@ export class ExtensionWebSocketClient {
 
       this.ws.onopen = () => {
         this.isConnected = true;
+        this.reconnectAttempts = 0;
         if (this.reconnectTimer) {
-          clearInterval(this.reconnectTimer);
+          clearTimeout(this.reconnectTimer);
           this.reconnectTimer = null;
         }
         this.flushQueue();
@@ -59,7 +85,7 @@ export class ExtensionWebSocketClient {
    */
   disconnect(): void {
     if (this.reconnectTimer) {
-      clearInterval(this.reconnectTimer);
+      clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
     if (this.ws) {
@@ -67,6 +93,7 @@ export class ExtensionWebSocketClient {
       this.ws = null;
     }
     this.isConnected = false;
+    this.reconnectAttempts = 0;
   }
 
   /**
@@ -95,9 +122,13 @@ export class ExtensionWebSocketClient {
 
   private scheduleReconnect(): void {
     if (this.reconnectTimer) return;
-    this.reconnectTimer = setInterval(() => {
+    const delay = this.calculateReconnectDelay();
+    this.reconnectAttempts++;
+
+    this.reconnectTimer = setTimeout(() => {
+      this.reconnectTimer = null;
       this.connect();
-    }, this.reconnectIntervalMs);
+    }, delay);
   }
 
   get connected(): boolean {

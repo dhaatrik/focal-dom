@@ -58,4 +58,16 @@ describe('ExtensionWebSocketClient (Telemetry Streamer)', () => {
     expect(receivedFrames[0].eventType).toBe('click');
     expect(receivedFrames[0].cursor.x).toBe(120);
   });
+
+  it('calculates jittered exponential backoff delays properly', () => {
+    client = new ExtensionWebSocketClient();
+    client.reconnectAttempts = 0;
+    const delay0 = client.calculateReconnectDelay();
+    expect(delay0).toBeGreaterThanOrEqual(1000);
+    expect(delay0).toBeLessThanOrEqual(1600);
+
+    client.reconnectAttempts = 4;
+    const delay4 = client.calculateReconnectDelay();
+    expect(delay4).toBeGreaterThan(delay0);
+  });
 });
