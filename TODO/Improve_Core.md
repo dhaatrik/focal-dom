@@ -95,18 +95,18 @@ flowchart TD
 ## 🛠️ Granular Phase-Wise Implementation Checklist
 
 ### Phase 01: Multi-Curve Analytical Easing Module & Spring Stability (`src/camera/`)
-- [ ] **Sub-phase 01.1: Closed-Form Analytical Easing Functions (`src/camera/easing.ts`)**
-  - [ ] Implement `evaluateEasingCurve(curve: EasingCurve, t: number): number` handling `linear`, `easeInOutCubic`, and `spring` with input clamping $t \in [0, 1]$.
-  - [ ] Implement state interpolation helper `interpolateCameraState(from: CameraState, to: CameraState, t: number, curve: EasingCurve): CameraState`.
-  - [ ] Implement helper `evaluateEasingVelocity(curve: EasingCurve, t: number, durationSeconds: number): number` for analytical derivatives.
-  - [ ] Export easing utilities from `src/camera/index.ts`.
-- [ ] **Sub-phase 01.2: Numerical Stability & Mass Guard in `SpringCamera` (`src/camera/spring-camera.ts`)**
-  - [ ] Enforce safe mass boundary `this.mass = Math.max(0.05, cfg.mass ?? 1.0)` to eliminate divide-by-zero risks.
-  - [ ] Enforce safe positive boundaries for `stiffness` (`Math.max(1.0, cfg.stiffness)`) and `damping` (`Math.max(0.1, cfg.damping)`).
-  - [ ] Add `NaN` and non-finite number guards in `step(deltaTimeSeconds)` and `setTarget(target)`.
-- [ ] **Sub-phase 01.3: Easing & Spring Numerical Unit Tests (`tests/easing.test.ts`, `tests/spring-camera.test.ts`)**
-  - [ ] Create `packages/core/tests/easing.test.ts` verifying boundary values ($t=0, t=1$), out-of-range inputs, and monotonicity.
-  - [ ] Add tests in `packages/core/tests/spring-camera.test.ts` for zero/negative mass configurations and non-finite delta times.
+- [x] **Sub-phase 01.1: Closed-Form Analytical Easing Functions (`src/camera/easing.ts`)**
+  - [x] Implement `evaluateEasingCurve(curve: EasingCurve, t: number): number` handling `linear`, `easeInOutCubic`, and `spring` with input clamping $t \in [0, 1]$.
+  - [x] Implement state interpolation helper `interpolateCameraState(from: CameraState, to: CameraState, t: number, curve: EasingCurve): CameraState`.
+  - [x] Implement helper `evaluateEasingVelocity(curve: EasingCurve, t: number, durationSeconds: number): number` for analytical derivatives.
+  - [x] Export easing utilities from `src/camera/index.ts`.
+- [x] **Sub-phase 01.2: Numerical Stability & Mass Guard in `SpringCamera` (`src/camera/spring-camera.ts`)**
+  - [x] Enforce safe mass boundary `this.mass = Math.max(0.05, cfg.mass ?? 1.0)` to eliminate divide-by-zero risks.
+  - [x] Enforce safe positive boundaries for `stiffness` (`Math.max(1.0, cfg.stiffness)`) and `damping` (`Math.max(0.1, cfg.damping)`).
+  - [x] Add `NaN` and non-finite number guards in `step(deltaTimeSeconds)` and `setTarget(target)`.
+- [x] **Sub-phase 01.3: Easing & Spring Numerical Unit Tests (`tests/easing.test.ts`, `tests/spring-camera.test.ts`)**
+  - [x] Create `packages/core/tests/easing.test.ts` verifying boundary values ($t=0, t=1$), out-of-range inputs, and monotonicity.
+  - [x] Add tests in `packages/core/tests/spring-camera.test.ts` for zero/negative mass configurations and non-finite delta times.
 
 ---
 

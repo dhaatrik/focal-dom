@@ -33,6 +33,37 @@ describe('SpringCamera Physics Engine', () => {
     expect(camera.isSettled()).toBe(true);
   });
 
+  it('handles zero or negative mass safely without producing NaN states', () => {
+    const zeroMassCamera = new SpringCamera({ mass: 0, stiffness: 140, damping: 16 });
+    expect(zeroMassCamera.mass).toBeGreaterThanOrEqual(0.05);
+
+    zeroMassCamera.setTarget({ x: 150, y: 50, scale: 2.0 });
+    for (let i = 0; i < 60; i++) {
+      zeroMassCamera.step(1 / 60);
+    }
+
+    const state = zeroMassCamera.getCurrent();
+    expect(isFinite(state.x)).toBe(true);
+    expect(isFinite(state.y)).toBe(true);
+    expect(isFinite(state.scale)).toBe(true);
+    expect(isNaN(state.x)).toBe(false);
+  });
+
+  it('safely handles non-positive and non-finite delta times', () => {
+    const camera = new SpringCamera();
+    camera.setTarget({ x: 100, y: 100, scale: 1.5 });
+
+    const before = camera.getCurrent();
+    camera.step(0);
+    expect(camera.getCurrent()).toEqual(before);
+
+    camera.step(-1);
+    expect(camera.getCurrent()).toEqual(before);
+
+    camera.step(NaN);
+    expect(camera.getCurrent()).toEqual(before);
+  });
+
   it('calculates valid affine transformation matrix for 2D canvas', () => {
     const camera = new SpringCamera();
     camera.snapTo({ x: 0, y: 0, scale: 2.0 });
