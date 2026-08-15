@@ -1,16 +1,31 @@
 import fs from 'node:fs/promises';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
+import os from 'node:os';
 import AdmZip from 'adm-zip';
 import { FocalDOMProject, DOMEventFrame } from '@focaldom/core';
 
 export class DesktopFileManager {
   /**
-   * Packages a FocalDOMProject and its DOM event stream into a .focal ZIP bundle.
+   * Packages a FocalDOMProject, its DOM event stream, and local media into a .focal ZIP bundle.
    */
   static async packProjectToFocalZip(project: FocalDOMProject, outputPath: string): Promise<void> {
     const zip = new AdmZip();
 
-    // 1. Write project metadata and configuration
+    let bundledMediaName: string | undefined = undefined;
+
+    // 1. If rawVideoPath is present and points to a local file, bundle it into media/
+    if (project.rawVideoPath && existsSync(project.rawVideoPath)) {
+      try {
+        const mediaBuffer = await fs.readFile(project.rawVideoPath);
+        bundledMediaName = path.basename(project.rawVideoPath);
+        zip.addFile(`media/${bundledMediaName}`, mediaBuffer);
+      } catch (err) {
+        console.warn(`Could not bundle media file ${project.rawVideoPath}:`, err);
+      }
+    }
+
+    // 2. Write project metadata and configuration
     const projectJson = JSON.stringify(
       {
         id: project.id,
@@ -19,6 +34,7 @@ export class DesktopFileManager {
         createdAt: project.createdAt,
         updatedAt: project.updatedAt,
         rawVideoPath: project.rawVideoPath,
+        bundledMediaName,
         aspectRatio: project.aspectRatio,
         canvasPadding: project.canvasPadding,
         backgroundStyle: project.backgroundStyle,
@@ -31,7 +47,7 @@ export class DesktopFileManager {
     );
     zip.addFile('project.json', Buffer.from(projectJson, 'utf-8'));
 
-    // 2. Write DOM event frames
+    // 3. Write DOM event frames
     const eventsJson = JSON.stringify(project.events || [], null, 2);
     zip.addFile('events.json', Buffer.from(eventsJson, 'utf-8'));
 
@@ -41,9 +57,13 @@ export class DesktopFileManager {
   }
 
   /**
-   * Unpacks and rehydrates a FocalDOMProject from a .focal ZIP bundle.
+   * Unpacks and rehydrates a FocalDOMProject from a .focal ZIP bundle, extracting bundled media if present.
    */
   static async unpackProjectFromFocalZip(sourcePath: string): Promise<FocalDOMProject> {
+    if (!existsSync(sourcePath)) {
+      throw new Error(`Project file does not exist: ${sourcePath}`);
+    }
+
     const zip = new AdmZip(sourcePath);
 
     const projectEntry = zip.getEntry('project.json');
@@ -56,11 +76,31 @@ export class DesktopFileManager {
     const eventsEntry = zip.getEntry('events.json');
     let events: DOMEventFrame[] = [];
     if (eventsEntry) {
-      events = JSON.parse(eventsEntry.getData().toString('utf-8'));
+      try {
+        events = JSON.parse(eventsEntry.getData().toString('utf-8'));
+      } catch {}
+    }
+
+    let rawVideoPath = projectData.rawVideoPath;
+
+    // Check if media was bundled inside the archive
+    const zipEntries = zip.getEntries();
+    const mediaEntry = zipEntries.find(
+      (entry) => entry.entryName.startsWith('media/') && !entry.isDirectory
+    );
+
+    if (mediaEntry) {
+      const fileName = path.basename(mediaEntry.entryName);
+      const cacheDir = path.join(os.tmpdir(), 'focaldom-media-cache', projectData.id || 'temp');
+      await fs.mkdir(cacheDir, { recursive: true });
+      const extractedPath = path.join(cacheDir, fileName);
+      await fs.writeFile(extractedPath, mediaEntry.getData());
+      rawVideoPath = extractedPath;
     }
 
     return {
       ...projectData,
+      rawVideoPath,
       events,
     };
   }
@@ -95,8 +135,13 @@ export class DesktopFileManager {
     }
 
     const filePath = result.filePaths[0];
-    const project = await this.unpackProjectFromFocalZip(filePath);
-    return { project, filePath };
+    try {
+      const project = await this.unpackProjectFromFocalZip(filePath);
+      return { project, filePath };
+    } catch (err: any) {
+      console.error('Failed to open project:', err);
+      return null;
+    }
   }
 
   /**

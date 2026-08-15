@@ -3,8 +3,15 @@ import { ExportPreset } from '@focaldom/renderer';
 
 export interface ExportVideoOptions {
   project: FocalDOMProject;
-  outputPath: string;
-  preset: ExportPreset;
+  outputPath?: string;
+  preset?: ExportPreset;
+  fps?: number;
+}
+
+export interface ExportProgress {
+  percent: number;
+  frame: number;
+  totalFrames: number;
   fps: number;
 }
 
@@ -28,6 +35,9 @@ export interface FocalDesktopAPI {
   saveProjectAs: (project: FocalDOMProject) => Promise<SaveProjectResult>;
   getFFmpegPath: () => Promise<string | null>;
   exportVideo: (options: ExportVideoOptions) => Promise<{ success: boolean; outputPath: string; error?: string }>;
+  onExportProgress: (callback: (progress: ExportProgress) => void) => () => void;
+  showItemInFolder: (filePath: string) => Promise<void>;
+  onOpenFilePath: (callback: (filePath: string) => void) => () => void;
   onTelemetryEvent: (callback: (event: DOMEventFrame) => void) => () => void;
   getPlatformInfo: () => Promise<PlatformInfo>;
 }

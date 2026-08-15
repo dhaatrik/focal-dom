@@ -48,8 +48,8 @@ export class DesktopFFmpegManager {
       }
     }
 
-    // 3. Fallback to system PATH
-    const systemExecutable = await this.testSystemExecutable(binaryName);
+    // 3. Fallback to system PATH (with 3000ms timeout guard)
+    const systemExecutable = await this.testSystemExecutable(binaryName, 3000);
     if (systemExecutable) {
       this.cachedPath = systemExecutable;
       return systemExecutable;
@@ -61,13 +61,48 @@ export class DesktopFFmpegManager {
   }
 
   /**
-   * Tests if the executable runs successfully from system PATH.
+   * Tests if the executable runs successfully from system PATH with a timeout guard.
    */
-  private static testSystemExecutable(executable: string): Promise<string | null> {
+  private static testSystemExecutable(executable: string, timeoutMs: number = 3000): Promise<string | null> {
     return new Promise((resolve) => {
-      const proc = spawn(executable, ['-version']);
-      proc.on('error', () => resolve(null));
-      proc.on('close', (code) => resolve(code === 0 ? executable : null));
+      let isResolved = false;
+
+      let proc: any;
+      const timeout = setTimeout(() => {
+        if (!isResolved) {
+          isResolved = true;
+          if (proc) {
+            try {
+              proc.kill();
+            } catch {}
+          }
+          resolve(null);
+        }
+      }, timeoutMs);
+
+      try {
+        proc = spawn(executable, ['-version']);
+        proc.on('error', () => {
+          if (!isResolved) {
+            isResolved = true;
+            clearTimeout(timeout);
+            resolve(null);
+          }
+        });
+        proc.on('close', (code: number) => {
+          if (!isResolved) {
+            isResolved = true;
+            clearTimeout(timeout);
+            resolve(code === 0 ? executable : null);
+          }
+        });
+      } catch {
+        if (!isResolved) {
+          isResolved = true;
+          clearTimeout(timeout);
+          resolve(null);
+        }
+      }
     });
   }
 

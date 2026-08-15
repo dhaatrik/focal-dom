@@ -23,9 +23,16 @@ win:
     - nsis
     - portable
   artifactName: ${productName}-Setup-${version}.${ext}
+  icon: assets/icon.ico
 
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: always
   createStartMenuShortcut: true
+
+fileAssociations:
+  - ext: focal
+    name: FocalDOM Project
+    description: FocalDOM Video Studio Project Bundle
+    role: Editor
